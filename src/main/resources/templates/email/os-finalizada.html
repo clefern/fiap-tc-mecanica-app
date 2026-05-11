@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Serviço Finalizado</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .header { background-color: #d4edda; padding: 10px; text-align: center; border-bottom: 1px solid #c3e6cb; color: #155724; }
+        .content { padding: 20px; }
+        .footer { font-size: 12px; color: #777; text-align: center; margin-top: 20px; }
+        .info-box { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 5px solid #28a745; }
+        .price { font-size: 18px; font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Seu Veículo está Pronto!</h2>
+        </div>
+        <div class="content">
+            <p>Olá, <strong th:text="${cliente.nome}">Cliente</strong>!</p>
+            <p>Temos o prazer de informar que o serviço no seu veículo foi concluído com sucesso.</p>
+            
+            <div class="info-box">
+                <p><strong>OS:</strong> <span th:text="${os.codigo}">OS-000</span></p>
+                <p><strong>Veículo:</strong> <span th:text="${veiculo.modelo}">Modelo</span></p>
+                <p><strong>Total a Pagar:</strong> <span class="price" th:text="${'R$ ' + #numbers.formatDecimal(os.valorTotal, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span></p>
+            </div>
+
+            <p>Você já pode vir retirar seu veículo em nosso horário de funcionamento.</p>
+            <p><strong>Horário de Retirada:</strong> Segunda a Sexta, das 08:00 às 18:00.</p>
+            
+            <p>Obrigado pela confiança!</p>
+        </div>
+        <div class="footer">
+            <p>Mecânica FIAP - Excelência em serviços automotivos</p>
+        </div>
+    </div>
+</body>
+</html>

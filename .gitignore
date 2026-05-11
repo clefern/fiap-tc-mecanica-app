@@ -1,0 +1,60 @@
+tmp
+.env
+!.env.example
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+.mvn/
+mvnw
+mvnw.cmd
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Terraform ###
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.tfvars
+!infra/*.tfvars.example
+infra/.terraform.lock.hcl
+infra/crash.log
+infra/override.tf
+infra/override.tf.json
+infra/*_override.tf
+infra/*_override.tf.json
+.*.lock.info
+tfplan
+
+### Kubernetes ###
+k8s/**/secrets.yaml
+!k8s/**/secret.yaml
+
+# Allure
+allure-results/
+allure-report/
+.allure/
+
+# IntelliJ / Eclipse / VSCode
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# MacOS
+.DS_Store
+
+# AspectJ
+ajcore*.txt
+
+# Logs
+*.log
+log/
+
+# Sonar Local Cache
+.sonar_local/

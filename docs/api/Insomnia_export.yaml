@@ -1,0 +1,4147 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Mecanica API
+meta:
+  id: wrk_1ecb8648821845d4b07df0e97d703eb7
+  created: 1774226419289
+  modified: 1774226419289
+  description: ""
+collection:
+  - url: "{{ base_url }}/actuator/health"
+    name: Health Check (Actuator)
+    meta:
+      id: req_8308ebda657445aeb7a589c7578277bf
+      created: 1705320000000
+      modified: 1705320000000
+      isPrivate: false
+      description: Checks system availability.
+      sortKey: -50
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - name: Fluxo Completo (E2E) - Fixed Users
+    meta:
+      id: fld_6e003a3246c64975b2cce31819b66f44
+      created: 1768318393996
+      modified: 1768318393996
+      sortKey: -1000
+      description: Fluxo sequencial usando usuários fixos (seeding) e encadeamento nativo.
+    children:
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_5672114a2fbb4962a035e258a892f5a5', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/entregar"
+        name: 32. Atendente - Entregar Veículo
+        meta:
+          id: req_015ca494f97d4f779c0936721b6c2b97
+          created: 1705320000000
+          modified: 1768591355127
+          isPrivate: false
+          description: Muda status para ENTREGUE.
+          sortKey: 260
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/insumos"
+        name: 15. Mecânico - Listar Insumos
+        meta:
+          id: req_022064faa07649bea75cfcb8e98103fd
+          created: 1705320000000
+          modified: 1768591159396
+          isPrivate: false
+          description: Lista insumos para obter ID.
+          sortKey: 130
+        method: GET
+        parameters:
+          - name: size
+            value: "10"
+          - name: page
+            value: "0"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/servicos/ativos"
+        name: 18. Mecânico - Listar Serviços
+        meta:
+          id: req_4669795de4fd404ca1136ee7869a7ee4
+          created: 1705320000000
+          modified: 1768591169115
+          isPrivate: false
+          description: Lista serviços ativos para referência.
+          sortKey: 150
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/prioridade/{% response 'body',
+          'req_5672114a2fbb4962a035e258a892f5a5', 'b64::JC5pZA==::46b', 'never',
+          60 %}"
+        name: 09. Admin - Atualizar Prioridade
+        meta:
+          id: req_5599b42ad3fc44208c0204fcbc0f6aad
+          created: 1705320000000
+          modified: 1768677469988
+          isPrivate: false
+          description: Define prioridade como URGENTE (Requer GERENTE ou ADMIN).
+          sortKey: 90
+        method: PUT
+        body:
+          mimeType: application/json
+          text: '"URGENTE"'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_eae61c298ce04db9949c989cc2579658',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/prioridade/fila-execucao"
+        name: 28. Mecânico - Listar Fila Execução
+        meta:
+          id: req_79ba8742186345399037d36fd61a1bcf
+          created: 1705320000000
+          modified: 1768664948598
+          isPrivate: false
+          description: Lista OS prontas para execução.
+          sortKey: 230
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/pecas"
+        name: 12. Mecânico - Listar Peças
+        meta:
+          id: req_a211b36c57d04fa7b1a9cd4c3a3b13d9
+          created: 1705320000000
+          modified: 1768591151343
+          isPrivate: false
+          description: Lista peças para obter ID.
+          sortKey: 110
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        parameters:
+          - name: size
+            value: "10"
+          - name: sort
+            value: nome,asc
+          - name: page
+            value: "0"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens/bulking"
+        name: 20. Mecânico - Adicionar Itens em Lote
+        meta:
+          id: req_ff76c34f936a44088f57a250e8295404
+          created: 1705320000000
+          modified: 1768681840488
+          isPrivate: false
+          description: Adiciona múltiplos itens (peça, insumo, serviço) de uma vez.
+          sortKey: 170
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            [
+            	{
+            		"tipo": "PECA",
+            		"referenciaId": "{% response 'body', 'req_a211b36c57d04fa7b1a9cd4c3a3b13d9', 'b64::JC5jb250ZW50WzFdLmlk::46b', 'never', 60 %}",
+            		"descricao": "{% response 'body', 'req_a211b36c57d04fa7b1a9cd4c3a3b13d9', 'b64::JC5jb250ZW50WzFdLm5vbWU=::46b', 'never', 60 %}",
+            		"quantidade": 1,
+            		"valorUnitario": {% response 'body', 'req_a211b36c57d04fa7b1a9cd4c3a3b13d9', 'b64::JC5jb250ZW50WzFdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            	},
+            	{
+            		"tipo": "INSUMO",
+            		"referenciaId": "{% response 'body', 'req_022064faa07649bea75cfcb8e98103fd', 'b64::JC5jb250ZW50WzFdLmlk::46b', 'never', 60 %}",
+            		"descricao": "{% response 'body', 'req_022064faa07649bea75cfcb8e98103fd', 'b64::JC5jb250ZW50WzFdLm5vbWU=::46b', 'never', 60 %}",
+            		"quantidade": 1,
+            		"valorUnitario": {% response 'body', 'req_022064faa07649bea75cfcb8e98103fd', 'b64::JC5jb250ZW50WzFdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            	},
+            	{
+            		"tipo": "SERVICO",
+            		"referenciaId": "{% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzFdLmlk::46b', 'never', 60 %}",
+            		"descricao": "{% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzFdLmRlc2NyaWNhbw==::46b', 'never', 60 %}",
+            		"quantidade": 1,
+            		"valorUnitario": {% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzFdLnZhbG9yQmFzZQ==::46b', 'never', 60 %}
+            	}
+            ]
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/emitir-orcamento"
+        name: 21. Mecânico - Emitir Orçamento - Email
+        meta:
+          id: req_18a5f59dbe5541ac835e2bfb88e5e604
+          created: 1768318393996
+          modified: 1768679686723
+          isPrivate: false
+          description: Muda status para AGUARDANDO_APROVACAO.
+          sortKey: 190
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/prioridade/proxima?tipo=EXECUCAO"
+        name: 29. Mecânico - Obter Próxima OS para Execução
+        meta:
+          id: req_19cff89e58c34df69cb69466e4a7726b
+          created: 1768318393996
+          modified: 1768591318641
+          isPrivate: false
+          description: Obtém a próxima OS na fila de execução respeitando a prioridade.
+          sortKey: 235
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes/{% response 'body',
+          'req_6ea13d1e844a4895a79bd7e8ded439d5', 'b64::JC5pZA==::46b', 'never',
+          60 %}/veiculos"
+        name: 04. Atendente - Listar Veículos do Cliente
+        meta:
+          id: req_30b080bdf9894b2eb0a2c08016beacd9
+          created: 1768318393996
+          modified: 1768681610163
+          isPrivate: false
+          description: Lista veículos para pegar o ID do primeiro.
+          sortKey: 50
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_5672114a2fbb4962a035e258a892f5a5', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/finalizar"
+        name: 31. Mecânico - Finalizar Serviço - Email
+        meta:
+          id: req_3452fafc1c27494d8360eeeceb152a52
+          created: 1768318393996
+          modified: 1768679715585
+          isPrivate: false
+          description: Muda status para AGUARDANDO_PAGAMENTO (ou FINALIZADA se pago).
+          sortKey: 250
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 00. Login Atendente
+        meta:
+          id: req_351c6647e1f0413ba3632981df4720ca
+          created: 1768318393996
+          modified: 1768589240093
+          isPrivate: false
+          description: Obtém token do atendente fixo.
+          sortKey: 10
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "atendente@teste.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_ae45c4d761e147bc8a4eb3142d80cc2e', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/iniciar-diagnostico"
+        name: 11. Mecânico - Iniciar Diagnóstico
+        meta:
+          id: req_3ee328f39988450488047eb04e68281d
+          created: 1768318393996
+          modified: 1768677524299
+          isPrivate: false
+          description: Muda status para EM_ANALISE.
+          sortKey: 100
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens"
+        name: 17. Mecânico - Adicionar Insumo
+        meta:
+          id: req_4d1c5f9867404a23a5e6d924acdda3d0
+          created: 1768318393996
+          modified: 1768677651639
+          isPrivate: false
+          description: Adiciona item ao orçamento.
+          sortKey: 140
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"tipo": "INSUMO",
+            	"referenciaId": "{% response 'body', 'req_401dd6b174f84f95bc56e6266e8ae625', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}",
+            	"descricao": "{% response 'body', 'req_401dd6b174f84f95bc56e6266e8ae625', 'b64::JC5jb250ZW50WzBdLm5vbWU=::46b', 'never', 60 %}",
+            	"quantidade": 1,
+            	"valorUnitario": {% response 'body', 'req_401dd6b174f84f95bc56e6266e8ae625', 'b64::JC5jb250ZW50WzBdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico"
+        name: 05. Atendente - Criar OS - Email
+        meta:
+          id: req_5672114a2fbb4962a035e258a892f5a5
+          created: 1768318393996
+          modified: 1772150109957
+          isPrivate: false
+          description: "Cria a OS (Status: ABERTA)."
+          sortKey: 60
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"clienteId": "{% response 'body', 'req_6ea13d1e844a4895a79bd7e8ded439d5', 'b64::JC5pZA==::46b', 'never', 60 %}", 
+            	"veiculoId": "{% response 'body', 'req_30b080bdf9894b2eb0a2c08016beacd9', 'b64::JFswXS5pZA==::46b', 'never', 60 %}", 
+            	"observacoes": "Barulho no motor"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens"
+        name: 19. Mecânico - Adicionar Serviço
+        meta:
+          id: req_5767db62d01846f488ff0e5d6f273654
+          created: 1768318393996
+          modified: 1768681802166
+          isPrivate: false
+          description: Adiciona serviço ao orçamento.
+          sortKey: 160
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"tipo": "SERVICO",
+            	"descricao": "{% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzBdLm5vbWU=::46b', 'never', 60 %}",
+            	"valorUnitario": {% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzBdLnZhbG9yQmFzZQ==::46b', 'never', 60 %},
+            	"quantidade": 1,
+            	"referenciaId": "{% response 'body', 'req_4669795de4fd404ca1136ee7869a7ee4', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_79ba8742186345399037d36fd61a1bcf',
+          'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60
+          %}/acoes/iniciar-execucao"
+        name: 30. Mecânico - Iniciar Execução
+        meta:
+          id: req_5b6dbfcd734749ccb4c2bde8f2026681
+          created: 1768318393996
+          modified: 1768591331419
+          isPrivate: false
+          description: Muda status para EM_EXECUCAO.
+          sortKey: 240
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes/documento/{% response 'body',
+          'req_4926277bd22349cd8b691c4de607a9a0', 'b64::JC5kb2N1bWVudG8=::46b',
+          'never', 60 %}"
+        name: 02. Atendente - Consultar Cliente por CPF/CNPJ
+        meta:
+          id: req_6ea13d1e844a4895a79bd7e8ded439d5
+          created: 1768318393996
+          modified: 1768677334554
+          isPrivate: false
+          description: Busca o cliente fixo para capturar o ID.
+          sortKey: 30
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_5672114a2fbb4962a035e258a892f5a5', 'b64::JC5pZA==::46b', 'never',
+          60 %}"
+        name: 33. Atendente - Consultar OS Final
+        meta:
+          id: req_70255fce798e425eb1e3e68d648c3e3a
+          created: 1768318393996
+          modified: 1768664911198
+          isPrivate: false
+          description: Verifica status final.
+          sortKey: 270
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 06. Login Mecânico
+        meta:
+          id: req_85023473c4e24155820d58809b6e6589
+          created: 1768318393996
+          modified: 1768590110162
+          isPrivate: false
+          description: Obtém token do mecânico fixo.
+          sortKey: 70
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "mecanico@teste.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/prioridade/proxima?tipo=ORCAMENTO"
+        name: 10. Mecânico - Obter Próxima OS para Orçamento
+        meta:
+          id: req_ae45c4d761e147bc8a4eb3142d80cc2e
+          created: 1768318393996
+          modified: 1768591138098
+          isPrivate: false
+          description: Obtém a próxima OS na fila de orçamento respeitando a prioridade.
+          sortKey: 95
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 24. Login Cliente
+        meta:
+          id: req_b9cdbe63dee545beb1880c56e8b440ca
+          created: 1768318393996
+          modified: 1768318393996
+          isPrivate: false
+          description: Obtém token do cliente.
+          sortKey: 200
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "cliente@teste.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens"
+        name: 14. Mecânico - Adicionar Peça
+        meta:
+          id: req_c42ae28b9f0c43179ee9b17a16d7c317
+          created: 1768318393996
+          modified: 1768678072271
+          isPrivate: false
+          description: Adiciona item ao orçamento.
+          sortKey: 120
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"tipo": "PECA",
+            	"referenciaId": "{% response 'body', 'req_7f523d0eccac4ed398f7c2acf39c9bf9', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}",
+            	"descricao": "{% response 'body', 'req_7f523d0eccac4ed398f7c2acf39c9bf9', 'b64::JC5jb250ZW50WzBdLm5vbWU=::46b', 'never', 60 %}",
+            	"quantidade": 1,
+            	"valorUnitario": {% response 'body', 'req_7f523d0eccac4ed398f7c2acf39c9bf9', 'b64::JC5jb250ZW50WzBdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes"
+        name: 01.1 Atendente - Cadastrar Cliente (FISICO) - Email
+        meta:
+          id: req_cfbba86a36a64f9d974520f04d60fb75
+          created: 1768318393996
+          modified: 1768679628640
+          isPrivate: false
+          description: Tenta cadastrar. Se falhar (409), ok, pule para o passo 03.
+          sortKey: 20
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             	 "nome": "João da Silva",
+             	 "documento": "32200283814",
+             	 "tipoPessoa": "FISICA",
+             	 "email": "joao.silva@example.com",
+             	 "telefone": "11999999999",
+             	 "endereco": "Rua das Flores, 123"
+             }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/prioridade/fila-orcamento"
+        name: 07. Mecânico - Listar OS Abertas - Fila de Orçamento
+        meta:
+          id: req_d5ea3dbba9fc4f01822ef25b05f04e84
+          created: 1768318393996
+          modified: 1768591126044
+          isPrivate: false
+          description: Verifica se a OS criada está na fila.
+          sortKey: 80
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/orcamentos/{% response 'body',
+          'req_f2709e19e072414eb0f9441e4e60d27b', 'b64::JC5pZA==::46b', 'never',
+          60 %}/aprovar"
+        name: 26.01. Cliente - Aprovar Orçamento
+        meta:
+          id: req_dc06cfc7d51e45c793d15a1e7d927eea
+          created: 1768318393996
+          modified: 1772361394812
+          isPrivate: false
+          description: Aprova orçamento e atualiza OS via evento.
+          sortKey: 220
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_b9cdbe63dee545beb1880c56e8b440ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_5672114a2fbb4962a035e258a892f5a5', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens/89239d8f-5ba7-4ba1-906f-f218b28d2856"
+        name: 22. Mecânico - Remover Item da OS
+        meta:
+          id: req_de44fd407aab49aaa08d5b84ad073715
+          created: 1768318393996
+          modified: 1768681940143
+          isPrivate: false
+          description: Remove um item da OS antes de emitir o orçamento.
+          sortKey: 185
+        method: DELETE
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 08. Login Admin
+        meta:
+          id: req_eae61c298ce04db9949c989cc2579658
+          created: 1768318393996
+          modified: 1768590125953
+          isPrivate: false
+          description: Obtém token do usuário ADMIN fixo.
+          sortKey: 85
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "admin@mecanica.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/orcamentos/os/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}"
+        name: 25. Cliente - Consultar Orçamento
+        meta:
+          id: req_f2709e19e072414eb0f9441e4e60d27b
+          created: 1768318393996
+          modified: 1768661855906
+          isPrivate: false
+          description: Cliente vê os valores.
+          sortKey: 210
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_b9cdbe63dee545beb1880c56e8b440ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes/{% response 'body',
+          'req_6ea13d1e844a4895a79bd7e8ded439d5', 'b64::JC5pZA==::46b', 'never',
+          60 %}/veiculos"
+        name: 03. Atendente - Cadastrar Veículo (Opcional)
+        meta:
+          id: req_f45615b1581d41cd920f7c8fb5ceca49
+          created: 1768318393996
+          modified: 1768620481415
+          isPrivate: false
+          description: Tenta cadastrar veículo. Se já existir, ok.
+          sortKey: 40
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"placa": "ABC1234", "marca": "Toyota", "modelo": "Corolla", "ano": 2020,
+            "cor": "Prata"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_3ee328f39988450488047eb04e68281d', 'b64::JC5pZA==::46b', 'never',
+          60 %}/itens/{% response 'body',
+          'req_ff76c34f936a44088f57a250e8295404',
+          'b64::JC5pdGVuc1swXS5pZA==::46b', 'never', 60 %}"
+        name: 19. Mecânico - Atualizar Quantidade Item - Email
+        meta:
+          id: req_fda689675d6e4e05908e9d5929612dcf
+          created: 1768318393996
+          modified: 1768681880700
+          isPrivate: false
+          description: Atualiza a quantidade de um item da OS.
+          sortKey: 180
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"quantidade": 34
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/orcamentos/{% response 'body',
+          'req_f2709e19e072414eb0f9441e4e60d27b', 'b64::JC5pZA==::46b', 'never',
+          60 %}/reprovar"
+        name: 26.02. Cliente - Reprovar Orçamento
+        meta:
+          id: req_a7992c70781c42759231d4d7131b0d5f
+          created: 1768518000000
+          modified: 1772361402457
+          isPrivate: false
+          description: Reprova orçamento e cancela OS (Fluxo Alternativo).
+          sortKey: 225
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_b9cdbe63dee545beb1880c56e8b440ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes"
+        name: 01.2 Atendente - Cadastrar Cliente (JURIDICO) - Email
+        meta:
+          id: req_4926277bd22349cd8b691c4de607a9a0
+          created: 1768594577029
+          modified: 1768679634025
+          isPrivate: false
+          description: Tenta cadastrar. Se falhar (409), ok, pule para o passo 03.
+          sortKey: 22.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             	 "nome": "WEG",
+             	 "documento": "60701190000104",
+             	 "tipoPessoa": "JURIDICA",
+             	 "email": "admin@weg.com",
+             	 "telefone": "11999999999",
+             	 "endereco": "Rua da Weg, 123"
+             }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_351c6647e1f0413ba3632981df4720ca',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/pecas/search"
+        name: 13. Mecânico - Buscar Peça
+        meta:
+          id: req_7f523d0eccac4ed398f7c2acf39c9bf9
+          created: 1768617600000
+          modified: 1768677570327
+          isPrivate: false
+          description: Pesquisa Peças por nome ou descrição contendo o termo informado.
+          sortKey: 115
+        method: GET
+        parameters:
+          - name: termo
+            value: Anéis de Pistão
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/insumos/search"
+        name: 16. Mecanico - Buscar Insumos por termo
+        meta:
+          id: req_401dd6b174f84f95bc56e6266e8ae625
+          created: 1768619650352
+          modified: 1768677639038
+          isPrivate: false
+          description: Pesquisa Insumos por nome ou descrição contendo o termo informado.
+          sortKey: 135
+        method: GET
+        parameters:
+          - name: termo
+            value: Cera Automotiva
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Endpoints
+    meta:
+      id: fld_34a607de1844433e9a5fab65b5e334e5
+      created: 1768369800000
+      modified: 1768369800000
+      sortKey: -200
+      description: Coleção de endpoints agrupados por domínio.
+    children:
+      - name: Relatórios
+        meta:
+          id: fld_092b249a4dee47ec90a4b218496259de
+          created: 1705320000000
+          modified: 1705320000000
+          sortKey: -10
+          description: Endpoints de relatórios gerenciais.
+        children:
+          - url: "{{ base_url }}/api/relatorios/desempenho-mecanicos"
+            name: Desempenho de Mecânicos
+            meta:
+              id: req_62977e94c9654232a02e47330e94b5e8
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Relatório de desempenho e comissões.
+              sortKey: 0
+            method: GET
+            parameters:
+              - name: mes
+                value: "1"
+              - name: ano
+                value: "2026"
+            authentication:
+              type: bearer
+              token: "{{ access_token }}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/api/relatorios/desempenho-mecanicos?inicio={{ data_inicio
+              }}&fim={{ data_fim }}"
+            name: Desempenho Mecânicos
+            meta:
+              id: req_85a46b786df946db93e68e52f9870960
+              created: 1768093534878
+              modified: 1768093534878
+              isPrivate: false
+              description: ""
+              sortKey: -100
+            method: GET
+            authentication:
+              type: bearer
+              token: "{{ access_token }}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/api/relatorios/tempo-medio-execucao-os"
+            name: Tempo Médio Execução OSs
+            meta:
+              id: req_ec2c4d9baf8645b095e4b41525b27df6
+              created: 1768452800000
+              modified: 1768452800000
+              isPrivate: false
+              description: Retorna o tempo médio de execução das ordens de serviço.
+              sortKey: 1
+            method: GET
+            authentication:
+              type: bearer
+              token: "{{ access_token }}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/api/relatorios/tempo-medio-execucao-os/periodo"
+            name: Tempo Médio Execução OSs (Período)
+            meta:
+              id: req_3c353134000342f99bff9ed02bd7fb0f
+              created: 1768455600000
+              modified: 1768455600000
+              isPrivate: false
+              description: Retorna o tempo médio de execução das ordens de serviço em um
+                período informado.
+              sortKey: 2
+            method: GET
+            parameters:
+              - name: inicio
+                value: 2026-01-01
+              - name: fim
+                value: 2026-01-31
+            authentication:
+              type: bearer
+              token: "{{ access_token }}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Authentication
+        meta:
+          id: fld_d767f215ec1743c89ef22c9f738fa4ed
+          created: 1705320000000
+          modified: 1768591587498
+          sortKey: -250
+          description: Authentication endpoints. Uses JWT Bearer Token flow.
+        children:
+          - url: "{{ base_url }}/oauth/authorize"
+            name: Authorize (Placeholder)
+            meta:
+              id: req_119f2cf930ad4e5889f120f3fbcdd06d
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Authorization endpoint placeholder.
+              sortKey: -70
+            method: GET
+            parameters:
+              - name: response_type
+                value: code
+              - name: client_id
+                value: client
+              - name: redirect_uri
+                value: http://localhost:8080/callback
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/oauth/token"
+            name: Login (Password Grant)
+            meta:
+              id: req_43faa8c5441143ba90b3537c1ad802f5
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Obtains an access token and refresh token using the Password Grant
+                flow.
+              sortKey: -100
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"grant_type": "password",
+                	"username": "{{ username }}",
+                	"password": "{{ password }}"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/oauth/forgot-password"
+            name: Forgot Password
+            meta:
+              id: req_56f816dba5104a2e9cef510a37bc0204
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Initiates password reset process.
+              sortKey: -80
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"email": "admin@mecanica.com"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/oauth/validate"
+            name: Validate Token
+            meta:
+              id: req_65c2e3dc97804ee189d4acf564f9b0b6
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Validates a JWT token.
+              sortKey: -80
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"token": "{{ access_token }}"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/oauth/reset-password"
+            name: Reset Password
+            meta:
+              id: req_a9ad2eaf7c284de7b7329bf1b6754b5e
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Completes password reset using token.
+              sortKey: -70
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                	"token": "{{ reset_token }}",
+                	"newPassword": "newSecret123"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ base_url }}/oauth/revoke"
+            name: Revoke Token
+            meta:
+              id: req_be9dd15bdeaf4a07b4bb6964cfb8a92b
+              created: 1705320000000
+              modified: 1705320000000
+              isPrivate: false
+              description: Revokes the current access token.
+              sortKey: -90
+            method: POST
+            parameters:
+              - name: token
+                value: "{{ access_token }}"
+                disabled: true
+            authentication:
+              type: bearer
+              token: "{% response 'body', 'req_eae61c298ce04db9949c989cc2579658',
+                'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Catálogo
+        meta:
+          id: fld_dca850ac1e9d48979a4d3ebad4d22a1f
+          created: 1705320000000
+          modified: 1705320000000
+          sortKey: -35
+          description: Catálogo de Serviços, Peças e Insumos.
+        children:
+          - name: Serviços
+            meta:
+              id: fld_ad5a4ca67d59429288fd125a1b89d647
+              created: 1705320000000
+              modified: 1705320000000
+              sortKey: 20
+              description: Service catalog management endpoints.
+            children:
+              - url: "{{ base_url }}/api/servicos/{{ servico_id }}"
+                name: Update Serviço
+                meta:
+                  id: req_445d8e8f78b147a0879187426d8589c5
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Updates service information.
+                  sortKey: -70
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: >-
+                    {
+                    	"nome": "Troca de Óleo Completa Updated",
+                    	"descricao": "Troca de óleo, filtro de óleo e filtro de ar.",
+                    	"valorBase": 260.00,
+                    	"tempoEstimadoMinutos": 50,
+                    	"categoria": "MANUTENCAO_PREVENTIVA",
+                    	"ativo": true
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos/{{ servico_id }}"
+                name: Get Serviço by ID
+                meta:
+                  id: req_625fc614551c4239bd3ff632a2a0749a
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a service by ID.
+                  sortKey: -80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos"
+                name: Create Serviço
+                meta:
+                  id: req_67c10d0a702547e1bdeff0d388d1730c
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Creates a new service in the catalog.
+                  sortKey: -100
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: >-
+                    {
+                    	"nome": "Troca de Óleo Completa",
+                    	"descricao": "Troca de óleo, filtro de óleo e filtro de ar.",
+                    	"valorBase": 250.00,
+                    	"tempoEstimadoMinutos": 45,
+                    	"categoria": "MANUTENCAO_PREVENTIVA"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos/{{ servico_id }}"
+                name: Delete Serviço
+                meta:
+                  id: req_6e7947a37c774699879c76e811d459a7
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Deletes (or deactivates) a service.
+                  sortKey: -60
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos/ativos"
+                name: List Serviços Ativos
+                meta:
+                  id: req_ca01f1e53eab4f88a4ba40ca0c1ef2a8
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Lists only active services.
+                  sortKey: -85
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos"
+                name: List All Serviços
+                meta:
+                  id: req_e50b2aa28c3742c5a22da028ec7c2985
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Lists all services.
+                  sortKey: -90
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: sort
+                    value: descricao,asc
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/servicos/{{ servico_id }}"
+                name: Get Serviço by ID
+                meta:
+                  id: req_d043530b4c414218a9cda69d0c6102cb
+                  created: 1768093534878
+                  modified: 1768093534878
+                  isPrivate: false
+                  description: ""
+                  sortKey: -70
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - name: Peças
+            meta:
+              id: fld_8b82d3983d6c4c49a19796c8d2f65415
+              created: 1766925300794
+              modified: 1766925300794
+              sortKey: -40
+              description: Endpoints de gestão de Peças.
+            children:
+              - url: "{{ base_url }}/api/pecas"
+                name: Listar Peças
+                meta:
+                  id: req_0e0d7ae504804d6a8cffbbcf362c92f9
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Listar Peças endpoint.
+                  sortKey: 20
+                method: GET
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas"
+                name: Criar Peça
+                meta:
+                  id: req_637ba759cf8f480ca1db26e094e99502
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Criar Peça endpoint.
+                  sortKey: 0
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                        "codigo": "P001",
+                        "nome": "Filtro de \u00d3leo",
+                        "descricao": "Filtro de \u00f3leo para motor 1.6",
+                        "preco": 45.5,
+                        "quantidadeEstoque": 100
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas/{{ peca_id }}"
+                name: Buscar Peça por ID
+                meta:
+                  id: req_65473d1d99834b20832d82e9b0e2703a
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Buscar Peça por ID endpoint.
+                  sortKey: 10
+                method: GET
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas/{{ peca_id }}"
+                name: Deletar Peça
+                meta:
+                  id: req_bc89379cf5c2464caf86e42ce0c19c74
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Deletar Peça endpoint.
+                  sortKey: 5
+                method: DELETE
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas/{{ peca_id }}"
+                name: Atualizar Peça
+                meta:
+                  id: req_f0cb5fabe5db427e9e41e4dae6e3c3f2
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Atualizar Peça endpoint.
+                  sortKey: 30
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                        "codigo": "P001-UPD",
+                        "nome": "Filtro de \u00d3leo Premium",
+                        "descricao": "Filtro de \u00f3leo de alta performance",
+                        "preco": 55.0,
+                        "quantidadeEstoque": 90
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas/ativas"
+                name: List Active Peças
+                meta:
+                  id: req_daae21554ebc477aa92cfb4585fd6a3f
+                  created: 1768093534878
+                  modified: 1768093534878
+                  isPrivate: false
+                  description: ""
+                  sortKey: -80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/pecas/search"
+                name: Buscar Peças por termo
+                meta:
+                  id: req_bf5b51b3d3294e2e99039ba9f3ac8c1b
+                  created: 1768617600000
+                  modified: 1768617600000
+                  isPrivate: false
+                  description: Pesquisa Peças por nome ou descrição contendo o termo informado.
+                  sortKey: 15
+                method: GET
+                parameters:
+                  - name: termo
+                    value: filtro
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - name: Insumos
+            meta:
+              id: fld_cc10f6909a1b4c9b8120ab9329e8ea2d
+              created: 1766925300794
+              modified: 1766925300794
+              sortKey: -30
+              description: Endpoints de gestão de Insumos.
+            children:
+              - url: "{{ base_url }}/api/insumos"
+                name: Listar Insumos
+                meta:
+                  id: req_1464700bd895435a9f6ce33e6c868522
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Listar Insumos endpoint.
+                  sortKey: 20
+                method: GET
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos/{{ insumo_id }}"
+                name: Atualizar Insumo
+                meta:
+                  id: req_58e1850fd4cc4129a91e46663c796abd
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Atualizar Insumo endpoint.
+                  sortKey: 30
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: >-
+                    {
+                        "codigo": "INS001-UPD",
+                        "nome": "\u00d3leo Sint\u00e9tico 5W30 Plus",
+                        "descricao": "\u00d3leo de motor sint\u00e9tico com aditivos",
+                        "preco": 40.0,
+                        "quantidadeEstoque": 180
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos"
+                name: Criar Insumo
+                meta:
+                  id: req_6e25a44111d047128ebd006fbe9087cc
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Criar Insumo endpoint.
+                  sortKey: 0
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                        "codigo": "INS001",
+                        "nome": "\u00d3leo Sint\u00e9tico 5W30",
+                        "descricao": "\u00d3leo de motor sint\u00e9tico",
+                        "preco": 35.0,
+                        "quantidadeEstoque": 200
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos/{{ insumo_id }}"
+                name: Buscar Insumo por ID
+                meta:
+                  id: req_8a0ca47653b0471c9531dbfcca5a82a3
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Buscar Insumo por ID endpoint.
+                  sortKey: 10
+                method: GET
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos/{{ insumo_id }}"
+                name: Deletar Insumo
+                meta:
+                  id: req_dbe9344f705540ddafab172309a813d0
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Deletar Insumo endpoint.
+                  sortKey: 5
+                method: DELETE
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos/ativos"
+                name: List Active Insumos
+                meta:
+                  id: req_86be78e1af5949efab697ed6d05c65ec
+                  created: 1768093534878
+                  modified: 1768093534878
+                  isPrivate: false
+                  description: ""
+                  sortKey: -80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/insumos/search"
+                name: Buscar Insumos por termo
+                meta:
+                  id: req_be2917d1bd274f6788dc1ad265b6b588
+                  created: 1768617600000
+                  modified: 1768617600000
+                  isPrivate: false
+                  description: Pesquisa Insumos por nome ou descrição contendo o termo informado.
+                  sortKey: 15
+                method: GET
+                parameters:
+                  - name: termo
+                    value: oleo
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+      - name: Integrações
+        meta:
+          id: fld_e609472d33714c5fb1ed76141abcd00e
+          created: 1742083200000
+          modified: 1742083200000
+          sortKey: -10
+          description: Endpoints machine-to-machine para integração com sistemas externos.
+            Autenticação via header X-Api-Key (sem JWT).
+        children:
+          - url: "{{ base_url }}/api/integracoes/orcamentos/aprovacao"
+            name: Aprovação Externa de Orçamento
+            meta:
+              id: req_d36a0ff6b3b74e02adb3e3d8ae2dd8b4
+              created: 1742083200000
+              modified: 1742083200000
+              isPrivate: false
+              description: Recebe decisão externa (APROVADO/REPROVADO) de orçamento
+                identificado pelo código da OS. Não requer JWT — autenticar com
+                header X-Api-Key.
+              sortKey: 10
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "osCodigo": "{{ os_codigo }}",
+                  "decisao": "APROVADO"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: X-Api-Key
+                value: "{{ integration_api_key }}"
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: Core dominio
+        meta:
+          id: fld_b3351d3a65e047eebfe9a26f8a8c3986
+          created: 1768456500000
+          modified: 1768456500000
+          sortKey: -150
+          description: "Endpoints do domínio central: estoque, OS, orçamentos, prioridade."
+        children:
+          - name: Orçamentos
+            meta:
+              id: fld_0f0c0ca8d1494642a31bcea7321e58d7
+              created: 1705320000000
+              modified: 1705320000000
+              sortKey: -15
+              description: Endpoints de gestão de Orçamentos.
+            children:
+              - url: "{{ base_url }}/api/orcamentos/{{ orcamento_id }}/pdf"
+                name: Baixar PDF do Orçamento
+                meta:
+                  id: req_0f3f5da5798942b7850bb870a16d7c8b
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Gera e retorna o PDF do orçamento.
+                  sortKey: 40
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/os/{{ os_id }}"
+                name: Buscar Orçamento por OS
+                meta:
+                  id: req_380777f715d749bcb137afefc246ab98
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Busca orçamento associado a uma Ordem de Serviço.
+                  sortKey: 20
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/{{ orcamento_id }}"
+                name: Deletar Orçamento
+                meta:
+                  id: req_db5db0b1addf46d3a252d204d69be6e6
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Remove um orçamento (Admin).
+                  sortKey: 30
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos"
+                name: Listar Orçamentos
+                meta:
+                  id: req_dd02b9d0034945e4928934f2c3538bf5
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Lista paginada de orçamentos.
+                  sortKey: 0
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: sort
+                    value: dataEmissao,desc
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/{{ orcamento_id }}"
+                name: Buscar Orçamento por ID
+                meta:
+                  id: req_f141b9dea72a460db92648749bf4498f
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Busca orçamento pelo UUID.
+                  sortKey: 10
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/codigo/{{ orcamento_codigo }}"
+                name: Buscar Orçamento por Código
+                meta:
+                  id: req_14eb1eaae2954e55b868b6dd376b9eb3
+                  created: 1742083200000
+                  modified: 1742083200000
+                  isPrivate: false
+                  description: Busca orçamento pelo código legível (ex. ORC-XXXXXXXX).
+                  sortKey: 15
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/{% response 'body',
+                  'req_18a5f59dbe5541ac835e2bfb88e5e604',
+                  'b64::JC5vcmNhbWVudG9faWQ=::46b', 'never', 60 %}/reprovar"
+                name: Reprovar Orçamento
+                meta:
+                  id: req_093bba9aaaf1498bb915f4ede0330310
+                  created: 1768318393996
+                  modified: 1768429300000
+                  isPrivate: false
+                  description: Reprova orçamento e atualiza OS via evento.
+                  sortKey: 225
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_b9cdbe63dee545beb1880c56e8b440ca',
+                    'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/orcamentos/{{ orcamento_id }}/aprovar"
+                name: Aprovar Orçamento
+                meta:
+                  id: req_e45a7fb147254298873c92b9892a95e9
+                  created: 1768429300000
+                  modified: 1768429300000
+                  isPrivate: false
+                  description: Aprova orçamento e atualiza OS associada. Requer role CLIENTE.
+                  sortKey: 25
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - name: Ordens de Serviço
+            meta:
+              id: fld_c0030f57bd17468b8f2060060407dd8d
+              created: 1766925300794
+              modified: 1766925300794
+              sortKey: -20
+              description: Endpoints de gestão de Ordens de Serviço.
+            children:
+              - url: "{{ base_url }}/api/ordens-servico/abertura-completa"
+                name: Criar OS Completa (com itens)
+                meta:
+                  id: req_0b017b4921474eca8c5792760f38bfcd
+                  created: 1741392000001
+                  modified: 1741392000001
+                  isPrivate: false
+                  description: "Cria uma OS com cliente, veículo e itens (peças, insumos,
+                    serviços) em uma única requisição atômica. Roles: ATENDENTE,
+                    MECANICO, ADMIN."
+                  sortKey: 100
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"clienteId": "{{ cliente_id }}",
+                    	"veiculoId": "{{ cliente_id_veiculo }}",
+                    	"observacoes": "Barulho no motor ao ligar",
+                    	"itens": [
+                    		{
+                    			"tipo": "SERVICO",
+                    			"descricao": "Diagnóstico geral",
+                    			"quantidade": 1,
+                    			"valorUnitario": 150.00
+                    		}
+                    	]
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/fila-operacional"
+                name: Listar Fila Operacional
+                meta:
+                  id: req_55c7102da91a423e86e35adb9b429220
+                  created: 1741392000002
+                  modified: 1741392000002
+                  isPrivate: false
+                  description: "Lista OS ativas (exclui FINALIZADA, ENTREGUE e CANCELADA),
+                    ordenadas por urgência de status e depois por data de
+                    entrada (mais antigas primeiro). Roles: ATENDENTE, MECANICO,
+                    ADMIN."
+                  sortKey: 95
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/status"
+                name: Consultar Status da OS
+                meta:
+                  id: req_9ce13df8e0084b6fb08f74da9f564386
+                  created: 1741392000003
+                  modified: 1741392000003
+                  isPrivate: false
+                  description: "Retorna status atual, descrição em PT-BR e timestamps
+                    (dataEntrada, dataAprovacao, dataFechamento) sem dados de
+                    itens. Adequado para polling leve. Roles: ATENDENTE,
+                    MECANICO, ADMIN, CLIENTE."
+                  sortKey: 85
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/codigo/{{ os_codigo }}"
+                name: Buscar OS por Código
+                meta:
+                  id: req_498b31bff519436c9856b1c19461fcd1
+                  created: 1742083200000
+                  modified: 1742083200000
+                  isPrivate: false
+                  description: Busca uma OS pelo código legível (ex. OS-XXXXXXXX).
+                  sortKey: 85
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico"
+                name: Criar Ordem de Serviço
+                meta:
+                  id: req_468d1c5ca2334adea614b60eebb6ec86
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Cria uma nova ordem de serviço.
+                  sortKey: 0
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"clienteId": "{{ cliente_id }}",
+                    	"veiculoId": "{{ cliente_id_veiculo }}",
+                    	"observacoes": "Barulho no motor"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}"
+                name: Buscar OS por ID
+                meta:
+                  id: req_64ba2105963849b2973ffac54c4a24d5
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Busca uma OS pelo ID.
+                  sortKey: 80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico"
+                name: Listar Ordens de Serviço
+                meta:
+                  id: req_a00d25ecaea446d9afb6494e0b6ea77b
+                  created: 1766925300794
+                  modified: 1774070400000
+                  isPrivate: false
+                  description: "Lista ordens de serviço paginadas. Filtros opcionais: status
+                    (RECEBIDA, EM_DIAGNOSTICO, AGUARDANDO_APROVACAO, APROVADA,
+                    EM_EXECUCAO, FINALIZADA, ENTREGUE, CANCELADA) e clienteId
+                    (UUID)."
+                  sortKey: 90
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: status
+                    value: ""
+                    disabled: true
+                  - name: clienteId
+                    value: ""
+                    disabled: true
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/itens/{{ item_id }}"
+                name: Remover Item da OS
+                meta:
+                  id: req_b6322945a545443688ea80ffd5a142d7
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Remove um item da OS.
+                  sortKey: 10.6
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/itens"
+                name: Adicionar Item à OS
+                meta:
+                  id: req_ec47075ca4de4cbcb13dd6c08fa67857
+                  created: 1766925300794
+                  modified: 1766925300794
+                  isPrivate: false
+                  description: Adiciona um item (serviço ou peça) à OS.
+                  sortKey: 10.5
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"descricao": "Troca de Óleo",
+                    	"valorUnitario": 150.00,
+                    	"quantidade": 1,
+                    	"tipo": "SERVICO"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/prioridade/fila-execucao"
+                name: Listar Fila Execução
+                meta:
+                  id: req_0d6e04a8a10b4800ba7dbbcb431e9aff
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Lista OS com status APROVADA, ordenada por prioridade (desc) e data
+                    aprovação (asc). Requer MECANICO ou ADMIN.
+                  sortKey: 12.5
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/iniciar-execucao"
+                name: "Ação: Iniciar Execução"
+                meta:
+                  id: req_3d67ea0885b948ea9beee97f770a5cbe
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para EM_EXECUCAO. Requer role MECANICO.
+                  sortKey: 13
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/finalizar"
+                name: "Ação: Finalizar Serviço"
+                meta:
+                  id: req_780479cbac4446fd8fc8c5d2f9bdbae1
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para FINALIZADA. Requer role MECANICO.
+                  sortKey: 14
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/iniciar-diagnostico"
+                name: "Ação: Iniciar Diagnóstico"
+                meta:
+                  id: req_7f87d9154ae142e190d853de965ec0c8
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para EM_DIAGNOSTICO. Requer role MECANICO.
+                  sortKey: 10
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/emitir-orcamento"
+                name: "Ação: Emitir Orçamento"
+                meta:
+                  id: req_a5c1448de1024b16b54e9b4e6b8705f0
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para AGUARDANDO_APROVACAO. Requer role MECANICO e
+                    itens na OS.
+                  sortKey: 11
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/prioridade/fila-orcamento"
+                name: Listar Fila Orçamento
+                meta:
+                  id: req_bb61030cab9144b1a0eca3edafd1caf2
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Lista OS com status RECEBIDA, ordenada por prioridade (desc) e data
+                    (asc). Requer ATENDENTE, MECANICO ou ADMIN.
+                  sortKey: 0.5
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/entregar"
+                name: "Ação: Entregar Veículo"
+                meta:
+                  id: req_d5558c0280474e99b6059643746d5b09
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para ENTREGUE. Requer role ATENDENTE.
+                  sortKey: 15
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/cancelar"
+                name: "Ação: Cancelar OS"
+                meta:
+                  id: req_d682663a9a5242ffa72662f660554fff
+                  created: 1766925300795
+                  modified: 1766925300795
+                  isPrivate: false
+                  description: Transita status para CANCELADA. Requer role ATENDENTE.
+                  sortKey: 16
+                method: POST
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/prioridade/{{ os_id }}"
+                name: "Ação: Atualizar Prioridade"
+                meta:
+                  id: req_914822d820a64ae3ba3ee4e8be43a766
+                  created: 1766925300796
+                  modified: 1766925300796
+                  isPrivate: false
+                  description: Atualiza a prioridade da OS. Requer GERENTE ou ADMIN.
+                  sortKey: 18
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: '"ALTA"'
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico/{{ os_id }}/acoes/trocar-mecanico"
+                name: "Ação: Trocar Mecânico"
+                meta:
+                  id: req_fc364c3b7fb745f7b2b2f742645df819
+                  created: 1766925300796
+                  modified: 1766925300796
+                  isPrivate: false
+                  description: Troca o mecânico responsável (Diagnóstico ou Execução). Requer
+                    ADMIN.
+                  sortKey: 17
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"novoMecanicoId": "{{ mecanico_id }}"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/prioridade/{{ os_id }}"
+                name: Alterar Prioridade OS
+                meta:
+                  id: req_a5b5989c1d1f437bbd32b147a5e2ee09
+                  created: 1768147790000
+                  modified: 1768147790000
+                  isPrivate: false
+                  description: "Altera a prioridade da OS (BAIXA, NORMAL, ALTA, URGENTE). Role:
+                    GERENTE, ADMIN."
+                  sortKey: 0.25
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: '"ALTA"'
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/prioridade/proxima?tipo=ORCAMENTO"
+                name: Mecânico - Obter Próxima OS para Orçamento
+                meta:
+                  id: req_0b0f7008cf6b4cb983a20cafa28ffdf5
+                  created: 1768591529084
+                  modified: 1768591545972
+                  isPrivate: false
+                  description: Obtém a próxima OS na fila de orçamento respeitando a prioridade.
+                  sortKey: 5.25
+                method: GET
+                body:
+                  mimeType: application/json
+                  text: ""
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_85023473c4e24155820d58809b6e6589',
+                    'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/ordens-servico?status=RECEBIDA"
+                name: Listar OS por Status
+                meta:
+                  id: req_55b6ac86da114ffba3bbe44d5a596a17
+                  created: 1774070400000
+                  modified: 1774070400000
+                  isPrivate: false
+                  description: "Filtra ordens de serviço por status. Valores possíveis: RECEBIDA,
+                    EM_DIAGNOSTICO, AGUARDANDO_APROVACAO, APROVADA, EM_EXECUCAO,
+                    FINALIZADA, ENTREGUE, CANCELADA."
+                  sortKey: 91
+                method: GET
+                parameters:
+                  - name: status
+                    value: RECEBIDA
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - name: Estoque
+            meta:
+              id: fld_46f6c95f7b56480bbb92c897a54e121d
+              created: 1768369200000
+              modified: 1768369200000
+              sortKey: -34
+              description: Endpoints de gestão de estoque (baixa, entrada, parâmetros).
+            children:
+              - url: "{{ base_url }}/api/estoque/parametros"
+                name: Atualizar Parâmetros de Estoque (Admin)
+                meta:
+                  id: req_0083141612f444c29fd7a2b7ec0b2a66
+                  created: 1768369200000
+                  modified: 1768369200000
+                  isPrivate: false
+                  description: Atualiza estoque mínimo e máximo de peça ou insumo. Requer ADMIN.
+                  sortKey: 10
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                      "referenciaId": "{{ referencia_id_estoque }}",
+                      "tipo": "PECA",
+                      "estoqueMinimo": 5,
+                      "estoqueMaximo": 50
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_eae61c298ce04db9949c989cc2579658',
+                    'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/estoque/entrada"
+                name: Entrada de Estoque (Admin)
+                meta:
+                  id: req_3b9ec20b2c744c27a44d427ddeb168d0
+                  created: 1768369200000
+                  modified: 1768369200000
+                  isPrivate: false
+                  description: Registra entrada de estoque para peça ou insumo. Requer ADMIN.
+                  sortKey: 0
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                      "referenciaId": "{{ referencia_id_estoque }}",
+                      "tipo": "PECA",
+                      "quantidade": 10
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_eae61c298ce04db9949c989cc2579658',
+                    'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/estoque/baixa"
+                name: Baixa de Estoque
+                meta:
+                  id: req_c7e709f8e25041f1b9db734175ff24de
+                  created: 1768369200000
+                  modified: 1768369200000
+                  isPrivate: false
+                  description: Efetua baixa de estoque para peça ou insumo.
+                  sortKey: -10
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                      "referenciaId": "{{ referencia_id_estoque }}",
+                      "tipo": "PECA",
+                      "quantidade": 5
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+      - name: Personas
+        meta:
+          id: fld_3fbccef3403d4f9e9c661051423baa03
+          created: 1768591630587
+          modified: 1768591663398
+          sortKey: -200
+          description: ""
+        children:
+          - name: Clientes
+            meta:
+              id: fld_0a16320923324a1981d629196ac66c1e
+              created: 1705320000000
+              modified: 1768591671089
+              sortKey: -1768591671024
+              description: Customer management endpoints.
+            children:
+              - url: "{{ base_url }}/api/clientes/documento/{{ documento }}"
+                name: Get Cliente by Documento
+                meta:
+                  id: req_0b07ff67ae03468293d656da419a3088
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a customer by their CPF/CNPJ.
+                  sortKey: -70
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/clientes"
+                name: Create Cliente
+                meta:
+                  id: req_1d32eb3cae834b729fd53eef140d73b8
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Creates a new customer.
+                  sortKey: -90
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "João da Silva",
+                    	"documento": "52998224725",
+                    	"tipoPessoa": "FISICA",
+                    	"email": "joao.silva@example.com",
+                    	"telefone": "11999999999",
+                    	"endereco": "Rua das Flores, 123"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/clientes/{{ cliente_id }}"
+                name: Update Cliente
+                meta:
+                  id: req_2f89c0c8de6b45629003a594cdee27ba
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Updates customer information.
+                  sortKey: -60
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "João da Silva Updated",
+                    	"documento": "52998224725",
+                    	"tipoPessoa": "FISICA",
+                    	"email": "joao.updated@example.com",
+                    	"telefone": "11988888888",
+                    	"endereco": "Rua Nova, 456"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/clientes"
+                name: Get All Clientes
+                meta:
+                  id: req_4ed520380c464e0993d3a8ab46d1dbdd
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a paginated list of all customers.
+                  sortKey: -85
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: sort
+                    value: nome,asc
+                authentication:
+                  type: bearer
+                  token: "{% response 'body', 'req_eae61c298ce04db9949c989cc2579658',
+                    'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/clientes/{{ cliente_id }}"
+                name: Delete Cliente
+                meta:
+                  id: req_99a891df68c74d7e975dccb88bb03193
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Deletes a customer.
+                  sortKey: -50
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/clientes/{{ cliente_id }}"
+                name: Get Cliente by ID
+                meta:
+                  id: req_a1185cb53cbf444ab0ade20e09adeaf8
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a customer by their UUID.
+                  sortKey: -80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - name: Veiculos
+                meta:
+                  id: fld_791c8014ff6543a9a39b9344c4b011c2
+                  created: 1705320000000
+                  modified: 1768591610521
+                  sortKey: 50
+                  description: Vehicle management endpoints.
+                children:
+                  - url: "{{ base_url }}/api/veiculos/{{ placa }}"
+                    name: Delete Veiculo
+                    meta:
+                      id: req_84e759e5a3cc4fe6bcfec2b36d1f83c8
+                      created: 1705320000000
+                      modified: 1705320000000
+                      isPrivate: false
+                      description: Removes a vehicle by license plate.
+                      sortKey: -50
+                    method: DELETE
+                    authentication:
+                      type: bearer
+                      token: "{{ access_token }}"
+                    settings:
+                      renderRequestBody: true
+                      encodeUrl: true
+                      followRedirects: global
+                      cookies:
+                        send: true
+                        store: true
+                      rebuildPath: true
+                  - url: "{{ base_url }}/api/clientes/{{ cliente_id_veiculo }}/veiculos"
+                    name: Create Veiculo
+                    meta:
+                      id: req_a8844b6501b94263989f76aa8d3d5792
+                      created: 1705320000000
+                      modified: 1705320000000
+                      isPrivate: false
+                      description: Adds a new vehicle to a customer.
+                      sortKey: -100
+                    method: POST
+                    body:
+                      mimeType: application/json
+                      text: |-
+                        {
+                        	"placa": "ABC1234",
+                        	"marca": "Toyota",
+                        	"modelo": "Corolla",
+                        	"ano": 2020
+                        }
+                    headers:
+                      - name: Content-Type
+                        value: application/json
+                    authentication:
+                      type: bearer
+                      token: "{{ access_token }}"
+                    settings:
+                      renderRequestBody: true
+                      encodeUrl: true
+                      followRedirects: global
+                      cookies:
+                        send: true
+                        store: true
+                      rebuildPath: true
+                  - url: "{{ base_url }}/api/veiculos/{{ placa }}"
+                    name: Get Veiculo by Placa
+                    meta:
+                      id: req_c6ebaff8ecc542e4ac4ebd5356c0ea2b
+                      created: 1705320000000
+                      modified: 1705320000000
+                      isPrivate: false
+                      description: Retrieves a vehicle by its license plate.
+                      sortKey: -90
+                    method: GET
+                    authentication:
+                      type: bearer
+                      token: "{{ access_token }}"
+                    settings:
+                      renderRequestBody: true
+                      encodeUrl: true
+                      followRedirects: global
+                      cookies:
+                        send: true
+                        store: true
+                      rebuildPath: true
+                  - url: "{{ base_url }}/api/clientes/{{ cliente_id_veiculo }}/veiculos"
+                    name: List Veiculos by Cliente
+                    meta:
+                      id: req_d796db7a2bcd4a04ba6d6119921dc36d
+                      created: 1705320000000
+                      modified: 1705320000000
+                      isPrivate: false
+                      description: Lists all vehicles belonging to a customer.
+                      sortKey: -80
+                    method: GET
+                    authentication:
+                      type: bearer
+                      token: "{{ access_token }}"
+                    settings:
+                      renderRequestBody: true
+                      encodeUrl: true
+                      followRedirects: global
+                      cookies:
+                        send: true
+                        store: true
+                      rebuildPath: true
+          - name: Mecanicos
+            meta:
+              id: fld_1bc191381e3745699328c5ddaf5ae1bf
+              created: 1705320000000
+              modified: 1768591712038
+              sortKey: -1768591671124
+              description: Mechanic management endpoints.
+            children:
+              - url: "{{ base_url }}/api/mecanicos/{{ mecanico_id }}"
+                name: Get Mecanico by ID
+                meta:
+                  id: req_0d53356d8dd34b2c876bd528633dec07
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a mechanic by ID.
+                  sortKey: -90
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/mecanicos/{{ mecanico_id }}"
+                name: Update Mecanico
+                meta:
+                  id: req_33eaf46f63be4fd69456e6e6e37947ec
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Updates mechanic information.
+                  sortKey: -70
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "Carlos Mecânico Updated",
+                    	"cpf": "12345678909",
+                    	"email": "carlos.updated@example.com",
+                    	"especialidade": "Motor, Câmbio e Suspensão"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/mecanicos/{{ mecanico_id }}"
+                name: Delete Mecanico
+                meta:
+                  id: req_41bc92956e3b4923bac6aaaf86fed0d5
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Deletes a mechanic.
+                  sortKey: -60
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/mecanicos"
+                name: Create Mecanico
+                meta:
+                  id: req_6530ae19e38545e6932f991f255315ad
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Registers a new mechanic.
+                  sortKey: -100
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "Carlos Mecânico",
+                    	"cpf": "12345678909",
+                    	"email": "carlos.mec@example.com",
+                    	"especialidade": "Motor e Suspensão"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/mecanicos"
+                name: List All Mecanicos
+                meta:
+                  id: req_7940009fb0ae4e3d9de50762a30b4b5a
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Lists all mechanics.
+                  sortKey: -80
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: sort
+                    value: nome,asc
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/mecanicos/cpf/{{ cpf }}"
+                name: Get Mecanico by CPF
+                meta:
+                  id: req_f1a03da413614c43b3650fff2855c18a
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves a mechanic by CPF.
+                  sortKey: -85
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+          - name: Atendentes
+            meta:
+              id: fld_22b171aa348f49c280e434c6d9c84e7c
+              created: 1705320000000
+              modified: 1768591726347
+              sortKey: -1768591671224
+              description: Attendant management endpoints.
+            children:
+              - url: "{{ base_url }}/api/atendentes/{{ atendente_id }}"
+                name: Get Atendente by ID
+                meta:
+                  id: req_126fab0dddb04171800d59fa8a494a9c
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves an attendant by ID.
+                  sortKey: -85
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/atendentes/{{ atendente_id }}"
+                name: Update Atendente
+                meta:
+                  id: req_34cb27f0a97f4f9fbc3adc75cf22423f
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Updates attendant information.
+                  sortKey: -70
+                method: PUT
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "Ana Atendente Updated",
+                    	"cpf": "98765432100",
+                    	"email": "ana.updated@example.com"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/atendentes/cpf/{{ documento }}"
+                name: Get Atendente by CPF
+                meta:
+                  id: req_4afbf45517f142ba86bf480f876de82a
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Retrieves an attendant by CPF.
+                  sortKey: -80
+                method: GET
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/atendentes/{{ atendente_id }}"
+                name: Delete Atendente
+                meta:
+                  id: req_52d082d4f41741819eddd5b193b16e70
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Deletes an attendant.
+                  sortKey: -60
+                method: DELETE
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/atendentes"
+                name: List All Atendentes
+                meta:
+                  id: req_a8d67cfb3bca48d395c6aa780ea14222
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Lists all attendants.
+                  sortKey: -90
+                method: GET
+                parameters:
+                  - name: page
+                    value: "0"
+                  - name: size
+                    value: "10"
+                  - name: sort
+                    value: nome,asc
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+              - url: "{{ base_url }}/api/atendentes"
+                name: Create Atendente
+                meta:
+                  id: req_c307e84f3b4d4a17bca36fe630c256ff
+                  created: 1705320000000
+                  modified: 1705320000000
+                  isPrivate: false
+                  description: Registers a new attendant.
+                  sortKey: -100
+                method: POST
+                body:
+                  mimeType: application/json
+                  text: |-
+                    {
+                    	"nome": "Ana Atendente",
+                    	"cpf": "98765432100",
+                    	"email": "ana.atend@example.com"
+                    }
+                headers:
+                  - name: Content-Type
+                    value: application/json
+                authentication:
+                  type: bearer
+                  token: "{{ access_token }}"
+                settings:
+                  renderRequestBody: true
+                  encodeUrl: true
+                  followRedirects: global
+                  cookies:
+                    send: true
+                    store: true
+                  rebuildPath: true
+  - name: Fluxo Fase 2 - Novos Endpoints
+    meta:
+      id: fld_0d68d228b4f44bd8bd58492134304a23
+      created: 1774300800000
+      modified: 1774300800000
+      sortKey: -2000
+      description: "Demonstra todos os endpoints novos da Fase 2: abertura completa,
+        status leve, fila operacional, aprovacao externa, busca por codigo e
+        relatorios."
+    children:
+      - url: "{{ base_url }}/api/clientes/{% response 'body',
+          'req_e9af9f5f79314298973c29046b3f1483', 'b64::JC5pZA==::46b', 'never',
+          60 %}/veiculos"
+        name: 05b. Atendente - Cadastrar Veículo (Opcional) - fase 2
+        meta:
+          id: req_55c91df1fc364eef9c4172ffe65b0e1d
+          created: 1774226544500
+          modified: 1774290470762
+          isPrivate: false
+          description: Tenta cadastrar veículo. Se já existir, ok.
+          sortKey: 63
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"placa": "ABC1235", "marca": "Toyota", "modelo": "Corolla", "ano": 2020,
+            "cor": "Prata"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes"
+        name: 050. Atendente - Cadastrar Cliente (FISICO) - Email - fase 2
+        meta:
+          id: req_97962ba874684f2fb675e08bd39d76a5
+          created: 1774228422279
+          modified: 1774306036506
+          isPrivate: false
+          description: Tenta cadastrar. Se falhar (409), ok, pule para o passo 03.
+          sortKey: 61
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             	 "nome": "João da Silva",
+             	 "documento": "32200283814",
+             	 "tipoPessoa": "FISICA",
+             	 "email": "joao.silva@example.com",
+             	 "telefone": "11999999999",
+             	 "endereco": "Rua das Flores, 123"
+             }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/servicos/ativos"
+        name: 05. Mecanico - Listar Servicos
+        meta:
+          id: req_13f19038d73640018a6df7e6d689edba
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Lista servicos ativos para obter ID, descricao e valor para
+            abertura completa.
+          sortKey: 60
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/fila-operacional"
+        name: 10. FASE 2 - Fila Operacional
+        meta:
+          id: req_1c638e0f98224348bd5e1b11e0514f72
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Lista OS ativas ordenadas por urgencia. A OS criada deve aparecer
+            com status AGUARDANDO_APROVACAO.
+          sortKey: 110
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 02. Login Admin
+        meta:
+          id: req_2dadf53525da4f92a266cd0b30b37df6
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Obtem token do admin fixo.
+          sortKey: 30
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "admin@mecanica.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/iniciar-execucao"
+        name: 13. Mecanico - Iniciar Execucao
+        meta:
+          id: req_2de6c0bc5311422589cee3052913b531
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Transicao APROVADA -> EM_EXECUCAO.
+          sortKey: 140
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes/{% response 'body',
+          'req_e9af9f5f79314298973c29046b3f1483', 'b64::JC5pZA==::46b', 'never',
+          60 %}/veiculos"
+        name: 05c. Atendente - Listar Veiculos do Cliente
+        meta:
+          id: req_53c0d1554af04942b9e8d164b9bb997e
+          created: 1774300800000
+          modified: 1774226732798
+          isPrivate: false
+          description: Lista veiculos do cliente para pegar o ID do primeiro.
+          sortKey: 64
+        method: GET
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/entregar"
+        name: 15. Atendente - Entregar Veiculo
+        meta:
+          id: req_6dc1593862d54847a53d6c7febbd6de1
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Transicao FINALIZADA -> ENTREGUE.
+          sortKey: 160
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/status"
+        name: 12. FASE 2 - Consultar Status (APROVADA)
+        meta:
+          id: req_7d603868d07f4569b067e442ad39f088
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Verifica que o status mudou para APROVADA apos aprovacao externa.
+          sortKey: 130
+        method: GET
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/finalizar"
+        name: 14. Mecanico - Finalizar Servico
+        meta:
+          id: req_8d6b9ac987a64d0f960189db3209178b
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Transicao EM_EXECUCAO -> FINALIZADA.
+          sortKey: 150
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/insumos"
+        name: 04. Mecanico - Listar Insumos
+        meta:
+          id: req_8ef2546899984a32b7518ebcca750b96
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Lista insumos para obter ID, nome e preco para abertura completa.
+          sortKey: 50
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 00. Login Atendente
+        meta:
+          id: req_a7e4287f31f24bc7af0dacf7940b7d68
+          created: 1774300800000
+          modified: 1774228272118
+          isPrivate: false
+          description: Obtem token do atendente fixo.
+          sortKey: 10
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "atendente@teste.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/iniciar-diagnostico"
+        name: 08. Mecanico - Iniciar Diagnostico
+        meta:
+          id: req_cfc760d1e04e4851ba60743891170b75
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Transicao RECEBIDA -> EM_DIAGNOSTICO.
+          sortKey: 90
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/oauth/token"
+        name: 01. Login Mecanico
+        meta:
+          id: req_d7271eed9287426eb73385305d92e54e
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Obtem token do mecanico fixo.
+          sortKey: 20
+        method: POST
+        body:
+          mimeType: application/json
+          text: '{"grant_type": "password", "username": "mecanico@teste.com", "password":
+            "123456"}'
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/pecas"
+        name: 03. Mecanico - Listar Pecas
+        meta:
+          id: req_e6584818e2ff4879b1a7f4d3e7e36ff7
+          created: 1774300800000
+          modified: 1774305907481
+          isPrivate: false
+          description: Lista pecas para obter ID, nome e preco para abertura completa.
+          sortKey: 40
+        method: GET
+        parameters:
+          - name: page
+            value: "0"
+          - name: size
+            value: "10"
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/acoes/emitir-orcamento"
+        name: 09. Mecanico - Emitir Orcamento
+        meta:
+          id: req_e7dcc740ff9946e6b3b56e6e7b6fafdf
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Transicao EM_DIAGNOSTICO -> AGUARDANDO_APROVACAO. Gera orcamento.
+          sortKey: 100
+        method: POST
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_d7271eed9287426eb73385305d92e54e',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/clientes/documento/32200283814"
+        name: 05a. Atendente - Consultar Cliente por CPF
+        meta:
+          id: req_e9af9f5f79314298973c29046b3f1483
+          created: 1774300800000
+          modified: 1774306044115
+          isPrivate: false
+          description: Busca o cliente seeded para capturar o ID.
+          sortKey: 62
+        method: GET
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/abertura-completa"
+        name: 06. FASE 2 - Abertura Completa
+        meta:
+          id: req_eb40af69462742a7915bc765727d087f
+          created: 1774300800000
+          modified: 1774226743397
+          isPrivate: false
+          description: Cria OS com cliente + veiculo + itens (peca, insumo, servico)
+            atomicamente.
+          sortKey: 70
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"clienteId": "{% response 'body', 'req_e9af9f5f79314298973c29046b3f1483', 'b64::JC5pZA==::46b', 'never', 60 %}",
+            	"veiculoId": "{% response 'body', 'req_53c0d1554af04942b9e8d164b9bb997e', 'b64::JFswXS5pZA==::46b', 'never', 60 %}",
+            	"observacoes": "Fluxo Fase 2 - Abertura completa com itens",
+            	"itens": [
+            		{
+            			"tipo": "PECA",
+            			"referenciaId": "{% response 'body', 'req_e6584818e2ff4879b1a7f4d3e7e36ff7', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}",
+            			"descricao": "{% response 'body', 'req_e6584818e2ff4879b1a7f4d3e7e36ff7', 'b64::JC5jb250ZW50WzBdLm5vbWU=::46b', 'never', 60 %}",
+            			"quantidade": 1,
+            			"valorUnitario": {% response 'body', 'req_e6584818e2ff4879b1a7f4d3e7e36ff7', 'b64::JC5jb250ZW50WzBdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            		},
+            		{
+            			"tipo": "INSUMO",
+            			"referenciaId": "{% response 'body', 'req_8ef2546899984a32b7518ebcca750b96', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}",
+            			"descricao": "{% response 'body', 'req_8ef2546899984a32b7518ebcca750b96', 'b64::JC5jb250ZW50WzBdLm5vbWU=::46b', 'never', 60 %}",
+            			"quantidade": 1,
+            			"valorUnitario": {% response 'body', 'req_8ef2546899984a32b7518ebcca750b96', 'b64::JC5jb250ZW50WzBdLnByZWNvQmFzZQ==::46b', 'never', 60 %}
+            		},
+            		{
+            			"tipo": "SERVICO",
+            			"referenciaId": "{% response 'body', 'req_13f19038d73640018a6df7e6d689edba', 'b64::JC5jb250ZW50WzBdLmlk::46b', 'never', 60 %}",
+            			"descricao": "{% response 'body', 'req_13f19038d73640018a6df7e6d689edba', 'b64::JC5jb250ZW50WzBdLmRlc2NyaWNhbw==::46b', 'never', 60 %}",
+            			"quantidade": 1,
+            			"valorUnitario": {% response 'body', 'req_13f19038d73640018a6df7e6d689edba', 'b64::JC5jb250ZW50WzBdLnZhbG9yQmFzZQ==::46b', 'never', 60 %}
+            		}
+            	]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/ordens-servico/{% response 'body',
+          'req_eb40af69462742a7915bc765727d087f', 'b64::JC5pZA==::46b', 'never',
+          60 %}/status"
+        name: 07. FASE 2 - Consultar Status (RECEBIDA)
+        meta:
+          id: req_f9351cceafe14124881077e551828b65
+          created: 1774300800000
+          modified: 1774300800000
+          isPrivate: false
+          description: Consulta lightweight do status da OS. Deve retornar RECEBIDA.
+          sortKey: 80
+        method: GET
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_a7e4287f31f24bc7af0dacf7940b7d68',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_a5c0e75374d046d282636c233588015b
+    created: 1768589220138
+    modified: 1768589220138
+environments:
+  name: Base Environment
+  meta:
+    id: env_9971623fe8da40c280c7a09db902e862
+    created: 1705320000000
+    modified: 1705320000000
+    isPrivate: false
+  data:
+    access_token: "{% response 'body', 'req_auth_token',
+      'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+    email_atendente: admin@mecanica.com
+    pass_atendente: "123456"
+    email_mecanico: carlos.mec@example.com
+    pass_mecanico: "123456"
+    pass_cliente: "123456"
+    token_atendente: REPLACE_WITH_TOKEN
+    token_mecanico: REPLACE_WITH_TOKEN
+    token_cliente: REPLACE_WITH_TOKEN
+    cliente_id: REPLACE_WITH_ID
+    veiculo_id: REPLACE_WITH_ID
+    os_id: REPLACE_WITH_ID
+    email_cliente: REPLACE_WITH_EMAIL
+  subEnvironments:
+    - name: Development
+      meta:
+        id: env_dc7b128a11d74146841caecf72d62235
+        created: 1705320000000
+        modified: 1705320000000
+        isPrivate: false
+        sortKey: 1705320000000
+      data:
+        base_url: http://localhost:8080
+        username: admin@mecanica.com
+        password: "123456"
+        cliente_id: REPLACE_WITH_VALID_UUID
+        documento: "52998224725"
+        cliente_id_veiculo: REPLACE_WITH_VALID_UUID
+        placa: ABC1234
+        mecanico_id: REPLACE_WITH_VALID_UUID
+        cpf: "12345678909"
+        peca_id: REPLACE_WITH_VALID_UUID
+        insumo_id: REPLACE_WITH_VALID_UUID
+        orcamento_id: REPLACE_WITH_VALID_UUID
+        os_id: REPLACE_WITH_VALID_UUID
+        integration_api_key: dev-key-local

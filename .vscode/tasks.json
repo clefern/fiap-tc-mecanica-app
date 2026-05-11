@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "OpenAPI: Export v3 api-docs to docs/openapi/openapi.json",
+      "type": "shell",
+      "command": "mkdir -p docs/openapi && curl -sS http://localhost:8083/v3/api-docs -o docs/openapi/openapi.json",
+      "problemMatcher": []
+    },
+    {
+      "label": "OpenAPI: Lint with Spectral (docs/openapi/openapi.json)",
+      "type": "shell",
+      "command": "npx -y @stoplight/spectral-cli lint docs/openapi/openapi.json",
+      "problemMatcher": []
+    }
+  ]
+}

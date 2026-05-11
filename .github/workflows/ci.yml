@@ -1,0 +1,31 @@
+######################################################
+# CI — Testes automáticos
+# Dispara automaticamente em push e pull request.
+# Para infra, build e deploy, use o workflow manual:
+#   Actions → "Provision & Deploy" → Run workflow
+######################################################
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'feat/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'feat/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: 🧪 Testes
+    uses: ./.github/workflows/test.yml
+    with:
+      java-version: ${{ vars.JAVA_VERSION }}

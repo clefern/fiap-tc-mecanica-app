@@ -1,0 +1,116 @@
+server:
+  port: "${APP_PORT:8080}"
+  shutdown: graceful
+  servlet:
+    context-path: "${APP_CONTEXT_PATH:/}"
+
+spring:
+  application:
+    name: mecanica
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+  main:
+    banner-mode: off
+  mvc:
+    problemdetails:
+      enabled: true
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mecanica}
+    username: ${DB_USER:mecanica_user}
+    password: ${DB_PASSWORD:mecanica_pass}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+  jpa:
+    properties:
+      hibernate.generate_statistics: false
+      hibernate.format_sql: false
+    show-sql: false
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    schemas: public
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId:-}] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    org.hibernate.stat: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+    info:
+      env:
+        enabled: true
+
+# Seeding Configuration
+seeding:
+  enabled: "${APP_SEEDING_ENABLED:true}" # Set to false to disable seeding even in dev profile
+
+security:
+  jwt:
+    # Secret key for HS256 (must be at least 256 bits/32 chars)
+    # In production, inject via K8s Secret: SECURITY_JWT_SECRET_KEY
+    secret-key: ${SECURITY_JWT_SECRET_KEY:F9pamnqT8v+avJP8Vobgpt0pBRg71VmO7ihsVyiL7E0=}
+    # Access token validity in milliseconds (1 hour = 3600000)
+    expiration-time: 3600000
+    refresh-token:
+      # Refresh token validity in milliseconds (7 days = 604800000)
+      expiration-time: 604800000
+  rate-limit:
+    capacity: 10
+    refill-tokens: 10
+    refill-duration-minutes: 1
+
+# Configuração de Notificações
+mecanica:
+  orcamento:
+    # Taxa de impostos sobre mão de obra (padrão: 5%)
+    taxa-impostos: ${ORCAMENTO_TAXA_IMPOSTOS:0.05}
+  mail:
+    fail-on-error: "${MAIL_FAIL_ON_ERROR:false}"
+    # Email remetente padrão para notificações
+    from: ${MAIL_FROM:no-reply@mecanica.com.br}
+    # Defina aqui um email para receber cópia oculta (BCC) de todas as notificações
+    # Ex: admin@mecanica.com.br
+    admin-copy: ${ADMIN_EMAIL_COPY:no-reply@mecanica.com.br}
+    # Secret HMAC-SHA256 para geração de action tokens nos links de email
+    # Em produção, injetar via K8s Secret: ACTION_TOKEN_SECRET
+    action-token-secret: ${ACTION_TOKEN_SECRET:0Yvtb2EXkwmzs6xCSaVt3adG93Xm0T3zHtXX}
+    # Validade dos action tokens em minutos (padrão: 24h)
+    action-token-expiry-minutes: ${ACTION_TOKEN_EXPIRY_MINUTES:1440}
+  notification:
+    admin-email: ${ADMIN_EMAIL:admin@mecanica.com.br}
+  integrations:
+    # API key para integrações machine-to-machine (ex.: aprovação externa de orçamento)
+    # Em produção, injetar via K8s Secret: INTEGRATION_API_KEY
+    api-key: ${INTEGRATION_API_KEY:hkarlLPeThCKc860sKMV-TSmAKICRBirJ0UR}

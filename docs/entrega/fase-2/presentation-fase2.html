@@ -1,0 +1,1503 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Mecânica API — Fase 2 | Grupo 14SOAT | FIAP 2025/2026</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+			:root {
+				--fiap-blue: #0f1f3d;
+				--fiap-blue2: #1e3a5f;
+				--accent: #f97316;
+				--accent-light: #fff7ed;
+				--text: #1e293b;
+				--text-muted: #64748b;
+				--border: #e2e8f0;
+				--bg-alt: #f8fafc;
+				--success: #16a34a;
+				--warning: #d97706;
+				--error: #dc2626;
+				--card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+				--phase2: #7c3aed;
+				--phase2-light: #f5f3ff;
+			}
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+			html {
+				font-size: 13px;
+			}
+			body {
+				font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+				color: var(--text);
+				background: #fff;
+				line-height: 1.65;
+			}
+
+			.page {
+				width: 210mm;
+				min-height: 297mm;
+				padding: 18mm 20mm 22mm;
+				margin: 0 auto;
+				position: relative;
+				background: #fff;
+				page-break-after: always;
+				break-after: page;
+			}
+			.page:last-child {
+				page-break-after: avoid;
+			}
+
+
+			/* ── COVER ── */
+			.cover {
+				background: linear-gradient(145deg, #1a0538 0%, #2d1b69 45%, #4c1d95 100%);
+				color: #fff;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				padding: 0;
+				min-height: 297mm;
+			}
+			.cover-inner {
+				padding: 30mm 24mm;
+			}
+
+			.cover-badge {
+				display: inline-block;
+				background: rgba(249, 115, 22, 0.18);
+				border: 1px solid rgba(249, 115, 22, 0.45);
+				color: #fed7aa;
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				padding: 4px 14px;
+				border-radius: 99px;
+				margin-bottom: 14px;
+			}
+			.cover-phase-badge {
+				display: inline-block;
+				background: rgba(124, 58, 237, 0.35);
+				border: 1px solid rgba(167, 139, 250, 0.6);
+				color: #c4b5fd;
+				font-size: 12px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				padding: 6px 20px;
+				border-radius: 99px;
+				margin-bottom: 28px;
+			}
+			.cover-icon {
+				width: 80px;
+				height: 80px;
+				background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+				border-radius: 20px;
+				margin: 0 auto 28px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 36px;
+				box-shadow: 0 8px 32px rgba(249, 115, 22, 0.4);
+			}
+			.cover h1 {
+				font-size: 44px;
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				margin-bottom: 10px;
+				color: #fff;
+			}
+			.cover h2 {
+				font-size: 15px;
+				font-weight: 400;
+				color: #c4b5fd;
+				margin-bottom: 40px;
+				letter-spacing: 0.01em;
+			}
+			.cover-divider {
+				width: 60px;
+				height: 3px;
+				background: var(--accent);
+				margin: 0 auto 40px;
+				border-radius: 2px;
+			}
+			.cover-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				color: #ddd6fe;
+				font-size: 12px;
+			}
+			.cover-meta strong {
+				color: #fff;
+			}
+			.cover-stack {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 8px;
+				margin-top: 40px;
+			}
+			.chip {
+				background: rgba(255, 255, 255, 0.1);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				color: #e2e8f0;
+				padding: 4px 12px;
+				border-radius: 99px;
+				font-size: 10.5px;
+				font-weight: 500;
+			}
+			.chip-phase2 {
+				background: rgba(124, 58, 237, 0.25);
+				border: 1px solid rgba(167, 139, 250, 0.4);
+				color: #c4b5fd;
+			}
+
+			/* ── SECTION HEADERS ── */
+			.section-header {
+				margin-bottom: 24px;
+			}
+			.section-label {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--phase2);
+				margin-bottom: 6px;
+			}
+			.section-title {
+				font-size: 26px;
+				font-weight: 800;
+				color: var(--fiap-blue);
+				letter-spacing: -0.02em;
+				line-height: 1.2;
+			}
+			.section-subtitle {
+				font-size: 13px;
+				color: var(--text-muted);
+				margin-top: 6px;
+			}
+			.section-rule {
+				width: 40px;
+				height: 3px;
+				background: var(--phase2);
+				border-radius: 2px;
+				margin-top: 10px;
+			}
+
+			/* ── CARDS ── */
+			.card {
+				background: #fff;
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				padding: 16px 20px;
+				box-shadow: var(--card-shadow);
+			}
+			.card-title {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+				margin-bottom: 10px;
+			}
+
+			/* ── GRID ── */
+			.grid-2 {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 16px;
+			}
+			.grid-3 {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				gap: 14px;
+			}
+			.grid-4 {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 12px;
+			}
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; overflow-wrap: break-word; }
+  th { background: var(--fiap-blue); color: #fff; font-weight: 600; padding: 8px 12px; text-align: left; font-size: 11px; letter-spacing: .03em; }
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child  { border-radius: 0 6px 0 0; }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--bg-alt); }
+  tr:last-child td { border-bottom: none; }
+
+			/* ── BADGES ── */
+			.badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				padding: 2px 8px;
+				border-radius: 99px;
+				font-size: 11px;
+				font-weight: 600;
+			}
+			.badge-success {
+				background: #dcfce7;
+				color: #15803d;
+			}
+			.badge-warning {
+				background: #fef9c3;
+				color: #a16207;
+			}
+			.badge-error {
+				background: #fee2e2;
+				color: #b91c1c;
+			}
+			.badge-info {
+				background: #dbeafe;
+				color: #1d4ed8;
+			}
+			.badge-phase2 {
+				background: #ede9fe;
+				color: #6d28d9;
+			}
+
+			/* ── STAT BOXES ── */
+			.stat-box {
+				background: linear-gradient(135deg, #1a0538 0%, #2d1b69 100%);
+				color: #fff;
+				border-radius: 10px;
+				padding: 16px;
+				text-align: center;
+			}
+			.stat-number {
+				font-size: 30px;
+				font-weight: 800;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.stat-label {
+				font-size: 11px;
+				font-weight: 500;
+				margin-top: 6px;
+				color: #c4b5fd;
+			}
+
+  /* ── ARCH DIAGRAM ── */
+  .arch-diagram { background: var(--fiap-blue); color: #e2e8f0; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 10.5px; line-height: 1.8; overflow: hidden; }
+  .arch-diagram pre { white-space: pre; font-size: 9.5px; overflow: hidden; }
+  .arch-diagram .layer-title { color: var(--accent); font-weight: 700; }
+  .arch-diagram .layer-item  { color: #93c5fd; }
+  .arch-diagram .arrow       { color: #64748b; }
+
+			/* ── FEATURE LIST ── */
+			.feature-list {
+				list-style: none;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.feature-list li {
+				display: flex;
+				align-items: flex-start;
+				gap: 10px;
+				font-size: 12.5px;
+			}
+			.feature-list li::before {
+				content: "▸";
+				color: var(--phase2);
+				font-weight: 700;
+				flex-shrink: 0;
+				margin-top: 1px;
+			}
+
+			/* ── PIPELINE ── */
+			.pipeline {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				flex-wrap: wrap;
+				margin: 14px 0;
+			}
+			.pipeline-step {
+				background: var(--fiap-blue);
+				color: #fff;
+				padding: 6px 14px;
+				border-radius: 6px;
+				font-size: 11px;
+				font-weight: 600;
+				white-space: nowrap;
+			}
+			.pipeline-arrow {
+				color: var(--phase2);
+				font-size: 16px;
+				font-weight: 700;
+			}
+
+			/* ── LINKS ── */
+			a {
+				color: var(--phase2);
+				text-decoration: none;
+			}
+			.link-card {
+				background: #fff;
+				border: 1px solid var(--border);
+				border-left: 4px solid var(--phase2);
+				border-radius: 6px;
+				padding: 12px 16px;
+				margin-bottom: 12px;
+				box-shadow: var(--card-shadow);
+			}
+			.link-card .link-type {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+			}
+			.link-card .link-value {
+				font-size: 12.5px;
+				margin-top: 3px;
+				word-break: break-all;
+			}
+			.link-card .link-desc {
+				font-size: 11px;
+				color: var(--text-muted);
+				margin-top: 3px;
+			}
+
+			.placeholder-box {
+				background: #fffbeb;
+				border: 2px dashed #f59e0b;
+				border-radius: 8px;
+				padding: 16px;
+				text-align: center;
+			}
+			.placeholder-box .ph-title {
+				font-weight: 700;
+				color: #92400e;
+				font-size: 13px;
+			}
+			.placeholder-box .ph-sub {
+				font-size: 11px;
+				color: #a16207;
+				margin-top: 4px;
+			}
+
+			/* ── HIGHLIGHT ── */
+			.highlight {
+				background: var(--phase2-light);
+				border-left: 4px solid var(--phase2);
+				border-radius: 0 6px 6px 0;
+				padding: 12px 16px;
+				font-size: 12.5px;
+			}
+			.highlight strong {
+				color: var(--fiap-blue);
+			}
+
+			/* ── PHASE HEADER BANNER ── */
+			.phase-banner {
+				background: linear-gradient(135deg, #1a0538 0%, #2d1b69 100%);
+				color: #fff;
+				border-radius: 8px;
+				padding: 14px 20px;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				margin-bottom: 20px;
+			}
+			.phase-banner .pb-num {
+				font-size: 32px;
+				font-weight: 800;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.phase-banner .pb-label {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: #c4b5fd;
+			}
+			.phase-banner .pb-title {
+				font-size: 18px;
+				font-weight: 700;
+			}
+			.phase-banner .pb-desc {
+				font-size: 11.5px;
+				color: #c4b5fd;
+				margin-top: 2px;
+			}
+
+  /* ── TEAM CARDS ── */
+  .team-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; box-shadow: var(--card-shadow); }
+  .team-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #1a0538 0%, #4c1d95 100%); color: #fff; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .team-name { font-weight: 700; font-size: 13px; color: var(--fiap-blue); }
+  .team-email { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .team-role { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--phase2); margin-top: 6px; }
+
+  /* ── PREVENT PAGE BREAK INSIDE CONTENT BLOCKS ── */
+  .card, .link-card, .highlight, .stat-box, .team-card, .phase-banner,
+  .grid-2, .grid-3, .grid-4, .arch-diagram, .pipeline {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .section-header {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* ── PREVENT HORIZONTAL OVERFLOW ── */
+  code { word-break: break-all; }
+  pre { overflow-x: hidden; white-space: pre-wrap; }
+
+  @media print {
+    html { font-size: 11px; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      padding: 0;
+      min-height: auto;
+      width: auto;
+      page-break-after: always;
+      break-after: page;
+    }
+    .cover {
+      margin: -18mm -20mm;
+      padding: 18mm 20mm;
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    .card, .link-card, .highlight, .grid-2, .grid-3, .grid-4,
+    .arch-diagram, .pipeline, .stat-box {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .section-header {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+    pre { overflow-x: hidden; white-space: pre-wrap; }
+  }
+  @page { size: A4 portrait; margin: 18mm 20mm; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 1 — CAPA
+════════════════════════════════════════════════════════════ -->
+		<div class="page cover">
+			<div class="cover-inner">
+				<div class="cover-badge">Tech Challenge — Pós-Graduação em Arquitetura de Software</div>
+				<div class="cover-phase-badge">⚡ Fase 2 — Infraestrutura &amp; Escalabilidade</div>
+
+				<div class="cover-icon">🚀</div>
+
+				<h1>Mecânica API</h1>
+				<h2>Evolução para Infraestrutura Escalável e Cloud-Native</h2>
+				<div class="cover-divider"></div>
+
+				<div class="cover-meta">
+					<p><strong>Entrega Fase 2</strong> — Infraestrutura, CI/CD e Escalabilidade</p>
+					<p><strong>Grupo 14SOAT</strong> | Turma SOAT — FIAP</p>
+					<p><strong>Período:</strong> 2025 / 2026 &nbsp;·&nbsp; <strong>Entrega:</strong> Março 2026</p>
+				</div>
+
+    <div class="cover-stack">
+      <span class="chip chip-phase2">Docker Multi-Stage</span>
+      <span class="chip chip-phase2">Kubernetes EKS 1.33</span>
+      <span class="chip chip-phase2">Terraform IaC</span>
+      <span class="chip chip-phase2">GitHub Actions CI/CD</span>
+      <span class="chip">HPA: min 1 / max 10 pods</span>
+      <span class="chip">HMAC-SHA256 Email</span>
+      <span class="chip">API Key M2M</span>
+      <span class="chip">4 Novos Endpoints</span>
+    </div>
+
+    <div style="margin-top: 32px; text-align: center;">
+      <div style="font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 12px;">Equipe — Grupo 14SOAT</div>
+      <div style="display: flex; justify-content: center; gap: 16px;">
+        <div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 150px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">CF</div>
+          <div style="font-weight: 700; font-size: 12px; color: #fff;">Cleber Fernandes</div>
+          <div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+        </div>
+        <div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 150px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">CL</div>
+          <div style="font-weight: 700; font-size: 12px; color: #fff;">Christian Felipe F. de Lima</div>
+          <div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+        </div>
+        <div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 18px; text-align: center; min-width: 150px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">GS</div>
+          <div style="font-weight: 700; font-size: 12px; color: #fff;">Gabriel J. A. Schuina</div>
+          <div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 2 — LINKS DE ENTREGA
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Entregáveis Fase 2</div>
+    <div class="section-title">Links e Artefatos de Entrega</div>
+    <div class="section-subtitle">Repositório · Swagger · Insomnia · README · Vídeo</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Repositório GitHub</div>
+    <div class="link-value">
+      <a href="https://github.com/clefern/fiap-tc-mecanica-java">https://github.com/clefern/fiap-tc-mecanica-java</a>
+    </div>
+    <div class="link-desc">
+      Código-fonte completo com Fase 1 + Fase 2 · Branch <code>main</code> (produção) · Histórico de PRs e pipelines
+    </div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Swagger UI — Documentação das APIs</div>
+    <div class="link-value">http://localhost:8080/swagger-ui.html</div>
+    <div class="link-desc">OpenAPI 3.0 · 50+ endpoints documentados · Inclui todos os endpoints novos da Fase 2</div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Collection Insomnia</div>
+    <div class="link-value">docs/api/Insomnia_export.yaml</div>
+    <div class="link-desc">Fluxo E2E completo + endpoints por categoria · Incluindo novos endpoints da Fase 2</div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">README.md — Guia Completo Fase 2</div>
+    <div class="link-value">README.md (raiz do repositório)</div>
+    <div class="link-desc">
+      Seção Fase 2: diagrama AWS, instruções de deploy K8s, comandos Terraform, variáveis de ambiente
+    </div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Vídeo Demonstrativo — YouTube</div>
+    <div class="link-value">
+      <a href="https://youtu.be/sCPwD91CEW0" target="_blank">https://youtu.be/sCPwD91CEW0</a>
+    </div>
+    <div class="link-desc">
+      Deploy na AWS, execução do CI/CD, consumo das APIs (Swagger), escalabilidade via HPA
+    </div>
+  </div>
+
+	<div class="link-card">
+		<div class="link-type">Desenho C4 Model</div>
+		<div class="link-value">docs/entrega/fase-2/c4.txt</div>
+		<div class="link-value">Este desenho representa até o nível C2</div>
+		<div class="link-desc">
+			Pode ser utilizado pelo site <a href="https://playground.structurizr.com/">structurizr</a>
+		</div>
+	</div>
+
+  <div class="grid-2" style="gap: 14px; margin-top: 14px;">
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">Como Executar — Desenvolvimento Local</div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">make dev</code> — sobe Docker Compose completo</li>
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">make test</code> — roda 1052+ testes</li>
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">make integration-test</code> — testes com DB real</li>
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">make coverage</code> — relatório JaCoCo</li>
+      </ul>
+    </div>
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">Como Fazer Deploy — Kubernetes</div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">cd infra/conf &amp;&amp; terraform apply</code></li>
+        <li>Configurar <code>kubectl</code> com output do Terraform</li>
+        <li><code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">kubectl apply -f k8s/base/</code></li>
+        <li>Verificar: <code style="background:#e2e8f0; padding:1px 5px; border-radius:3px;">kubectl get pods,hpa</code></li>
+      </ul>
+    </div>
+  </div>
+
+	<div class="highlight">
+		<strong>Escopo da Fase 2:</strong> Evolução da aplicação backend com refatoração arquitetural, novos endpoints
+		de negócio, containerização avançada, orquestração Kubernetes na AWS, infraestrutura como código via Terraform e
+		pipeline CI/CD completo — entrega como sistema cloud-native de produção.
+	</div>
+
+</div>
+
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 3 — CONFORMIDADE (REQUISITOS VS ENTREGÁVEIS)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Conformidade — Fase 2</div>
+    <div class="section-title">Requisitos vs Entregáveis</div>
+    <div class="section-subtitle">Mapeamento completo com evidências — 20 de 22 requisitos implementados no código</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="card-title" style="color: var(--phase2);">Evolução da Aplicação</div>
+    <table>
+      <tr>
+        <th style="width:40%">Requisito</th>
+        <th style="width:12%">Status</th>
+        <th>Evidência</th>
+      </tr>
+      <tr>
+        <td>Refatoração: Clean Code + Arquitetura Hexagonal</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">refactor/os-dependencies</code> — OrdemServicoServiceImpl decomposto; 15 interfaces *Api</td>
+      </tr>
+      <tr>
+        <td>Testes automatizados para fluxos críticos</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>1052+ testes; JaCoCo ≥ 90% global / ≥ 80% domínio</td>
+      </tr>
+      <tr>
+        <td>Abertura de OS (cliente + veículo + serviços + peças)</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">POST /api/ordens-servico/abertura-completa</code></td>
+      </tr>
+      <tr>
+        <td>Consulta de status da OS</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">GET /api/ordens-servico/{id}/status</code></td>
+      </tr>
+      <tr>
+        <td>Aprovação de orçamento via notificação externa</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">POST /api/integracoes/orcamentos/aprovacao</code> — API key M2M</td>
+      </tr>
+      <tr>
+        <td>Listagem de OS com ordenação por status + exclusão FINALIZADA/ENTREGUE</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">GET /api/ordens-servico/fila-operacional</code></td>
+      </tr>
+      <tr>
+        <td>Atualização de status via email</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>Links HMAC-SHA256 no email de orçamento — <code style="font-size:11px;">ActionTokenService</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="card-title" style="color: var(--phase2);">Infraestrutura</div>
+    <table>
+      <tr>
+        <th style="width:40%">Requisito</th>
+        <th style="width:12%">Status</th>
+        <th>Evidência</th>
+      </tr>
+      <tr>
+        <td>Dockerfile atualizado</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">/Dockerfile</code> (Alpine) + <code style="font-size:11px;">/Dockerfile.deploy</code> (distroless)</td>
+      </tr>
+      <tr>
+        <td>docker-compose para desenvolvimento local</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">/docker-compose.yml</code> — 5 serviços</td>
+      </tr>
+      <tr>
+        <td>Manifestos K8s: Deployments, Services, ConfigMaps, Secrets</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">/k8s/base/</code> + overlays lab/prod</td>
+      </tr>
+      <tr>
+        <td>HPA escalando por CPU/memória</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">/k8s/base/hpa.yaml</code> — CPU 70% / Mem 80%, min 1, max 10</td>
+      </tr>
+      <tr>
+        <td>Terraform — Cluster Kubernetes (EKS)</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">/infra/conf/</code> — VPC, EKS 1.33, node group t3.large</td>
+      </tr>
+      <tr>
+        <td>Terraform — Banco de Dados</td>
+        <td><span class="badge badge-warning">⚠️ PVC</span></td>
+        <td>PostgreSQL StatefulSet + PVC 10Gi EBS (não RDS por custo de laboratório)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="card-title" style="color: var(--phase2);">CI/CD e Documentação</div>
+    <table>
+      <tr>
+        <th style="width:40%">Requisito</th>
+        <th style="width:12%">Status</th>
+        <th>Evidência</th>
+      </tr>
+      <tr>
+        <td>CI/CD — Build, testes, Docker, deploy K8s</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">.github/workflows/</code> — 5 workflows (ci, test, build, cd, infra)</td>
+      </tr>
+      <tr>
+        <td>README.md com arquitetura, instruções de deploy e Terraform</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">README.md</code> — diagrama ASCII AWS, make commands, guias completos</td>
+      </tr>
+      <tr>
+        <td>Link para collection das APIs (Swagger/Postman)</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code style="font-size:11px;">docs/api/Insomnia_export.yaml</code> + Swagger em <code style="font-size:11px;">/swagger-ui.html</code></td>
+      </tr>
+      <tr>
+        <td>Vídeo demonstrativo (YouTube/Vimeo, ≤ 15 min)</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><a href="https://youtu.be/sCPwD91CEW0" target="_blank" style="color: var(--accent);">youtu.be/sCPwD91CEW0</a></td>
+      </tr>
+      <tr>
+        <td>PDF de entrega com link GitHub + arquitetura + link vídeo</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>Este documento — <code style="font-size:11px;">docs/entrega/fase-2/entrega-fase2-grupo14soat.pdf</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="highlight" style="font-size:11.5px;">
+    <strong>Nota sobre banco de dados:</strong> PostgreSQL roda como StatefulSet no Kubernetes com PVC de 10Gi no EBS.
+    A arquitetura está preparada para migração a RDS alterando apenas a string de conexão e os secrets — sem mudança de código.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 4 — CONTEXTO E OBJETIVOS
+════════════════════════════════════════════════════════════ -->
+		<div class="page">
+			<div class="section-header">
+				<div class="section-label">Evolução da Aplicação</div>
+				<div class="section-title">Refatoração e Qualidade de Código</div>
+				<div class="section-subtitle">Clean Code · Arquitetura Hexagonal reforçada · 1052+ testes passando</div>
+				<div class="section-rule"></div>
+			</div>
+
+			<div class="grid-2" style="gap: 16px; margin-bottom: 18px">
+				<div class="card">
+					<div class="card-title">Refatoração Aplicada (Clean Code)</div>
+					<ul class="feature-list">
+						<li>
+							<strong>OrdemServicoServiceImpl decomposto</strong> — classe monolítica dividida em serviços coesos com
+							responsabilidade única
+						</li>
+						<li>
+							<strong
+								>15 interfaces
+								<code style="font-size: 11px; background: #f1f5f9; padding: 1px 4px; border-radius: 3px"
+									>*Api</code
+								></strong
+							>
+							extraídas para contratos OpenAPI separados dos controllers
+						</li>
+						<li><strong>Nomes claros</strong> — renomeação de métodos e variáveis para linguagem ubíqua do domínio</li>
+						<li><strong>Coesão por use case</strong> — cada service impl cuida de um bounded context</li>
+						<li><strong>JWT secret</strong> removido do application.yml base — obrigatório via env var em produção</li>
+						<li><strong>Token Sonar</strong> hardcoded removido do código (ADR-SEC-001)</li>
+					</ul>
+				</div>
+				<div class="card">
+					<div class="card-title">Arquitetura Hexagonal Reforçada</div>
+					<ul class="feature-list">
+						<li>Domain layer: <strong>zero anotações Spring/JPA</strong> — POJO puro verificado</li>
+						<li>
+							Ports em
+							<code style="font-size: 11px; background: #f1f5f9; padding: 1px 4px; border-radius: 3px"
+								>domain/repository/</code
+							>, adapters em
+							<code style="font-size: 11px; background: #f1f5f9; padding: 1px 4px; border-radius: 3px"
+								>infra/adapter/</code
+							>
+						</li>
+						<li>Dois mappers separados: infra (domain↔entity) e presentation (domain↔DTO)</li>
+						<li>
+							Integração M2M isolada em
+							<code style="font-size: 11px; background: #f1f5f9; padding: 1px 4px; border-radius: 3px"
+								>IntegracaoOrcamentoController</code
+							>
+						</li>
+						<li>API Key filter separado do JWT filter — responsabilidades distintas</li>
+						<li>282 classes Java mantendo separação estrita de camadas</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="card" style="margin-bottom: 16px">
+				<div class="card-title">Testes Automatizados — Fluxos Críticos Cobertos</div>
+				<div class="grid-3" style="gap: 12px">
+					<div>
+						<p style="font-weight: 700; font-size: 11px; color: var(--phase2); margin-bottom: 6px">Unitários</p>
+						<ul class="feature-list" style="font-size: 11.5px">
+							<li>Máquina de estados da OS</li>
+							<li>Validações de orçamento</li>
+							<li>Regras de estoque</li>
+							<li>Value Objects (CPF, CNPJ, Email)</li>
+							<li>Domain events</li>
+						</ul>
+					</div>
+					<div>
+						<p style="font-weight: 700; font-size: 11px; color: var(--phase2); margin-bottom: 6px">
+							Integração (TestContainers)
+						</p>
+						<ul class="feature-list" style="font-size: 11.5px">
+							<li>Repositórios JPA com PostgreSQL real</li>
+							<li>Controllers completos (MockMvc)</li>
+							<li>Fluxo abertura completa de OS</li>
+							<li>Aprovação via token HMAC</li>
+							<li>Fila operacional filtrada</li>
+						</ul>
+					</div>
+					<div>
+						<p style="font-weight: 700; font-size: 11px; color: var(--phase2); margin-bottom: 6px">
+							Qualidade &amp; Análise
+						</p>
+						<ul class="feature-list" style="font-size: 11.5px">
+							<li>JaCoCo ≥ 90% global / ≥ 80% domínio</li>
+							<li>Checkstyle (Google Java Style)</li>
+							<li>PMD — complexidade ciclomática</li>
+							<li>SpotBugs — null/resource leaks</li>
+							<li>SonarQube contínuo</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="card" style="background: var(--bg-alt)">
+				<div class="card-title">Melhorias de Performance — Fase 2</div>
+				<div class="grid-3" style="gap: 12px; font-size: 12px">
+					<div>
+						<strong style="color: var(--phase2)">@BatchSize(20)</strong><br />
+						<span style="color: var(--text-muted)">Em OrdemServicoEntity.itens — evita N+1 em listagens paginadas</span>
+					</div>
+					<div>
+						<strong style="color: var(--phase2)">V16 — 3 Índices</strong><br />
+						<span style="color: var(--text-muted)"
+							>idx_status, idx_status+data, idx_orcamentos — aceleração de queries críticas</span
+						>
+					</div>
+					<div>
+						<strong style="color: var(--phase2)">Spring Cache</strong><br />
+						<span style="color: var(--text-muted)">@Cacheable em endpoints de consulta de alta frequência</span>
+					</div>
+				</div>
+			</div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 5 — EVOLUÇÃO DO CÓDIGO
+════════════════════════════════════════════════════════════ -->
+		<div class="page">
+			<div class="section-header">
+				<div class="section-label">APIs — Fase 2</div>
+				<div class="section-title">Novos Endpoints Implementados</div>
+				<div class="section-subtitle">4 endpoints + fluxo de aprovação por email com token seguro</div>
+				<div class="section-rule"></div>
+			</div>
+
+			<div class="card" style="margin-bottom: 16px">
+				<div class="card-title">Endpoints — Visão Geral</div>
+				<table>
+					<tr>
+						<th style="width: 10%">Método</th>
+						<th style="width: 44%">Endpoint</th>
+						<th style="width: 18%">Auth</th>
+						<th>Requisito Atendido</th>
+					</tr>
+					<tr>
+						<td><span class="badge badge-success">POST</span></td>
+						<td><code style="font-size: 11px">/api/ordens-servico/abertura-completa</code></td>
+						<td><span class="badge badge-phase2">JWT Atendente</span></td>
+						<td>Abertura de OS com cliente, veículo, serviços e peças em um request</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-info">GET</span></td>
+						<td><code style="font-size: 11px">/api/ordens-servico/fila-operacional</code></td>
+						<td><span class="badge badge-phase2">JWT Mecânico</span></td>
+						<td>Listagem ordenada por prioridade (Execução &gt; Ag.Apr. &gt; Diagnóstico &gt; Recebida)</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-info">GET</span></td>
+						<td><code style="font-size: 11px">/api/ordens-servico/{id}/status</code></td>
+						<td><span class="badge badge-phase2">JWT — todos roles</span></td>
+						<td>Consulta de status resumido — DTO enxuto para polling de frontend/cliente</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-success">POST</span></td>
+						<td><code style="font-size: 11px">/api/integracoes/orcamentos/aprovacao</code></td>
+						<td><span class="badge badge-warning">API Key M2M</span></td>
+						<td>Aprovação/recusa de orçamento via integração externa (X-Api-Key header)</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-info">GET</span></td>
+						<td><code style="font-size: 11px">/api/integracoes/orcamentos/aprovacao?token=...</code></td>
+						<td><span class="badge badge-warning">HMAC Token</span></td>
+						<td>Aprovação via link do email — sem necessidade de login JWT</td>
+					</tr>
+				</table>
+			</div>
+
+  <div class="arch-diagram" style="margin-bottom: 16px;">
+    <div style="font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:10px;">Arquitetura da Aplicação — Hexagonal + DDD</div>
+    <pre style="font-family: 'Courier New', monospace; font-size: 9.5px; line-height:1.7;">
+<span class="layer-title">┌─────────────────────────────────────────────────────┐</span>
+<span class="layer-title">│</span>                  <span class="layer-item">Presentation</span>                       <span class="layer-title">│</span>
+<span class="layer-title">│</span>  Controllers · Req/Res DTOs · *Api interfaces       <span class="layer-title">│</span>
+<span class="layer-title">└────────────────────────┬────────────────────────────┘</span>
+<span class="arrow">                         │</span>
+<span class="layer-title">┌────────────────────────▼────────────────────────────┐</span>
+<span class="layer-title">│</span>                  <span class="layer-item">Application</span>                        <span class="layer-title">│</span>
+<span class="layer-title">│</span>  Use Cases (Services) · DTOs · Event Listeners      <span class="layer-title">│</span>
+<span class="layer-title">└────────────────────────┬────────────────────────────┘</span>
+<span class="arrow">                         │  ← ports (interfaces)</span>
+<span class="layer-title">┌────────────────────────▼────────────────────────────┐</span>
+<span class="layer-title">│</span>                    <span class="layer-item">Domain</span>                           <span class="layer-title">│</span>
+<span class="layer-title">│</span>  Entities · Value Objects · Ports · Events           <span class="layer-title">│</span>
+<span class="layer-title">│</span>  <span style="color:#86efac;">(zero Spring/JPA — POJO puro)</span>                      <span class="layer-title">│</span>
+<span class="layer-title">└────────────────────────┬────────────────────────────┘</span>
+<span class="arrow">                         │  ← adapters (implements ports)</span>
+<span class="layer-title">┌────────────────────────▼────────────────────────────┐</span>
+<span class="layer-title">│</span>                <span class="layer-item">Infrastructure</span>                      <span class="layer-title">│</span>
+<span class="layer-title">│</span>  JPA Adapters · JPA Entities · Mappers · Security    <span class="layer-title">│</span>
+<span class="layer-title">└─────────────────────────────────────────────────────┘</span></pre>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">Testes Automatizados — Fluxos Críticos Cobertos</div>
+    <div class="grid-3" style="gap: 12px;">
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--phase2); margin-bottom:6px;">Unitários</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>Máquina de estados da OS</li>
+          <li>Validações de orçamento</li>
+          <li>Regras de estoque</li>
+          <li>Value Objects (CPF, CNPJ, Email)</li>
+          <li>Domain events</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--phase2); margin-bottom:6px;">Integração (TestContainers)</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>Repositórios JPA com PostgreSQL real</li>
+          <li>Controllers completos (MockMvc)</li>
+          <li>Fluxo abertura completa de OS</li>
+          <li>Aprovação via token HMAC</li>
+          <li>Fila operacional filtrada</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--phase2); margin-bottom:6px;">Qualidade &amp; Análise</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>JaCoCo ≥ 90% global / ≥ 80% domínio</li>
+          <li>Checkstyle (Google Java Style)</li>
+          <li>PMD — complexidade ciclomática</li>
+          <li>SpotBugs — null/resource leaks</li>
+          <li>SonarQube contínuo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+			<div class="footer">
+				<span class="accent">Grupo 14SOAT</span>
+				<span>FIAP 2025/2026</span>
+				<span>Página 4</span>
+			</div>
+		</div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 6 — NOVOS ENDPOINTS
+════════════════════════════════════════════════════════════ -->
+		<div class="page">
+			<div class="section-header">
+				<div class="section-label">Containerização &amp; Orquestração</div>
+				<div class="section-title">Docker + Kubernetes</div>
+				<div class="section-subtitle">Imagens otimizadas · Manifests K8s completos · HPA automático</div>
+				<div class="section-rule"></div>
+			</div>
+
+			<div class="grid-2" style="gap: 16px; margin-bottom: 16px">
+				<div class="card">
+					<div class="card-title">Docker — Build Multi-Stage</div>
+					<div
+						style="
+							background: var(--fiap-blue);
+							border-radius: 8px;
+							padding: 12px;
+							margin-bottom: 10px;
+							font-family: &quot;Courier New&quot;, monospace;
+							font-size: 10.5px;
+							color: #93c5fd;
+							line-height: 1.7;
+						"
+					>
+						<div style="color: #f97316; font-weight: 700"># Stage 1: Build</div>
+						<div>FROM maven:3.9-eclipse-temurin-21 AS builder</div>
+						<div>COPY pom.xml .</div>
+						<div>RUN mvn dependency:go-offline</div>
+						<div>COPY src ./src</div>
+						<div>RUN mvn clean package -DskipTests</div>
+						<br />
+						<div style="color: #f97316; font-weight: 700"># Stage 2: Runtime (Alpine ~120MB)</div>
+						<div>FROM eclipse-temurin:21-jre-alpine</div>
+						<div>COPY --from=builder /app/target/*.jar app.jar</div>
+						<div>USER nonroot</div>
+						<div>ENTRYPOINT ["java", "-jar", "app.jar"]</div>
+					</div>
+					<ul class="feature-list" style="font-size: 11.5px">
+						<li><strong>Dockerfile</strong> — JRE Alpine (~120MB, cache Maven)</li>
+						<li><strong>Dockerfile.deploy</strong> — distroless (zero shell, máxima segurança)</li>
+						<li>Usuário não-root em todas as imagens</li>
+						<li>Trivy scan integrado no pipeline</li>
+					</ul>
+				</div>
+				<div class="card">
+					<div class="card-title">Docker Compose — 5 Serviços</div>
+					<table style="font-size: 11px; margin-bottom: 10px">
+						<tr>
+							<th>Serviço</th>
+							<th>Porta</th>
+							<th>Função</th>
+						</tr>
+						<tr>
+							<td><code>mecanica-app</code></td>
+							<td>8080</td>
+							<td>API + Swagger</td>
+						</tr>
+						<tr>
+							<td><code>mecanica-postgres</code></td>
+							<td>5433</td>
+							<td>PostgreSQL 16</td>
+						</tr>
+						<tr>
+							<td><code>mecanica-adminer</code></td>
+							<td>8081</td>
+							<td>DB Browser</td>
+						</tr>
+						<tr>
+							<td><code>mecanica-mailhog</code></td>
+							<td>8025</td>
+							<td>Email catcher</td>
+						</tr>
+						<tr>
+							<td><code>sonarqube</code></td>
+							<td>9000</td>
+							<td>Code quality</td>
+						</tr>
+					</table>
+					<div class="highlight" style="font-size: 11px; padding: 8px 12px; margin-top: 8px">
+						<code style="font-size: 11px">make dev</code> — sobe todos os serviços com rebuild automático
+					</div>
+				</div>
+			</div>
+
+			<div class="card" style="margin-bottom: 16px">
+				<div class="card-title">Kubernetes — Manifests Completos (/k8s)</div>
+				<div class="grid-2" style="gap: 14px">
+					<div>
+						<p style="font-weight: 700; font-size: 11px; color: var(--phase2); margin-bottom: 8px">k8s/base/</p>
+						<table style="font-size: 11px">
+							<tr>
+								<th>Manifest</th>
+								<th>Conteúdo</th>
+							</tr>
+							<tr>
+								<td><code>namespace.yaml</code></td>
+								<td>Namespace isolado</td>
+							</tr>
+							<tr>
+								<td><code>configmap.yaml</code></td>
+								<td>Variáveis não-sensíveis</td>
+							</tr>
+							<tr>
+								<td><code>secret.yaml</code></td>
+								<td>DB, JWT, API Key (base64)</td>
+							</tr>
+							<tr>
+								<td><code>deployment.yaml</code></td>
+								<td>App + liveness/readiness probes</td>
+							</tr>
+							<tr>
+								<td><code>service.yaml</code></td>
+								<td>ClusterIP + LoadBalancer</td>
+							</tr>
+							<tr>
+								<td><code>hpa.yaml</code></td>
+								<td>HPA CPU 70% / Mem 80%</td>
+							</tr>
+							<tr>
+								<td><code>pvc.yaml</code></td>
+								<td>Persistent Volume 10Gi (EBS)</td>
+							</tr>
+						</table>
+					</div>
+					<div>
+						<p style="font-weight: 700; font-size: 11px; color: var(--phase2); margin-bottom: 8px">
+							HPA — Horizontal Pod Autoscaler
+						</p>
+						<div
+							style="
+								background: var(--fiap-blue);
+								border-radius: 8px;
+								padding: 12px;
+								font-family: &quot;Courier New&quot;, monospace;
+								font-size: 10.5px;
+								color: #93c5fd;
+								line-height: 1.7;
+							"
+						>
+							<div style="color: #f97316">apiVersion: autoscaling/v2</div>
+							<div>spec:</div>
+							<div>&nbsp;&nbsp;minReplicas: <span style="color: #86efac">1</span></div>
+							<div>&nbsp;&nbsp;maxReplicas: <span style="color: #86efac">10</span></div>
+							<div>&nbsp;&nbsp;metrics:</div>
+							<div>&nbsp;&nbsp;&nbsp;&nbsp;- cpu: <span style="color: #fbbf24">70%</span></div>
+							<div>&nbsp;&nbsp;&nbsp;&nbsp;- memory: <span style="color: #fbbf24">80%</span></div>
+						</div>
+						<p style="font-size: 11px; color: var(--text-muted); margin-top: 8px">
+							Overlays separados em <code>k8s/overlays/lab/</code> e <code>k8s/overlays/prod/</code>
+						</p>
+					</div>
+				</div>
+			</div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 7 — DOCKER E KUBERNETES
+════════════════════════════════════════════════════════════ -->
+		<div class="page">
+			<div class="section-header">
+				<div class="section-label">Infraestrutura como Código</div>
+				<div class="section-title">AWS + Terraform</div>
+				<div class="section-subtitle">VPC · EKS 1.33 · ECR · ALB · NGINX · Cert-Manager — tudo como código</div>
+				<div class="section-rule"></div>
+			</div>
+
+  <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+    <div class="card">
+      <div class="card-title">Docker — Build Multi-Stage</div>
+      <div style="background: var(--fiap-blue); border-radius:8px; padding:12px; margin-bottom:10px; font-family:'Courier New',monospace; font-size:10.5px; color: #93c5fd; line-height:1.7;">
+        <div style="color:#f97316; font-weight:700;"># Stage 1: Build</div>
+        <div>FROM maven:3.9-eclipse-temurin-21 AS builder</div>
+        <div>COPY pom.xml .</div>
+        <div>RUN mvn dependency:go-offline</div>
+        <div>COPY src ./src</div>
+        <div>RUN mvn clean package -DskipTests</div>
+        <br>
+        <div style="color:#f97316; font-weight:700;"># Stage 2: Runtime (Alpine ~120MB)</div>
+        <div>FROM eclipse-temurin:21-jre-alpine</div>
+        <div>COPY --from=builder /app/target/*.jar app.jar</div>
+        <div>USER nonroot</div>
+        <div>ENTRYPOINT ["java", "-jar", "app.jar"]</div>
+      </div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li><strong>Dockerfile</strong> — JRE Alpine (~120MB, cache Maven)</li>
+        <li><strong>Dockerfile.deploy</strong> — distroless (zero shell, máxima segurança)</li>
+        <li>Usuário não-root em todas as imagens</li>
+        <li>Trivy scan integrado no pipeline</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Docker Compose — 5 Serviços</div>
+      <table style="font-size:11px; margin-bottom:10px;">
+        <tr>
+          <th>Serviço</th>
+          <th>Porta</th>
+          <th>Função</th>
+        </tr>
+        <tr><td><code>mecanica-app</code></td><td>8080</td><td>API + Swagger</td></tr>
+        <tr><td><code>mecanica-postgres</code></td><td>5433</td><td>PostgreSQL 16</td></tr>
+        <tr><td><code>mecanica-adminer</code></td><td>8081</td><td>DB Browser</td></tr>
+        <tr><td><code>mecanica-mailhog</code></td><td>8025</td><td>Email catcher</td></tr>
+        <tr><td><code>sonarqube</code></td><td>9000</td><td>Code quality</td></tr>
+      </table>
+      <div class="highlight" style="font-size:11px; padding:8px 12px; margin-top:8px;">
+        <code style="font-size:11px;">make dev</code> — sobe todos os serviços com rebuild automático
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">Kubernetes — Manifests Completos (/k8s)</div>
+    <div class="grid-2" style="gap: 14px;">
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--phase2); margin-bottom:8px;">k8s/base/</p>
+        <table style="font-size:11px;">
+          <tr><th>Manifest</th><th>Conteúdo</th></tr>
+          <tr><td><code>namespace.yaml</code></td><td>Namespace isolado</td></tr>
+          <tr><td><code>configmap.yaml</code></td><td>Variáveis não-sensíveis</td></tr>
+          <tr><td><code>secret.yaml</code></td><td>DB, JWT, API Key (base64)</td></tr>
+          <tr><td><code>deployment.yaml</code></td><td>App + liveness/readiness probes</td></tr>
+          <tr><td><code>service.yaml</code></td><td>ClusterIP + LoadBalancer</td></tr>
+          <tr><td><code>hpa.yaml</code></td><td>HPA CPU 70% / Mem 80%</td></tr>
+          <tr><td><code>pvc.yaml</code></td><td>Persistent Volume 10Gi (EBS)</td></tr>
+        </table>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--phase2); margin-bottom:8px;">HPA — Horizontal Pod Autoscaler</p>
+        <div style="background: var(--fiap-blue); border-radius:8px; padding:12px; font-family:'Courier New',monospace; font-size:10.5px; color: #93c5fd; line-height:1.7;">
+          <div style="color:#f97316;">apiVersion: autoscaling/v2</div>
+          <div>spec:</div>
+          <div>&nbsp;&nbsp;minReplicas: <span style="color:#86efac;">1</span></div>
+          <div>&nbsp;&nbsp;maxReplicas: <span style="color:#86efac;">10</span></div>
+          <div>&nbsp;&nbsp;metrics:</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;- cpu: <span style="color:#fbbf24;">70%</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;- memory: <span style="color:#fbbf24;">80%</span></div>
+        </div>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">
+          Overlays separados em <code>k8s/overlays/lab/</code> e <code>k8s/overlays/prod/</code>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 8 — TERRAFORM E AWS
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Infraestrutura como Código</div>
+    <div class="section-title">AWS + Terraform</div>
+    <div class="section-subtitle">VPC · EKS 1.33 · ECR · ALB · NGINX · Cert-Manager — tudo como código</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="arch-diagram" style="margin-bottom: 16px;">
+    <pre style="font-family: 'Courier New', monospace; font-size: 10.5px; line-height:1.8;">
+<span class="layer-item">                         Internet</span>
+<span class="arrow">                              │</span>
+<span class="layer-title">         ┌────────────────────────────────────┐</span>
+<span class="layer-title">         │   AWS Application Load Balancer    │</span>
+<span class="layer-title">         └──────────────┬─────────────────────┘</span>
+<span class="arrow">                        │  HTTPS (Cert-Manager TLS)</span>
+<span class="layer-title">  ┌─────────────────────▼───────────────────────────────────┐</span>
+<span class="layer-title">  │           Amazon EKS 1.33 — us-east-1                  │</span>
+<span class="layer-item">  │  ┌─────────────────────────────────────────────────┐   │</span>
+<span class="layer-item">  │  │  mecanica-app (Deployment)                      │   │</span>
+<span class="layer-item">  │  │  Node Group: t3.large · Auto Scaling · OIDC     │   │</span>
+<span class="layer-item">  │  │  HPA → min 1, max 10 pods                       │   │</span>
+<span class="layer-item">  │  └─────────────────┬───────────────────────────────┘   │</span>
+<span class="layer-item">  │  ┌─────────────────▼───────────────────────────────┐   │</span>
+<span class="layer-item">  │  │  PostgreSQL (StatefulSet + PVC 10Gi EBS)        │   │</span>
+<span class="layer-item">  │  └─────────────────────────────────────────────────┘   │</span>
+<span class="layer-title">  └───────────────────────────┬─────────────────────────────┘</span>
+<span class="arrow">                             │  pull images</span>
+<span class="layer-title">              ┌──────────────▼──────────────┐</span>
+<span class="layer-title">              │  Amazon ECR (private)        │</span>
+<span class="layer-title">              └──────────────────────────────┘</span></pre>
+			</div>
+
+			<div class="grid-3" style="gap: 14px; margin-bottom: 14px">
+				<div class="card">
+					<div class="card-title">VPC &amp; Network (TF-001)</div>
+					<ul class="feature-list" style="font-size: 11.5px">
+						<li>VPC customizada com CIDR definido</li>
+						<li>Subnets públicas e privadas</li>
+						<li>Internet Gateway + NAT Gateway</li>
+						<li>Route tables configuradas</li>
+						<li>Security Groups por camada</li>
+					</ul>
+				</div>
+				<div class="card">
+					<div class="card-title">Serviços AWS (TF-002)</div>
+					<ul class="feature-list" style="font-size: 11.5px">
+						<li>Amazon ECR — repositório privado</li>
+						<li>Amazon S3— arquivos estáticos e tfstate</li>
+						<li>Amazon DynamoDB — tabela de locks</li>
+						<li>Amazon EKS — cluster v1.33</li>
+						<li>Amazon ASG — t3.large</li>
+						<li>IAM roles</li>
+					</ul>
+				</div>
+				<div class="card">
+					<div class="card-title">Serviços K8S (TF-003)</div>
+					<ul class="feature-list" style="font-size: 11.5px">
+						<li>ALB Controller via Helm</li>
+						<li>NGINX Ingress Controller</li>
+						<li>Metrics Server (HPA dependency)</li>
+						<li>Cert-Manager (TLS automático)</li>
+						<li>EBS CSI Driver (via OIDC ou Pod Identity)</li>
+					</ul>
+				</div>
+			</div>
+			<div class="card" style="background: var(--bg-alt)">
+				<div class="card-title">Estrutura Terraform (/infra)</div>
+				<div class="grid-2" style="gap: 12px; font-size: 11.5px">
+					<div>
+						<ul class="feature-list">
+							<li><code>environments/</code> — entry points por ambiente (develop, lab, local)</li>
+							<li><code>conf/0-providers.tf</code> — provider AWS</li>
+							<li><code>conf/variables.tf</code> — region, eks_name, env, zones</li>
+							<li><code>conf/output.tf</code> — vpc_id, cluster_name, ecr_repository</li>
+							<li><code>conf/2-vpc..6-routes</code> — VPC, subnets, IGW, NAT, routes</li>
+						</ul>
+					</div>
+					<div>
+						<ul class="feature-list">
+							<li><code>conf/7-eks.tf</code>, <code>8-nodes.tf</code> — cluster + node group</li>
+							<li><code>conf/14-ecr.tf</code> — repositório de imagens</li>
+							<li><code>conf/10-13</code> — Helm: metrics-server, ALBC, Nginx, cert-manager</li>
+							<li><code>conf/15-ebs-csi.tf</code>, <code>16-oicd.tf</code> — EBS CSI + OIDC</li>
+							<li><strong>Uso:</strong> <code>terraform init &amp;&amp; terraform apply</code> no env</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer">
+				<span class="accent">Grupo 14SOAT</span>
+				<span>FIAP 2025/2026</span>
+				<span>Página 6</span>
+			</div>
+		</div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 9 — CI/CD
+════════════════════════════════════════════════════════════ -->
+		<div class="page">
+			<div class="section-header">
+				<div class="section-label">Automação</div>
+				<div class="section-title">Pipeline CI/CD — GitHub Actions</div>
+				<div class="section-subtitle">5 workflows separados · do push ao deploy em EKS em produção</div>
+				<div class="section-rule"></div>
+			</div>
+
+			<div class="pipeline" style="margin-bottom: 20px">
+				<div class="pipeline-step">📦 git push</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">🔨 Maven Build + Cache</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">🧪 Testes + JaCoCo</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">🐳 Docker Multi-Stage</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">🔍 Trivy Scan</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">📤 ECR Push</div>
+				<div class="pipeline-arrow">→</div>
+				<div class="pipeline-step">🚀 kubectl apply</div>
+			</div>
+
+			<div class="card" style="margin-bottom: 16px">
+				<div class="card-title">5 Workflows GitHub Actions</div>
+				<table>
+					<tr>
+						<th style="width: 15%">Workflow</th>
+						<th style="width: 22%">Trigger</th>
+						<th style="width: 18%">Arquivo</th>
+						<th>Responsabilidade</th>
+					</tr>
+					<tr>
+						<td><span class="badge badge-phase2">CI</span></td>
+						<td>Push/PR → develop</td>
+						<td><code style="font-size: 11px">ci.yml</code></td>
+						<td>Compilação Maven, cache M2, lint (Checkstyle + PMD + SpotBugs)</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-phase2">Test</span></td>
+						<td>Push/PR → develop</td>
+						<td><code style="font-size: 11px">test.yml</code></td>
+						<td>Testes unitários e integração (TestContainers), cobertura JaCoCo</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-success">Build</span></td>
+						<td>Merge → main</td>
+						<td><code style="font-size: 11px">build.yml</code></td>
+						<td>Docker multi-stage + Trivy vulnerability scan + push para ECR</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-success">CD</span></td>
+						<td>Após build</td>
+						<td><code style="font-size: 11px">cd.yml</code></td>
+						<td>Deploy em EKS via <code>kubectl apply</code> + <code>k8s-deploy.sh</code> (envsubst)</td>
+					</tr>
+					<tr>
+						<td><span class="badge badge-warning">Infra</span></td>
+						<td>Manual dispatch</td>
+						<td><code style="font-size: 11px">infra.yml</code></td>
+						<td>Terraform plan/apply — provisionamento da infraestrutura AWS</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="grid-2" style="gap: 14px">
+				<div class="card">
+					<div class="card-title">Segurança no Pipeline</div>
+					<ul class="feature-list" style="font-size: 12px">
+						<li>OIDC para autenticação AWS — sem chaves estáticas de longa duração</li>
+						<li>Secrets via GitHub Actions Secrets (não expostos em logs)</li>
+						<li>Trivy: scan de CVEs na imagem Docker antes do push</li>
+						<li>EBS CSI Driver com OIDC provider do EKS</li>
+						<li>Imagens distroless em produção — zero shell disponível</li>
+					</ul>
+				</div>
+				<div class="card">
+					<div class="card-title">GitHub Secrets Configurados</div>
+					<div
+						style="
+							font-family: &quot;Courier New&quot;, monospace;
+							font-size: 10.5px;
+							line-height: 1.8;
+							color: var(--text);
+						"
+					>
+						<div><span style="color: var(--phase2)">AWS_ACCESS_KEY_ID</span></div>
+						<div><span style="color: var(--phase2)">AWS_SECRET_ACCESS_KEY</span></div>
+						<div><span style="color: var(--phase2)">AWS_SESSION_TOKEN</span></div>
+						<div>
+							<span style="color: var(--phase2)">ECR_REGISTRY</span> /
+							<span style="color: var(--phase2)">ECR_REPOSITORY</span>
+						</div>
+						<div><span style="color: var(--phase2)">EKS_CLUSTER_NAME</span></div>
+						<div>
+							<span style="color: var(--phase2)">JWT_SECRET</span> /
+							<span style="color: var(--phase2)">INTEGRATION_API_KEY</span>
+						</div>
+						<div>
+							<span style="color: var(--phase2)">DB_URL</span> / <span style="color: var(--phase2)">DB_USERNAME</span> /
+							<span style="color: var(--phase2)">DB_PASSWORD</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+extends: "spectral:oas"
+rules:
+  oas3-api-servers:
+    description: Defina pelo menos um server na especificação.
+    given: $.servers
+    then:
+      function: truthy
+    severity: warn
+
+  operation-summary:
+    description: Toda operação deve possuir um summary.
+    given: $.paths[*][*]
+    then:
+      field: summary
+      function: truthy
+    severity: warn
+
+  operation-description:
+    description: Toda operação deve possuir uma description.
+    given: $.paths[*][*]
+    then:
+      field: description
+      function: truthy
+    severity: warn
+
+  operation-2xx-response:
+    description: Cada operação deve definir uma resposta 2xx.
+    given: $.paths[*][*].responses
+    then:
+      function: pattern
+      functionOptions:
+        match: "2\\d{2}"
+    severity: warn
+
+  schema-description:
+    description: Schemas devem possuir description.
+    given: $.components.schemas[*]
+    then:
+      field: description
+      function: truthy
+    severity: warn
+
+  response-content-type:
+    description: Respostas devem declarar content-type application/json quando aplicável.
+    given: $.paths[*][*].responses[*].content
+    then:
+      field: application/json
+      function: falsy
+    severity: off

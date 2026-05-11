@@ -1,0 +1,186 @@
+workspace "Sistema de Mecânica" "Gestão de ordens de serviço com notificação e aprovação por e-mail." {
+
+    model {
+
+        // ─── Pessoas ────────────────────────────────────────────────────────────
+        administrador = person "Atendente" \
+            "Cria ordens de serviço, interage com o cliente e atualiza o sistema."
+
+        mecanico = person "Mecânico" \
+            "Interage com as ordens de serviço."
+
+        cliente = person "Cliente" \
+            "Recebe notificações por e-mail e aprova ou recusa a OS clicando nos botões do e-mail."
+
+        // ─── Sistemas externos ──────────────────────────────────────────────────
+        emailProvider = softwareSystem "Email Provider" "Recebe as mensagens da aplicação via SMTP e as entrega ao cliente" "External"
+
+        // ─── Sistema em foco ────────────────────────────────────────────────────
+        sistema = softwareSystem "Sistema de Mecânica" \
+            "Gerencia ordens de serviço, controla acesso por perfil e notifica clientes sobre cada atualização." {
+
+            // ── Containers ──────────────────────────────────────────────────────
+            api = container "Spring Boot App" \
+                "API REST central. Aplica segurança por perfil, processa ordens de serviço e despacha notificações." \
+                "Java 21 · Spring Boot · HTTP · porta 8080" {
+
+                // Interface Adapters — Controllers
+                adminController = component "Admin Controller" \
+                    "Endpoints restritos ao Administrador. Criação de OS, cadastro de clientes e gestão geral." \
+                    "@RestController · /api/admin/** · requer role ADMIN"
+
+                mecanicoController = component "Mecânico Controller" \
+                    "Endpoints restritos ao Mecânico. Atualização de status e apontamentos na OS." \
+                    "@RestController · /api/mecanico/** · requer role MECANICO"
+
+                clienteController = component "Cliente Controller" \
+                    "Endpoints abertos autenticados por token de aprovação. Recebe aprovação ou rejeição da OS." \
+                    "@RestController · /api/cliente/os/{token}/aprovacao"
+
+                // Interface Adapters — Security
+                securityFilter = component "Security Filter" \
+                    "Intercepta todas as requisições. Valida JWT para admin/mecânico e token de aprovação para endpoints do cliente." \
+                    "Spring Security · JwtAuthFilter · OncePerRequestFilter"
+
+                // Use Cases (Clean Arch — Application layer)
+                osUseCase = component "Ordem de Serviço Use Case" \
+                    "Orquestra criação, atualização e consulta de OS. Aciona notificação sempre que o estado da OS muda." \
+                    "Use Case · porta de entrada para operações de OS"
+
+                aprovacaoUseCase = component "Aprovação Use Case" \
+                    "Valida o token de aprovação, verifica expiração e aplica a decisão (aprovado/recusado) na OS." \
+                    "Use Case · processa resposta do cliente"
+
+                notificacaoUseCase = component "Notificação Use Case" \
+                    "Gera o link de aprovação com token temporário e solicita o envio do e-mail ao cliente." \
+                    "Use Case · acionado após cada atualização de OS"
+
+                // Domain (Clean Arch — Enterprise Business Rules)
+                osDomain = component "Ordem de Serviço" \
+                    "Entidade central. Contém itens, status, referência ao cliente e ao token de aprovação vigente." \
+                    "Entity · Clean Arch domain"
+
+                tokenDomain = component "Token de Aprovação" \
+                    "Value Object com hash único, validade e estado (pendente/expirado/consumido)." \
+                    "Value Object · Clean Arch domain"
+
+                // Infrastructure — Gateways / Adapters de saída
+                osRepository = component "OS Repository" \
+                    "Persiste e consulta ordens de serviço e tokens de aprovação no banco de dados." \
+                    "Gateway · Spring Data JPA · @Repository"
+
+                mailGateway = component "Mail Gateway" \
+                    "Envia e-mails via JavaMailSender. Isola o restante da aplicação do provedor de e-mail concreto." \
+                    "Gateway · JavaMailSender · abstrai Email Provider"
+            }
+
+            db = container "PostgreSQL" \
+                "Armazena ordens de serviço, clientes, usuários da mecânica." \
+                "PostgreSQL · porta 5432" \
+                "Database"
+        }
+
+        // ─── Relacionamentos C1 ─────────────────────────────────────────────────
+        administrador -> sistema       "Cria e atualiza ordens de serviço" "HTTP"
+        mecanico      -> sistema       "Atualiza status das ordens de serviço" "HTTP"
+        cliente       -> sistema       "Aprova ou recusa OS via link do e-mail" "HTTP"
+        sistema       -> emailProvider "Envia notificação de atualização de OS" "SMTP"
+        emailProvider -> cliente       "Entrega e-mail com botões de aprovação/rejeição" "E-mail"
+
+        // ─── Relacionamentos C2 ─────────────────────────────────────────────────
+        administrador -> api           "Gerencia OS e clientes" "HTTP/REST · JWT"
+        mecanico      -> api           "Atualiza status da OS" "HTTP/REST · JWT"
+        cliente       -> api           "Aprova ou recusa OS pelo token do e-mail" "HTTP/REST · token de aprovação"
+        api           -> db            "Lê e persiste dados" "JDBC · porta 5432"
+        api           -> emailProvider "Envia e-mails de notificação" "SMTP"
+        emailProvider -> cliente       "Entrega e-mail com link de ação" "E-mail"
+
+        // ─── Relacionamentos C3 ─────────────────────────────────────────────────
+
+        // Entrada — usuários chamam os controllers
+        administrador      -> adminController    "Chama endpoints de gestão" "HTTP · JWT ADMIN"
+        mecanico           -> mecanicoController "Chama endpoints de OS" "HTTP · JWT MECANICO"
+        cliente            -> clienteController  "Aprova/recusa OS" "HTTP · token aprovação"
+
+        // Controllers validam via Security Filter
+        adminController    -> securityFilter     "Valida JWT role ADMIN"
+        mecanicoController -> securityFilter     "Valida JWT role MECANICO"
+        clienteController  -> securityFilter     "Valida token de aprovação"
+
+        // Controllers -> Use Cases
+        adminController    -> osUseCase          "Delega criação e atualização de OS"
+        mecanicoController -> osUseCase          "Delega atualização de status"
+        clienteController  -> aprovacaoUseCase   "Delega decisão do cliente"
+
+        // Use Cases -> Domain e entre si
+        osUseCase          -> osDomain           "Cria e manipula"
+        osUseCase          -> tokenDomain        "Gera token de aprovação"
+        osUseCase          -> notificacaoUseCase "Aciona notificação após cada mudança de OS"
+        aprovacaoUseCase   -> tokenDomain        "Valida expiração e consome token"
+        aprovacaoUseCase   -> osDomain           "Atualiza status da OS"
+        notificacaoUseCase -> tokenDomain        "Obtém token para compor link"
+        notificacaoUseCase -> mailGateway        "Solicita envio do e-mail"
+
+        // Domain -> Infrastructure
+        osDomain           -> osRepository       "Persiste via"
+        tokenDomain        -> osRepository       "Persiste via"
+
+        // Infrastructure -> Sistemas externos
+        osRepository       -> db                 "SQL via JPA" "JDBC"
+        mailGateway        -> emailProvider      "Envia e-mail" "SMTP"
+    }
+
+    // ─── Views ──────────────────────────────────────────────────────────────────
+    views {
+
+        systemContext sistema "C1-Contexto" "Visão de contexto — quem usa e com o que o sistema interage." {
+            include *
+            autolayout lr 300 150
+        }
+
+        container sistema "C2-Containers" "Visão de containers — unidades deployáveis e seus protocolos." {
+            include *
+            autolayout lr 300 150
+        }
+
+        # component api "C3-Componentes" "Visão de componentes do Spring Boot App — camadas da Clean Architecture." {
+        #     include *
+        #     autolayout lr 300 150
+        # }
+
+        // ─── Estilos ─────────────────────────────────────────────────────────
+        styles {
+            element "Person" {
+                shape    Person
+                background #1D9E75
+                color    #ffffff
+                fontSize 14
+            }
+            element "Software System" {
+                background #0F6E56
+                color    #ffffff
+            }
+            element "External" {
+                background #5F5E5A
+                color    #ffffff
+            }
+            element "Container" {
+                background #085041
+                color    #ffffff
+            }
+            element "Database" {
+                shape    Cylinder
+                background #185FA5
+                color    #ffffff
+            }
+            element "Component" {
+                background #534AB7
+                color    #ffffff
+            }
+            relationship "Relationship" {
+                fontSize 12
+                color    #444441
+            }
+        }
+    }
+}

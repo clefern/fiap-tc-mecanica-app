@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ordem de Serviço Criada</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .header { background-color: #f8f9fa; padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
+        .content { padding: 20px; }
+        .footer { font-size: 12px; color: #777; text-align: center; margin-top: 20px; }
+        .info-box { background-color: #e9ecef; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Ordem de Serviço Recebida</h2>
+        </div>
+        <div class="content">
+            <p>Olá, <strong th:text="${cliente.nome}">Cliente</strong>!</p>
+            <p>Seu veículo foi recebido em nossa oficina e uma nova Ordem de Serviço foi aberta.</p>
+            
+            <div class="info-box">
+                <p><strong>Número da OS:</strong> <span th:text="${os.codigo}">OS-000</span></p>
+                <p><strong>Veículo:</strong> <span th:text="${veiculo.modelo}">Modelo</span> - <span th:text="${veiculo.placa.value()}">ABC-1234</span></p>
+                <p><strong>Data de Entrada:</strong> <span th:text="${#temporals.format(os.dataEntrada, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:00</span></p>
+            </div>
+
+            <p><strong>Solicitações/Observações:</strong></p>
+            <p th:text="${os.observacoes}">Nenhuma observação.</p>
+
+            <p>Em breve nossos mecânicos farão o diagnóstico e enviaremos o orçamento para sua aprovação.</p>
+        </div>
+        <div class="footer">
+            <p>Mecânica FIAP - Excelência em serviços automotivos</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Configurações de sobreposição para testes (Profile "test")
+# O Spring faz o merge automático com o application.yml do src/main/resources
+
+server:
+  port: 0
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:mecanica-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  flyway:
+    enabled: false
+
+management:
+  health:
+    mail:
+      enabled: false # Necessário porque o @MockBean JavaMailSender quebra o health check padrão

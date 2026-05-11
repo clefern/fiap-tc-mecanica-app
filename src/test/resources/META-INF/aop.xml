@@ -1,0 +1,14 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+    <weaver>
+        <!-- Exclude Spring Boot JDBC classes that reference optional dependencies to avoid MissingResolvedTypeWithKnownSignature errors -->
+        <exclude within="org.springframework.boot.jdbc.**"/>
+        
+        <!-- Exclude other common libraries to improve performance and avoid noise -->
+        <exclude within="org.springframework.**"/>
+        <exclude within="org.hibernate.**"/>
+        <exclude within="com.zaxxer.**"/>
+        <exclude within="net.bytebuddy.**"/>
+        <exclude within="org.postgresql.**"/>
+    </weaver>
+</aspectj>

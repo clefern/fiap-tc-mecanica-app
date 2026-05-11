@@ -1,0 +1,10 @@
+#!/bin/bash
+# Delegated Pre-commit Hook
+# This file is version-controlled and located in scripts/githooks/
+# It delegates execution to the main logic in scripts/quality.sh
+
+# Ensure script is executable
+chmod +x ./scripts/quality.sh 2>/dev/null
+
+# Delegate to the centralized quality script
+./scripts/quality.sh pre-commit-hook

@@ -1,0 +1,1 @@
+ALTER TABLE ordens_servico ALTER COLUMN codigo TYPE VARCHAR(50);

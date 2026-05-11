@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Seu Orçamento</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f8f9fa;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 2px solid #007bff;
+      }
+      .content {
+        margin-top: 20px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        text-align: center;
+        color: #777;
+      }
+      .items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      .items th,
+      .items td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      .items th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Mecânica FIAP - Orçamento Gerado</h2>
+      </div>
+      <div class="content">
+        <p>
+          Olá, <strong th:text="${cliente != null ? cliente.nome : 'Cliente'}">Cliente</strong>!
+        </p>
+
+        <p>
+          Seu orçamento referente à Ordem de Serviço
+          <strong>#<span th:text="${orcamento.codigo}">CODIGO</span></strong> foi gerado com
+          sucesso.
+        </p>
+
+        <p th:if="${nomeMecanicoDiagnostico != null}">
+            <strong>Responsável pelo Diagnóstico:</strong> <span th:text="${nomeMecanicoDiagnostico}">Nome Mecânico</span>
+        </p>
+
+        <p><strong>Detalhes do Orçamento:</strong></p>
+        <ul>
+          <li>
+            Valor Total:
+            <strong
+              th:text="${'R$ ' + #numbers.formatDecimal(orcamento.valorTotal, 1, 'POINT', 2, 'COMMA')}"
+              >R$ 0,00</strong
+            >
+          </li>
+          <li>
+            Data de Validade:
+            <span th:text="${#temporals.format(orcamento.dataValidade, 'dd/MM/yyyy')}"
+              >01/01/2024</span
+            >
+          </li>
+        </ul>
+
+        <div th:if="${os != null}">
+          <p><strong>Itens do Serviço:</strong></p>
+          <table class="items">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Tipo</th>
+                <th>Qtd</th>
+                <th>Valor Unit.</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="item : ${os.itens}">
+                <td th:text="${item.descricao}">Descrição</td>
+                <td th:text="${item.tipo.descricao}">Tipo</td>
+                <td th:text="${item.quantidade}">1</td>
+                <td
+                  th:text="${'R$ ' + #numbers.formatDecimal(item.valorUnitario, 1, 'POINT', 2, 'COMMA')}"
+                >
+                  R$ 100,00
+                </td>
+                <td
+                  th:text="${'R$ ' + #numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}"
+                >
+                  R$ 100,00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>O PDF detalhado está em anexo neste email.</p>
+
+        <div th:if="${linkAprovarOrcamento != null}">
+          <p>Revise o orçamento e nos informe sua decisão clicando em um dos botões abaixo:</p>
+
+          <p>
+            <a
+              th:href="${linkAprovarOrcamento}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #28a745;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
+                margin-right: 10px;
+              "
+              >Aprovar Orçamento</a
+            >
+            <a
+              th:href="${linkRecusarOrcamento}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #dc3545;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
+              "
+              >Recusar Orçamento</a
+            >
+          </p>
+
+          <p style="font-size: 12px; color: #777;">
+            Os links acima são válidos por 24 horas. Após esse prazo, entre em contato com a oficina.
+          </p>
+        </div>
+      </div>
+      <div class="footer">
+        <p>Mecânica FIAP - Excelência em serviços automotivos.</p>
+        <p>Este é um email automático, por favor não responda.</p>
+      </div>
+    </div>
+  </body>
+</html>

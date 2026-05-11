@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Ignore EI_EXPOSE_REP2 (storing external mutable object) for Spring Components -->
+    <!-- These are injected singletons, so this warning is usually a false positive in Spring context -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Or>
+            <Class name="~.*Controller"/>
+            <Class name="~.*Service.*"/>
+            <Class name="~.*Repository.*"/>
+            <Class name="~.*Factory"/>
+            <Class name="~.*Config"/>
+        </Or>
+    </Match>
+
+    <!-- Ignore serialization warnings for CustomUserDetails wrapper -->
+    <Match>
+        <Class name="com.fiap.mecanica.infra.config.security.CustomUserDetails"/>
+        <Or>
+            <Bug pattern="SE_BAD_FIELD"/>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+            <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+        </Or>
+    </Match>
+
+    <!-- Ignore Constructor Throw warning (DDD Invariants) -->
+    <!-- We want validation in constructors for domain objects -->
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+
+    <!-- Ignore EI_EXPOSE_REP for Entities (JPA requires mutable state often) -->
+    <Match>
+        <Or>
+            <Class name="~.*\.infra\.entity\..*"/>
+            <Class name="~.*\.domain\.model\..*"/>
+        </Or>
+        <Or>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+        </Or>
+    </Match>
+
+    <!-- Ignore EI_EXPOSE_REP (returning external mutable object) for DTOs and Entities if needed -->
+    <!-- For now, focusing on the specific reported errors -->
+</FindBugsFilter>

@@ -1,0 +1,26 @@
+{
+  "name": "Java 21 & Spring Boot",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/maven:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "Pivotal.vscode-spring-boot",
+        "vscjava.vscode-java-dependency",
+        "vscjava.vscode-java-test"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "spring-boot.ls.java.home": "/usr/local/sdkman/candidates/java/current"
+      }
+    }
+  },
+  "forwardPorts": [8080, 8081],
+  "postCreateCommand": "mvn clean install -DskipTests",
+  "remoteUser": "vscode"
+}

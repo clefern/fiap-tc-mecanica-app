@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mecânica API — Fase 1 | Grupo 14SOAT | FIAP 2025/2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --fiap-blue:    #0f1f3d;
+    --fiap-blue2:   #1e3a5f;
+    --accent:       #0ea5e9;
+    --accent2:      #0284c7;
+    --accent-light: #f0f9ff;
+    --text:         #1e293b;
+    --text-muted:   #64748b;
+    --border:       #e2e8f0;
+    --bg-alt:       #f8fafc;
+    --success:      #16a34a;
+    --warning:      #d97706;
+    --error:        #dc2626;
+    --card-shadow:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 13px; }
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    color: var(--text);
+    background: #fff;
+    line-height: 1.65;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 18mm 20mm 22mm;
+    margin: 0 auto;
+    position: relative;
+    background: #fff;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child { page-break-after: avoid; }
+
+  .footer {
+    position: absolute;
+    bottom: 10mm;
+    left: 20mm;
+    right: 20mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 4px;
+  }
+  .footer .accent { color: var(--accent); font-weight: 600; }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(145deg, #0c1f3a 0%, #0f3460 50%, #1a5276 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    min-height: 297mm;
+  }
+  .cover-inner { padding: 30mm 24mm; }
+  .cover-badge {
+    display: inline-block;
+    background: rgba(14,165,233,.18);
+    border: 1px solid rgba(14,165,233,.45);
+    color: #bae6fd;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 99px;
+    margin-bottom: 14px;
+  }
+  .cover-phase-badge {
+    display: inline-block;
+    background: rgba(14,165,233,.25);
+    border: 1px solid rgba(125,211,252,.5);
+    color: #7dd3fc;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    border-radius: 99px;
+    margin-bottom: 28px;
+  }
+  .cover-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    border-radius: 20px;
+    margin: 0 auto 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 8px 32px rgba(14,165,233,.4);
+  }
+  .cover h1 { font-size: 44px; font-weight: 800; letter-spacing: -.02em; margin-bottom: 10px; color: #fff; }
+  .cover h2 { font-size: 15px; font-weight: 400; color: #7dd3fc; margin-bottom: 40px; }
+  .cover-divider { width: 60px; height: 3px; background: var(--accent); margin: 0 auto 40px; border-radius: 2px; }
+  .cover-meta { display: flex; flex-direction: column; gap: 8px; color: #bae6fd; font-size: 12px; }
+  .cover-meta strong { color: #fff; }
+  .cover-stack { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 40px; }
+  .chip { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #e2e8f0; padding: 4px 12px; border-radius: 99px; font-size: 10.5px; font-weight: 500; }
+  .chip-phase1 { background: rgba(14,165,233,.25); border: 1px solid rgba(125,211,252,.4); color: #7dd3fc; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header { margin-bottom: 24px; }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .section-title { font-size: 26px; font-weight: 800; color: var(--fiap-blue); letter-spacing: -.02em; line-height: 1.2; }
+  .section-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  .section-rule { width: 40px; height: 3px; background: var(--accent); border-radius: 2px; margin-top: 10px; }
+
+  /* ── CARDS ── */
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; box-shadow: var(--card-shadow); }
+  .card-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--fiap-blue); color: #fff; font-weight: 600; padding: 8px 12px; text-align: left; font-size: 11px; letter-spacing: .03em; }
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child  { border-radius: 0 6px 0 0; }
+  td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--bg-alt); }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .badge-success { background: #dcfce7; color: #15803d; }
+  .badge-warning { background: #fef9c3; color: #a16207; }
+  .badge-error   { background: #fee2e2; color: #b91c1c; }
+  .badge-info    { background: #e0f2fe; color: #0369a1; }
+
+  /* ── STAT BOXES ── */
+  .stat-box { background: linear-gradient(135deg, #0c1f3a 0%, #0f3460 100%); color: #fff; border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-number { font-size: 30px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .stat-label  { font-size: 11px; font-weight: 500; margin-top: 6px; color: #7dd3fc; }
+
+  /* ── ARCH DIAGRAM ── */
+  .arch-diagram { background: var(--fiap-blue); color: #e2e8f0; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 10.5px; line-height: 1.8; }
+  .arch-diagram .layer-title { color: var(--accent); font-weight: 700; }
+  .arch-diagram .layer-item  { color: #93c5fd; }
+  .arch-diagram .arrow       { color: #64748b; }
+
+  /* ── FEATURE LIST ── */
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .feature-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; }
+  .feature-list li::before { content: "▸"; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── STATE FLOW ── */
+  .state-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+  .state-pill { background: var(--fiap-blue); color: #93c5fd; padding: 4px 10px; border-radius: 5px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .state-pill.cancel { background: #7f1d1d; color: #fca5a5; }
+  .state-arrow { color: var(--accent); font-size: 13px; font-weight: 700; }
+
+  /* ── HIGHLIGHT ── */
+  .highlight { background: var(--accent-light); border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 12.5px; }
+  .highlight strong { color: var(--fiap-blue); }
+
+  /* ── TEAM CARDS ── */
+  .team-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; text-align: center; box-shadow: var(--card-shadow); }
+  .team-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #0c1f3a 0%, #0f3460 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 12px; color: #fff; font-weight: 700; }
+  .team-name  { font-weight: 700; font-size: 13px; color: var(--fiap-blue); }
+  .team-email { font-size: 11px; color: var(--text-muted); margin-top: 4px; word-break: break-all; }
+  .team-role  { display: inline-block; margin-top: 8px; background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 2px 10px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+
+  /* ── LINK CARDS ── */
+  a { color: var(--accent); text-decoration: none; }
+  .link-card { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; box-shadow: var(--card-shadow); }
+  .link-card .link-type  { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+  .link-card .link-value { font-size: 12.5px; margin-top: 3px; word-break: break-all; }
+  .link-card .link-desc  { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  code { font-size: 11px; background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-family: 'Courier New', monospace; }
+
+  @media print {
+    html { font-size: 11px; }
+    .page { margin: 0; box-shadow: none; page-break-after: always; break-after: page; }
+    .cover { min-height: 100vh; }
+    a { color: inherit; }
+  }
+  @page { size: A4 portrait; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 1 — CAPA
+════════════════════════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-inner">
+    <div class="cover-badge">Tech Challenge — Pós-Graduação em Arquitetura de Software</div>
+    <div class="cover-phase-badge">🏗️ Fase 1 — Core do Domínio</div>
+
+    <div class="cover-icon">🔧</div>
+
+    <h1>Mecânica API</h1>
+    <h2>DDD · Arquitetura Hexagonal · API REST Completa</h2>
+    <div class="cover-divider"></div>
+
+    <div class="cover-meta">
+      <p><strong>Entrega Fase 1</strong> — Núcleo de Negócio e Qualidade de Código</p>
+      <p><strong>Grupo 14SOAT</strong> | Turma SOAT — FIAP</p>
+      <p><strong>Período:</strong> 2025 / 2026</p>
+    </div>
+
+    <div class="cover-stack">
+      <span class="chip chip-phase1">Java 21 + Spring Boot 3.3</span>
+      <span class="chip chip-phase1">Arquitetura Hexagonal + DDD</span>
+      <span class="chip chip-phase1">PostgreSQL 16</span>
+      <span class="chip chip-phase1">JWT + Autorização Híbrida</span>
+      <span class="chip">1052+ Testes · JaCoCo 90%</span>
+      <span class="chip">28 ADRs</span>
+      <span class="chip">Swagger OpenAPI 3.0</span>
+    </div>
+  </div>
+
+  <div class="footer" style="color: rgba(255,255,255,.4); border-color: rgba(255,255,255,.12);">
+    <span>Grupo 14SOAT | FIAP 2025/2026</span>
+    <span>Mecânica API — Fase 1</span>
+    <span>Página 1</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 2 — EQUIPE + VISÃO GERAL
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Quem somos</div>
+    <div class="section-title">Equipe</div>
+    <div class="section-subtitle">Turma 14SOAT — Pós-Graduação em Arquitetura de Software | FIAP 2025/2026</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="grid-2" style="gap:18px; margin-bottom: 22px;">
+    <div class="team-card">
+      <div class="team-avatar">CF</div>
+      <div class="team-name">Cleber Fernandes</div>
+      <div class="team-email">cleber.fernandes@fiap.com</div>
+      <div class="team-role">Software Engineer</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">CL</div>
+      <div class="team-name">Christian Felipe Ferreira de Lima</div>
+      <div class="team-email">christian.ff@hotmail.com</div>
+      <div class="team-role">Software Engineer</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">GS</div>
+      <div class="team-name">Gabriel José do Amaral Schuina</div>
+      <div class="team-email">gabrielschuina86@gmail.com</div>
+      <div class="team-role">Software Engineer</div>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="stat-box">
+      <div class="stat-number">13</div>
+      <div class="stat-label">Domínios funcionais</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">1052+</div>
+      <div class="stat-label">Testes escritos</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">90%</div>
+      <div class="stat-label">Cobertura JaCoCo</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">28</div>
+      <div class="stat-label">ADRs documentados</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 2</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 3 — PROBLEMA E SOLUÇÃO
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Contexto</div>
+    <div class="section-title">Problema e Solução</div>
+    <div class="section-subtitle">Oficinas mecânicas com processos manuais → sistema integrado com DDD</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="grid-2" style="gap: 16px; margin-bottom: 18px;">
+    <div class="card" style="border-top: 3px solid var(--error);">
+      <div class="card-title" style="color: var(--error);">O Problema</div>
+      <ul class="feature-list">
+        <li>Oficinas operam com planilhas e processos manuais dispersos</li>
+        <li>Sem rastreabilidade no ciclo de vida das ordens de serviço</li>
+        <li>Aprovação de orçamentos por telefone — sem registro ou segurança</li>
+        <li>Controle de estoque manual, sujeito a erros e divergências</li>
+        <li>Dificuldade para gerar métricas e relatórios operacionais</li>
+        <li>Acesso indiscriminado às informações de clientes e OS</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--success);">
+      <div class="card-title" style="color: var(--success);">A Solução (Fase 1)</div>
+      <ul class="feature-list">
+        <li>API REST completa — 50+ endpoints documentados com Swagger</li>
+        <li>Máquina de estados para OS: 7 estados + CANCELADA</li>
+        <li>Aprovação de orçamento via link seguro (HMAC-SHA256)</li>
+        <li>Estoque com reserva automática ao aprovar o orçamento</li>
+        <li>JWT + autorização híbrida (role + object-level security)</li>
+        <li>Domain Events para notificações e efeitos colaterais</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">Stack da Fase 1</div>
+    <div class="grid-3" style="gap: 12px;">
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--accent); margin-bottom:6px;">Backend</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>Java 21 — Records, Sealed Classes</li>
+          <li>Spring Boot 3.3.4</li>
+          <li>Spring Security 6 + JWT</li>
+          <li>Spring Data JPA + Hibernate 6</li>
+          <li>Bucket4j (rate limiting)</li>
+          <li>Flying Saucer + OpenPDF</li>
+          <li>Spring Mail + Thymeleaf</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--accent); margin-bottom:6px;">Dados &amp; Persistência</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>PostgreSQL 16 (produção)</li>
+          <li>H2 In-Memory (testes unitários)</li>
+          <li>Flyway — 15 migrations V1→V15</li>
+          <li>TestContainers (integração)</li>
+          <li>Seeding automático (dev)</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:11px; color: var(--accent); margin-bottom:6px;">Qualidade</p>
+        <ul class="feature-list" style="font-size:11.5px;">
+          <li>JUnit 5 + Mockito</li>
+          <li>JaCoCo — 90%/80% gates</li>
+          <li>Checkstyle (Google Style)</li>
+          <li>PMD + SpotBugs</li>
+          <li>Spotless (pre-commit)</li>
+          <li>SonarQube</li>
+          <li>Allure Reports</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <strong>Abordagem arquitetural:</strong> Monolito Modular com Arquitetura Hexagonal (Ports &amp; Adapters)
+    e Domain-Driven Design — domínio puro isolado de frameworks, banco e HTTP. 282 classes Java.
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 3</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 4 — ARQUITETURA HEXAGONAL
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Design de Software</div>
+    <div class="section-title">Arquitetura Hexagonal + DDD</div>
+    <div class="section-subtitle">Ports &amp; Adapters · Regra de dependência estrita · Domínio isolado</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="arch-diagram" style="margin-bottom: 16px;">
+    <pre style="font-family:'Courier New',monospace; font-size:10.5px; line-height:1.7;">
+<span class="layer-title">┌────────────────────────────────────────────────────────────────────────┐</span>
+<span class="layer-title">│                         PRESENTATION LAYER                             │</span>
+<span class="layer-item">│   REST Controllers · Request/Response DTOs · Presentation Mappers       │</span>
+<span class="layer-item">│   *ControllerApi interfaces (OpenAPI) · GlobalExceptionHandler           │</span>
+<span class="layer-title">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="layer-title">│                         APPLICATION LAYER                              │</span>
+<span class="layer-item">│   Service Interfaces · Use Case Impls · @TransactionalEventListener     │</span>
+<span class="layer-item">│   Email Service · PDF Service · DTOs de aplicação                       │</span>
+<span class="layer-title">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="layer-title">│                          DOMAIN LAYER  ← núcleo                        │</span>
+<span class="layer-item">│   Entities (OS, Orcamento, User, Veiculo…) · Value Objects              │</span>
+<span class="layer-item">│   Repository Ports (interfaces puras) · Domain Events · Exceptions       │</span>
+<span class="layer-title">│                  ★ ZERO Spring · ZERO JPA · POJO puro ★                 │</span>
+<span class="layer-title">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="layer-title">│                       INFRASTRUCTURE LAYER                             │</span>
+<span class="layer-item">│   JPA Entities · Jpa*RepositoryAdapter (implementam ports do domínio)   │</span>
+<span class="layer-item">│   SecurityConfig · JwtFilter · OsSecurity · ApiKeyFilter · Seeding      │</span>
+<span class="layer-item">│   Infra Mappers (domain model ↔ JPA entity) · Flyway migrations          │</span>
+<span class="layer-title">└────────────────────────────────────────────────────────────────────────┘</span></pre>
+  </div>
+
+  <div class="grid-2" style="gap: 14px; margin-bottom: 14px;">
+    <div class="card">
+      <div class="card-title">Regra de Dependência</div>
+      <ul class="feature-list" style="font-size:12px;">
+        <li>Setas sempre apontam para o domínio — nunca o contrário</li>
+        <li>Ports: interfaces Java em <code>domain/repository/</code></li>
+        <li>Adapters JPA em <code>infra/adapter/Jpa*RepositoryAdapter</code></li>
+        <li>Dois mappers: <code>infra/mapper/</code> e <code>presentation/mapper/</code></li>
+        <li>Domain layer verificada: zero import Spring/JPA/HTTP</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Bounded Contexts</div>
+      <table style="margin-top:2px;">
+        <tr><th>Contexto</th><th>Entidades</th></tr>
+        <tr><td><span class="badge badge-info">Atendimento</span></td><td>OrdemServico, Cliente, Veiculo</td></tr>
+        <tr><td><span class="badge badge-info">Diagnóstico</span></td><td>Orcamento, Mecanico</td></tr>
+        <tr><td><span class="badge badge-info">Estoque</span></td><td>Peca, Insumo, Servico</td></tr>
+        <tr><td><span class="badge badge-info">Identidade</span></td><td>User, Atendente, Admin</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Value Objects Implementados</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">CPF</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">CNPJ</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">Email</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">PlacaVeiculo</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">Endereco</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">TelefoneBr</span>
+      <span style="background: var(--accent-light); color: var(--accent2); border: 1px solid #bae6fd; padding: 3px 10px; border-radius: 99px; font-size:11px; font-weight:600;">Documento (abstract)</span>
+    </div>
+    <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Todos com validação de negócio encapsulada — CPF/CNPJ com algoritmo módulo 11, placa com padrão Mercosul.</p>
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 4</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 5 — DOMÍNIO: OS + EVENTOS
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Modelo de Domínio</div>
+    <div class="section-title">OrdemServico &amp; Domain Events</div>
+    <div class="section-subtitle">Aggregate root central · Máquina de estados · 7 eventos de domínio</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">Máquina de Estados — OrdemServico (Aggregate Root)</div>
+    <div style="padding: 10px 0;">
+      <div class="state-flow">
+        <span class="state-pill">RECEBIDA</span>
+        <span class="state-arrow">→</span>
+        <span class="state-pill">EM_DIAGNOSTICO</span>
+        <span class="state-arrow">→</span>
+        <span class="state-pill">AGUARDANDO_APROVACAO</span>
+        <span class="state-arrow">→</span>
+        <span class="state-pill">APROVADA</span>
+      </div>
+      <div class="state-flow" style="margin-top:4px;">
+        <span class="state-pill" style="opacity:0; pointer-events:none;">RECEBIDA</span>
+        <span class="state-arrow" style="opacity:0;">→</span>
+        <span class="state-pill" style="opacity:0; pointer-events:none;">EM_DIAGNOSTICO&nbsp;</span>
+        <span class="state-arrow" style="opacity:0;">→</span>
+        <span class="state-pill">EM_EXECUCAO</span>
+        <span class="state-arrow">→</span>
+        <span class="state-pill">FINALIZADA</span>
+        <span class="state-arrow">→</span>
+        <span class="state-pill">ENTREGUE</span>
+      </div>
+      <div class="state-flow" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);">
+        <span class="state-pill cancel">CANCELADA</span>
+        <span style="font-size:11px; color: var(--text-muted); margin-left:6px;">← transição válida a partir de qualquer estado</span>
+      </div>
+    </div>
+    <p style="font-size:11px; color:var(--text-muted); margin-top:6px;">
+      Transições inválidas lançam <code>TransicaoStatusInvalidaException</code> (HTTP 422).
+      Ações via sub-recurso: <code>POST /api/ordens-servico/{id}/acoes</code> (ADR-003).
+    </p>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <div class="card-title">Domain Events (Spring ApplicationEvent)</div>
+    <table>
+      <tr>
+        <th style="width:40%">Evento</th>
+        <th style="width:28%">Handler</th>
+        <th>Efeito</th>
+      </tr>
+      <tr>
+        <td><code>OsCriadaEvent</code></td>
+        <td>OsCreatedListener</td>
+        <td>Log / auditoria da criação</td>
+      </tr>
+      <tr>
+        <td><code>OrcamentoGeradoEvent</code></td>
+        <td>OrcamentoEmailListener</td>
+        <td>Envia email ao cliente com link HMAC-SHA256</td>
+      </tr>
+      <tr>
+        <td><code>OrcamentoAprovadoEvent</code></td>
+        <td>EstoqueListener</td>
+        <td>Baixa estoque das peças reservadas (ADR-019)</td>
+      </tr>
+      <tr>
+        <td><code>OrcamentoReprovadoEvent</code></td>
+        <td>OsListener</td>
+        <td>Cancela reservas de estoque</td>
+      </tr>
+      <tr>
+        <td><code>OsFinalizadaEvent</code></td>
+        <td>PdfListener</td>
+        <td>Gera PDF de entrega automaticamente</td>
+      </tr>
+      <tr>
+        <td><code>OrdemServicoCanceladaEvent</code></td>
+        <td>EstoqueListener</td>
+        <td>Estorna itens ao estoque</td>
+      </tr>
+      <tr>
+        <td><code>OrdemServicoAguardandoAprovacaoEvent</code></td>
+        <td>OsAguardandoListener</td>
+        <td>Notificação / log de estado</td>
+      </tr>
+    </table>
+    <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">
+      Todos os handlers usam <code>@TransactionalEventListener</code> + <code>@Async</code> — efeitos colaterais fora da transação principal.
+    </p>
+  </div>
+
+  <div class="highlight">
+    <strong>ADR-022 — Fluxo Invertido:</strong> A OS avança para APROVADA quando o cliente aprova o
+    <em>orçamento</em> (e não o contrário). <strong>ADR-019:</strong> o estoque é baixado nesse momento —
+    nunca antes, nunca depois.
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 5</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 6 — API REST + SEGURANÇA
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">API REST</div>
+    <div class="section-title">Endpoints e Segurança</div>
+    <div class="section-subtitle">14 controllers · 50+ endpoints · JWT + autorização híbrida</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="grid-2" style="gap: 14px; margin-bottom: 16px;">
+    <div class="card">
+      <div class="card-title">Controllers REST</div>
+      <table style="font-size:11px;">
+        <tr>
+          <th>Controller</th>
+          <th>Base Path</th>
+        </tr>
+        <tr><td>AuthController</td><td><code>/auth</code> — público</td></tr>
+        <tr><td>ClienteController</td><td><code>/api/clientes</code></td></tr>
+        <tr><td>AtendenteController</td><td><code>/api/atendentes</code></td></tr>
+        <tr><td>MecanicoController</td><td><code>/api/mecanicos</code></td></tr>
+        <tr><td>VeiculoController</td><td><code>/api/veiculos</code></td></tr>
+        <tr><td>OrdemServicoController</td><td><code>/api/ordens-servico</code></td></tr>
+        <tr><td>OrdemServicoAcaoController</td><td><code>/api/ordens-servico/{id}/acoes</code></td></tr>
+        <tr><td>OrdemServicoPrioridadeController</td><td><code>/api/ordens-servico/{id}/prioridade</code></td></tr>
+        <tr><td>OrcamentoController</td><td><code>/api/orcamentos</code></td></tr>
+        <tr><td>PecaController</td><td><code>/api/pecas</code></td></tr>
+        <tr><td>InsumoController</td><td><code>/api/insumos</code></td></tr>
+        <tr><td>ServicoController</td><td><code>/api/servicos</code></td></tr>
+        <tr><td>EstoqueController</td><td><code>/api/estoque</code></td></tr>
+        <tr><td>RelatorioController</td><td><code>/api/relatorios</code></td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom: 14px;">
+        <div class="card-title">Segurança — JWT + Autorização Híbrida (ADR-010)</div>
+        <table style="font-size:11px;">
+          <tr><th>Camada</th><th>Implementação</th></tr>
+          <tr><td>Autenticação</td><td>JWT JJWT 0.12.5 — stateless</td></tr>
+          <tr><td>Role-based</td><td><code>@PreAuthorize("hasRole(...)")</code></td></tr>
+          <tr><td>Object-level</td><td><code>@OsSecurity.canView(auth, osId)</code></td></tr>
+          <tr><td>Rate limiting</td><td>Bucket4j — 10 req/min por IP</td></tr>
+        </table>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">
+          Clientes só acessam suas próprias OS.<br>
+          Mecânicos só editam OS a eles atribuídas.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Roles e Permissões</div>
+        <table style="font-size:11px;">
+          <tr><th>Role</th><th>Pode fazer</th></tr>
+          <tr><td><span class="badge badge-info">ADMIN</span></td><td>Tudo — gestão total</td></tr>
+          <tr><td><span class="badge badge-info">ATENDENTE</span></td><td>OS, Clientes, Veículos</td></tr>
+          <tr><td><span class="badge badge-info">MECANICO</span></td><td>OS atribuídas, Orçamentos</td></tr>
+          <tr><td><span class="badge badge-info">CLIENTE</span></td><td>Suas próprias OS e orçamentos</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Convenções de API</div>
+    <div class="grid-3" style="gap:10px; font-size:11.5px;">
+      <div>
+        <strong>Task-based Status</strong> (ADR-003)<br>
+        <span style="color:var(--text-muted);">Transições de estado como sub-recursos: <code>/acoes</code></span>
+      </div>
+      <div>
+        <strong>Paginação padronizada</strong><br>
+        <span style="color:var(--text-muted);">Pageable — default 20, max 100 itens por página</span>
+      </div>
+      <div>
+        <strong>Exceções padronizadas</strong> (ADR-008)<br>
+        <span style="color:var(--text-muted);">Código <code>"OS-422-01"</code> em toda DomainRuleException</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 6</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 7 — TESTES E QUALIDADE
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Qualidade de Código</div>
+    <div class="section-title">Testes e Análise Estática</div>
+    <div class="section-subtitle">1052+ testes · JaCoCo ≥ 90% · 5 ferramentas de análise estática</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+    <div class="card">
+      <div class="card-title">Pirâmide de Testes</div>
+      <div style="text-align:center; padding: 12px; background: var(--bg-alt); border-radius:8px; margin-bottom:10px; font-family:'Courier New',monospace; font-size:11px; line-height:1.9; color: var(--fiap-blue);">
+        <div style="color:var(--error);">▲ E2E / Carga (RestAssured, k6)</div>
+        <div style="color:var(--warning);">▲▲▲ Integração (TestContainers + PostgreSQL real)</div>
+        <div style="color:var(--success);">▲▲▲▲▲▲ Unitários (JUnit 5 + Mockito)</div>
+      </div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li><strong>Unitários:</strong> domínio puro, sem Spring — regras de negócio, VOs, entidades</li>
+        <li><strong>Integração:</strong> TestContainers com PostgreSQL real — repositórios, controllers</li>
+        <li><strong>E2E:</strong> RestAssured contra container rodando — fluxo completo</li>
+        <li><strong>Carga:</strong> k6 — concorrência nos endpoints críticos</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Cobertura JaCoCo</div>
+      <div class="grid-2" style="gap:10px; margin-bottom:12px;">
+        <div style="text-align:center; padding:14px; background:var(--bg-alt); border-radius:8px;">
+          <div style="font-size:32px; font-weight:800; color:var(--success);">≥ 90%</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Cobertura Global</div>
+          <div style="font-size:10px; color:var(--text-muted);">Gate ativo no CI</div>
+        </div>
+        <div style="text-align:center; padding:14px; background:var(--bg-alt); border-radius:8px;">
+          <div style="font-size:32px; font-weight:800; color:var(--success);">≥ 80%</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Cobertura Domínio</div>
+          <div style="font-size:10px; color:var(--text-muted);">Gate ativo no CI</div>
+        </div>
+      </div>
+      <p style="font-size:11.5px; color:var(--text-muted);">
+        Relatório HTML: <code>make coverage</code> → <code>target/site/jacoco/index.html</code><br>
+        Allure Reports: <code>make allure-serve</code> — agrupamento por Epic/Feature/Story
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 14px;">
+    <div class="card-title">Ferramentas de Análise Estática</div>
+    <table>
+      <tr>
+        <th style="width:25%">Ferramenta</th>
+        <th style="width:45%">Propósito</th>
+        <th>Comando</th>
+      </tr>
+      <tr>
+        <td><strong>Checkstyle</strong></td>
+        <td>Google Java Style Guide — formatação e convenções</td>
+        <td><code>make lint</code></td>
+      </tr>
+      <tr>
+        <td><strong>PMD</strong></td>
+        <td>Complexidade ciclomática, código morto, más práticas</td>
+        <td><code>make lint</code></td>
+      </tr>
+      <tr>
+        <td><strong>SpotBugs</strong></td>
+        <td>Null dereference, resource leaks, bugs potenciais</td>
+        <td><code>make lint</code></td>
+      </tr>
+      <tr>
+        <td><strong>Spotless</strong></td>
+        <td>Auto-formatação Google Java Format (pre-commit hook)</td>
+        <td><code>make format</code></td>
+      </tr>
+      <tr>
+        <td><strong>SonarQube</strong></td>
+        <td>Dashboard consolidado — code smells + vulnerabilidades</td>
+        <td><code>make sonar</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="highlight" style="font-size:11.5px;">
+    <strong>Pre-commit hook</strong> instalado via <code>make install-hooks</code> — Spotless executa automaticamente
+    antes de cada commit, garantindo formatação consistente em todo o repositório.
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 7</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 8 — REQUISITOS VS ENTREGÁVEIS
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Conformidade — Fase 1</div>
+    <div class="section-title">Requisitos vs Entregáveis</div>
+    <div class="section-subtitle">Todos os 11 requisitos da Fase 1 implementados e verificados</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="card" style="margin-bottom: 16px;">
+    <table>
+      <tr>
+        <th style="width:8%">ID</th>
+        <th style="width:42%">Requisito Oficial</th>
+        <th style="width:12%">Status</th>
+        <th>Evidência / Localização</th>
+      </tr>
+      <tr>
+        <td colspan="4" style="background: linear-gradient(135deg, #0c1f3a 0%, #0f3460 100%); color:#7dd3fc; font-weight:700; font-size:11px; letter-spacing:.05em; padding: 6px 12px;">
+          Domínio de Negócio
+        </td>
+      </tr>
+      <tr>
+        <td>F1-01</td>
+        <td>Gestão de OS com máquina de estados</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code>domain/model/OrdemServico.java</code> — 8 estados (7 + CANCELADA)</td>
+      </tr>
+      <tr>
+        <td>F1-02</td>
+        <td>Orçamentos com aprovação do cliente</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>Link HMAC-SHA256 no email · fluxo invertido (ADR-022)</td>
+      </tr>
+      <tr>
+        <td>F1-03</td>
+        <td>Controle de estoque (peças e insumos)</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>Reserva automática ao aprovar orçamento (ADR-019)</td>
+      </tr>
+      <tr>
+        <td>F1-04</td>
+        <td>Cadastro de clientes e veículos</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>CPF/CNPJ validados · placa Mercosul · endereço completo</td>
+      </tr>
+      <tr>
+        <td>F1-05</td>
+        <td>Cadastro de mecânicos e atendentes</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>CRUD completo com paginação (Pageable, max 100)</td>
+      </tr>
+      <tr>
+        <td>F1-06</td>
+        <td>Catálogo de serviços, peças e insumos</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code>/api/servicos</code> · <code>/api/pecas</code> · <code>/api/insumos</code></td>
+      </tr>
+      <tr>
+        <td colspan="4" style="background: linear-gradient(135deg, #0c1f3a 0%, #0f3460 100%); color:#7dd3fc; font-weight:700; font-size:11px; letter-spacing:.05em; padding: 6px 12px;">
+          Segurança, Qualidade e Documentação
+        </td>
+      </tr>
+      <tr>
+        <td>F1-07</td>
+        <td>Autenticação e autorização por perfil</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>JWT JJWT 0.12.5 · 4 roles · autorização híbrida (ADR-010)</td>
+      </tr>
+      <tr>
+        <td>F1-08</td>
+        <td>Relatórios operacionais</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>Tempo médio de serviços · PDF de OS finalizada (Flying Saucer)</td>
+      </tr>
+      <tr>
+        <td>F1-09</td>
+        <td>Testes com cobertura ≥ 90% global / 80% domínio</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>1052+ testes · JaCoCo gate ativo no CI · Allure Reports</td>
+      </tr>
+      <tr>
+        <td>F1-10</td>
+        <td>Documentação Swagger / OpenAPI 3.0</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td>15 interfaces <code>*Api</code> · <code>/swagger-ui.html</code> · 401/403/422 documentados</td>
+      </tr>
+      <tr>
+        <td>F1-11</td>
+        <td>Collection Insomnia exportada</td>
+        <td><span class="badge badge-success">✅ OK</span></td>
+        <td><code>docs/api/Insomnia_export.yaml</code> — fluxo E2E completo</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="grid-2" style="gap: 14px;">
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">28 ADRs Documentados</div>
+      <p style="font-size:12px; color:var(--text-muted);">
+        Todos em <code>docs/ADRs/</code> — cobrem desde escolha de banco (ADR-001) até
+        estratégia de testes (ADR-027). Principais: ADR-010, ADR-019, ADR-022, ADR-003.
+      </p>
+    </div>
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">Artefatos DDD</div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li>Linguagem Ubíqua — glossário completo do domínio</li>
+        <li>Event Storming — eventos, comandos e políticas</li>
+        <li>Diagramas C4 — Bounded Contexts e Context Map</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP 2025/2026</span>
+    <span>Página 8</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 9 — LINKS DE ENTREGA
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-header">
+    <div class="section-label">Entregáveis Fase 1</div>
+    <div class="section-title">Links e Artefatos</div>
+    <div class="section-subtitle">Repositório · Swagger · Insomnia · Documentação DDD</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Repositório GitHub</div>
+    <div class="link-value">
+      <a href="https://github.com/clefern/fiap-tc-mecanica-java">https://github.com/clefern/fiap-tc-mecanica-java</a>
+    </div>
+    <div class="link-desc">Branch <code>main</code> — código completo da Fase 1 + histórico de PRs e decisões</div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Swagger UI — Documentação da API</div>
+    <div class="link-value">http://localhost:8080/swagger-ui.html</div>
+    <div class="link-desc">OpenAPI 3.0 · 50+ endpoints · <code>make dev</code> para subir o ambiente</div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Collection Insomnia</div>
+    <div class="link-value">docs/api/Insomnia_export.yaml</div>
+    <div class="link-desc">Fluxo E2E completo com autenticação encadeada + todos os endpoints por categoria</div>
+  </div>
+
+  <div class="link-card">
+    <div class="link-type">Documentação DDD + Arquitetura</div>
+    <div class="link-value">docs/ — arquitetura.md · qualidade.md · decisoes.md · 28 ADRs</div>
+    <div class="link-desc">Linguagem Ubíqua · Event Storming · Diagramas C4 · Decisões arquiteturais</div>
+  </div>
+
+  <div class="grid-2" style="gap: 14px; margin-top: 16px;">
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">Como Executar</div>
+      <ul class="feature-list" style="font-size:11.5px;">
+        <li><code>make dev</code> — Docker Compose (5 serviços)</li>
+        <li><code>make test</code> — 1052+ testes unitários</li>
+        <li><code>make integration-test</code> — TestContainers</li>
+        <li><code>make coverage</code> — relatório JaCoCo</li>
+        <li><code>make lint</code> — análise estática completa</li>
+        <li><code>make allure-serve</code> — relatório Allure</li>
+      </ul>
+    </div>
+    <div class="card" style="background: var(--bg-alt);">
+      <div class="card-title">Usuários de Teste (Seeded)</div>
+      <table style="font-size:11px;">
+        <tr><th>Perfil</th><th>Email</th><th>Senha</th></tr>
+        <tr><td>Admin</td><td>admin@mecanica.com</td><td>123456</td></tr>
+        <tr><td>Mecânico</td><td>mecanico@mecanica.com</td><td>123456</td></tr>
+        <tr><td>Atendente</td><td>atendente@mecanica.com</td><td>123456</td></tr>
+        <tr><td>Cliente</td><td>cliente@mecanica.com</td><td>123456</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer" style="bottom: 10mm;">
+    <span class="accent">Grupo 14SOAT</span>
+    <span>FIAP — Pós-Graduação em Arquitetura de Software 2025/2026</span>
+    <span>Página 9</span>
+  </div>
+</div>
+
+</body>
+</html>

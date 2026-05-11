@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Orçamento Mecânica FIAP</title>
+    <style>
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .header {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+      }
+      .info-block {
+        margin-bottom: 20px;
+      }
+      .info-title {
+        font-weight: bold;
+        font-size: 14px;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th {
+        background-color: #f2f2f2;
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      .total-row {
+        font-weight: bold;
+        background-color: #e6e6e6;
+      }
+      .footer {
+        margin-top: 50px;
+        text-align: center;
+        font-size: 10px;
+        color: #777;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">Mecânica FIAP</div>
+      <div>Excelência em serviços automotivos</div>
+      <div>Rua Lins de Vasconcelos, 1222 - São Paulo, SP</div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">Dados do Orçamento</div>
+      <div><strong>Código:</strong> <span th:text="${orcamento.codigo}">ORC-001</span></div>
+      <div>
+        <strong>Data de Validade:</strong>
+        <span th:text="${#temporals.format(orcamento.dataValidade, 'dd/MM/yyyy')}">01/01/2026</span>
+      </div>
+      <div>
+        <strong>Status:</strong> <span th:text="${orcamento.status}">AGUARDANDO_APROVACAO</span>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">Dados do Cliente</div>
+      <div><strong>Nome:</strong> <span th:text="${cliente.nome}">Nome do Cliente</span></div>
+      <div>
+        <strong>Email:</strong> <span th:text="${cliente.email.value}">email@cliente.com</span>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">Dados do Veículo</div>
+      <div><strong>Placa:</strong> <span th:text="${veiculo.placa}">ABC-1234</span></div>
+    </div>
+
+    <div class="info-block">
+      <div class="info-title">Itens do Serviço</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Quantidade</th>
+            <th>Valor Unitário</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Iterar sobre os itens da OS (se existirem) -->
+          <tr th:each="item : ${os.itens}">
+            <td th:text="${item.descricao}">Troca de Óleo</td>
+            <td th:text="${item.tipo.descricao}">Serviço</td>
+            <td th:text="${item.quantidade}">1</td>
+            <td
+              th:text="${'R$ ' + #numbers.formatDecimal(item.valorUnitario, 1, 'POINT', 2, 'COMMA')}"
+            >
+              R$ 100,00
+            </td>
+            <td th:text="${'R$ ' + #numbers.formatDecimal(item.subtotal, 1, 'POINT', 2, 'COMMA')}">
+              R$ 100,00
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="4" style="text-align: right">Total Geral:</td>
+            <td
+              th:text="${'R$ ' + #numbers.formatDecimal(orcamento.valorTotal, 1, 'POINT', 2, 'COMMA')}"
+            >
+              R$ 100,00
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="footer">
+      <p>Este documento é um orçamento e não garante a reserva de peças até a aprovação.</p>
+      <p>Mecânica FIAP - CNPJ: 00.000.000/0001-00</p>
+    </div>
+  </body>
+</html>

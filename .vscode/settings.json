@@ -1,0 +1,41 @@
+{
+  // Java & Maven integration
+  "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home",
+      "default": true
+    }
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "maven.executable.path": "${workspaceFolder}/mvnw",
+  "maven.terminal.useJavaHome": true,
+
+  // Formatting & diagnostics
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  "files.saveConflictResolution": "overwriteFileOnDisk",
+
+  // YAML support (for application.yml and OpenAPI exports)
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+  },
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms100m -Xlog:disable",
+  "java.compile.nullAnalysis.mode": "automatic",
+
+  // Spell Checker Configuration
+  // DISABLED to avoid false positives with Portuguese domain terms and technical jargon.
+  // This removes the need for manual dictionary maintenance in a bi-lingual project.
+  "cSpell.enabled": false,
+
+  // Clean up previous dictionary configurations to avoid confusion
+  "cSpell.language": "en,pt,pt-BR"
+}
