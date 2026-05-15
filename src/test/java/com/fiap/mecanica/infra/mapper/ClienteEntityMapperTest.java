@@ -13,6 +13,8 @@ import com.fiap.mecanica.domain.valueobject.PlacaVeiculo;
 import com.fiap.mecanica.domain.valueobject.TelefoneBr;
 import com.fiap.mecanica.infra.entity.ClienteEntity;
 import com.fiap.mecanica.infra.entity.VeiculoEntity;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -130,7 +132,7 @@ class ClienteEntityMapperTest {
     entity.setEndereco("Rua Teste");
     entity.setAtivo(true);
 
-    List<VeiculoEntity> mockList = Mockito.mock(List.class);
+    List<VeiculoEntity> mockList = Mockito.spy(new ArrayList<>());
     Mockito.doThrow(new LazyInitializationException("Lazy loaded"))
         .when(mockList)
         .forEach(ArgumentMatchers.any());
@@ -153,10 +155,10 @@ class ClienteEntityMapperTest {
     entity.setEndereco("Rua Teste");
     entity.setAtivo(true);
 
-    List<VeiculoEntity> mockList = Mockito.mock(List.class);
+    List<VeiculoEntity> mockList = Mockito.spy(new ArrayList<VeiculoEntity>());
     Mockito.doThrow(new RuntimeException("Generic error"))
         .when(mockList)
-        .forEach(ArgumentMatchers.any());
+        .forEach(ArgumentMatchers.<java.util.function.Consumer<? super VeiculoEntity>>any());
 
     Mockito.doReturn(mockList).when(entity).getVeiculos();
 

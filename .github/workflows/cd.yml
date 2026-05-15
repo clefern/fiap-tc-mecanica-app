@@ -1,0 +1,72 @@
+######################################################
+# CD — Execução manual
+# Dispare pela aba: Actions → "Provision & Deploy" → Run workflow
+# Ao executar, todos os passos rodam em sequência:
+#   Infra (Terraform) → Build & Push (ECR) → Deploy (EKS)
+######################################################
+name: CD
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  ###########
+  ## Infra ##
+  ###########
+  infra:
+    name: 🏗️ Infra
+    uses: ./.github/workflows/infra.yml
+    with:
+      environment: ${{ vars.ENV }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+
+  ##################
+  ## Build & Push ##
+  ##################
+  build:
+    name: 🐳 Build & Push
+    needs: [ infra ]
+    uses: ./.github/workflows/build.yml
+    with:
+      java-version: ${{ vars.JAVA_VERSION }}
+      aws-region: ${{ vars.AWS_REGION }}
+      ecr-repository: ${{ needs.infra.outputs.ecr-repository }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ############
+  ## Deploy ##
+  ############
+  deploy:
+    name: 🚀 Deploy
+    needs: [ build, infra ]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: ${{ vars.ENV }}
+      aws-region: ${{ vars.AWS_REGION }}
+      eks-cluster-name: ${{ needs.infra.outputs.eks-cluster-name }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      SECURITY_JWT_SECRET_KEY: ${{ secrets.SECURITY_JWT_SECRET_KEY }}
+      ACTION_TOKEN_SECRET: ${{ secrets.ACTION_TOKEN_SECRET }}
+      INTEGRATION_API_KEY: ${{ secrets.INTEGRATION_API_KEY }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}

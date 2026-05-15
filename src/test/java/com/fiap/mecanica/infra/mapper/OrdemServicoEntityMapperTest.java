@@ -148,4 +148,81 @@ class OrdemServicoEntityMapperTest {
     // Verify bidirectional relationship
     assertThat(itemEntity.getOrdemServico()).isEqualTo(entity);
   }
+
+  @Test
+  @DisplayName("updateEntity deve atualizar escalares e preservar id, createdAt e itens")
+  void shouldUpdateEntityPreservingIdCreatedAtAndItens() {
+    UUID idOriginal = UUID.randomUUID();
+    LocalDateTime createdAtOriginal = LocalDateTime.now().minusDays(5);
+    ItemOrdemServicoEntity itemOriginal =
+        ItemOrdemServicoEntity.builder().id(UUID.randomUUID()).descricao("original").build();
+
+    OrdemServicoEntity managed =
+        OrdemServicoEntity.builder()
+            .id(idOriginal)
+            .codigo("OS-OLD")
+            .status(StatusOS.RECEBIDA)
+            .valorTotal(BigDecimal.ZERO)
+            .observacoes("antiga")
+            .createdAt(createdAtOriginal)
+            .itens(new java.util.ArrayList<>(List.of(itemOriginal)))
+            .build();
+
+    OrdemServico domain =
+        OrdemServico.builder()
+            .id(UUID.randomUUID())
+            .codigo("OS-NEW")
+            .status(StatusOS.EM_DIAGNOSTICO)
+            .valorTotal(BigDecimal.valueOf(100))
+            .observacoes("nova")
+            .build();
+
+    mapper.updateEntity(managed, domain);
+
+    assertThat(managed.getId()).isEqualTo(idOriginal);
+    assertThat(managed.getCreatedAt()).isEqualTo(createdAtOriginal);
+    assertThat(managed.getItens()).containsExactly(itemOriginal);
+    assertThat(managed.getCodigo()).isEqualTo("OS-NEW");
+    assertThat(managed.getStatus()).isEqualTo(StatusOS.EM_DIAGNOSTICO);
+    assertThat(managed.getValorTotal()).isEqualByComparingTo("100");
+    assertThat(managed.getObservacoes()).isEqualTo("nova");
+  }
+
+  @Test
+  @DisplayName("updateItem deve atualizar campos e preservar id e ordemServico")
+  void shouldUpdateItemPreservingIdAndOrdemServico() {
+    UUID idOriginal = UUID.randomUUID();
+    OrdemServicoEntity osManaged = OrdemServicoEntity.builder().id(UUID.randomUUID()).build();
+
+    ItemOrdemServicoEntity managed =
+        ItemOrdemServicoEntity.builder()
+            .id(idOriginal)
+            .ordemServico(osManaged)
+            .descricao("antigo")
+            .quantidade(1)
+            .valorUnitario(BigDecimal.ONE)
+            .tipo(TipoItem.PECA)
+            .referenciaId(UUID.randomUUID())
+            .build();
+
+    ItemOrdemServico domain =
+        ItemOrdemServico.builder()
+            .id(UUID.randomUUID()) // tentar sobrescrever id - deve ser ignorado
+            .descricao("novo")
+            .quantidade(5)
+            .valorUnitario(BigDecimal.valueOf(42))
+            .tipo(TipoItem.SERVICO)
+            .referenciaId(UUID.randomUUID())
+            .build();
+
+    mapper.updateItem(managed, domain);
+
+    assertThat(managed.getId()).isEqualTo(idOriginal);
+    assertThat(managed.getOrdemServico()).isEqualTo(osManaged);
+    assertThat(managed.getDescricao()).isEqualTo("novo");
+    assertThat(managed.getQuantidade()).isEqualTo(5);
+    assertThat(managed.getValorUnitario()).isEqualByComparingTo("42");
+    assertThat(managed.getTipo()).isEqualTo(TipoItem.SERVICO);
+    assertThat(managed.getReferenciaId()).isEqualTo(domain.getReferenciaId());
+  }
 }

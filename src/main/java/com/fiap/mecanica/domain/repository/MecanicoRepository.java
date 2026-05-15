@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface MecanicoRepository {
+public interface MecanicoRepository extends BaseRepository {
 
   Optional<Mecanico> findById(UUID id);
 

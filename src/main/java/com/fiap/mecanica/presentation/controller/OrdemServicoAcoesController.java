@@ -3,6 +3,8 @@ package com.fiap.mecanica.presentation.controller;
 import com.fiap.mecanica.application.service.OsLifecycleService;
 import com.fiap.mecanica.domain.model.OrdemServico;
 import com.fiap.mecanica.infra.config.security.UserContext;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.OrdemServicoAcoesApi;
 import com.fiap.mecanica.presentation.dto.TrocarMecanicoRequest;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/ordens-servico/{id}/acoes")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class OrdemServicoAcoesController implements OrdemServicoAcoesApi {
 
   private final OsLifecycleService lifecycleService;

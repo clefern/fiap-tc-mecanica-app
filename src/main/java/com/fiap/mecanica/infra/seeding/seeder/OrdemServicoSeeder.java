@@ -96,6 +96,17 @@ public class OrdemServicoSeeder implements Seeder {
         return;
       }
 
+      // Check if fixed scenarios already exist for this client
+      long existingFixedOs = ordemServicoService.listarTodas(null, clienteOpt.get().getId(), Pageable.unpaged())
+          .getContent().stream()
+          .filter(os -> os.getObservacoes() != null && os.getObservacoes().startsWith("OS de Teste -"))
+          .count();
+
+      if (existingFixedOs >= 3) {
+        logger.info("Skipping Fixed Test Scenarios seeding, already have {} records.", existingFixedOs);
+        return;
+      }
+
       seedFixedOSs(clienteOpt.get(), mecanicoOpt.get(), veiculoOpt.get());
       logger.info("✅ Fixed Test Scenarios Created!");
     } catch (Exception e) {
@@ -201,7 +212,19 @@ public class OrdemServicoSeeder implements Seeder {
           return;
         }
 
+        // Check overall limit inside the loop
+        if (ordemServicoService.listarTodas(null, null, Pageable.unpaged()).getTotalElements() >= 30) {
+          logger.info("Reached OS seeding limit (30 records). Stopping.");
+          break;
+        }
+
         List<Veiculo> veiculos = veiculoService.listByClienteId(cliente.getId());
+
+        // Skip clients that already have OS to distribute better
+        long osForClient = ordemServicoService.listarTodas(null, cliente.getId(), Pageable.unpaged()).getTotalElements();
+        if (osForClient > 0) {
+          continue;
+        }
 
         for (Veiculo v : veiculos) {
           if (shutdownGuard.isShuttingDown()) {

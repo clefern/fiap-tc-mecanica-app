@@ -2,6 +2,8 @@ package com.fiap.mecanica.presentation.controller;
 
 import com.fiap.mecanica.application.service.InsumoService;
 import com.fiap.mecanica.domain.model.Insumo;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.InsumoApi;
 import com.fiap.mecanica.presentation.dto.InsumoRequest;
 import com.fiap.mecanica.presentation.dto.InsumoResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/insumos")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class InsumoController implements InsumoApi {
 
   private final InsumoService service;

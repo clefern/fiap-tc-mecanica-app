@@ -1,0 +1,111 @@
+name: Reusable - Infra
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+    outputs:
+      ecr-repository:
+        description: "Nome do repositório ECR"
+        value: ${{ jobs.terraform.outputs.ecr-repository }}
+      eks-cluster-name:
+        description: "Nome do cluster EKS"
+        value: ${{ jobs.terraform.outputs.eks-cluster-name }}
+
+jobs:
+  terraform:
+    name: 🟣 Terraform
+    runs-on: ubuntu-latest
+    env:
+      ENV: ${{ inputs.environment }}
+
+    outputs:
+      ecr-repository: ${{ steps.outputs.outputs.ecr_repository }}
+      eks-cluster-name: ${{ steps.outputs.outputs.cluster_name }}
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Criar profile AWS temporário para Terraform
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials << EOC
+          [${{ vars.TF_PROFILE }}]
+          aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_session_token = ${{ secrets.AWS_SESSION_TOKEN }}
+          EOC
+          
+          cat > ~/.aws/config << EOC
+          [profile ${{ vars.TF_PROFILE }}]
+          region = ${{ vars.AWS_REGION }}
+          EOC
+
+      - name: Criar bucket S3 para Terraform state
+        working-directory: ${{ github.workspace }}
+        run: |
+          BUCKET_NAME=${{ vars.AWS_TF_BUCKET_NAME }}
+          REGION=${{ vars.AWS_REGION }}
+          PROFILE=${{ vars.TF_PROFILE }}
+          chmod +x ./scripts/bootstrap_tf_lab.sh
+          ./scripts/bootstrap_tf_lab.sh "$BUCKET_NAME" "$REGION" "$PROFILE"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        working-directory: infra/environments/${{ inputs.environment }}
+        run: |
+          terraform init -input=false \
+            -backend-config="bucket=${{ vars.AWS_TF_BUCKET_NAME }}" \
+            -backend-config="profile=${{ vars.TF_PROFILE }}"
+
+      - name: Terraform Apply
+        working-directory: infra/environments/${{ inputs.environment }}
+        timeout-minutes: 20
+        run: |
+          terraform plan -out=tfplan
+          terraform apply -input=false -auto-approve tfplan
+
+      - name: Capture Terraform Outputs
+        working-directory: infra/environments/${{ inputs.environment }}
+        id: outputs
+        run: |
+          echo "ecr_repository=$(terraform output -raw ecr_repository)" >> $GITHUB_OUTPUT
+          echo "cluster_name=$(terraform output -raw cluster_name)" >> $GITHUB_OUTPUT
+
+      - name: Cleanup on Failure
+        if: failure() || cancelled()
+        working-directory: infra/environments/${{ inputs.environment }}
+        run: |
+          echo "🚨 Falha ou Cancelamento detectado! Iniciando resgate de infraestrutura..."
+          
+          # 1. Primeiro tentamos destruir os recursos da AWS (EKS, VPC, etc) 
+          # O parâmetro -lock=false é usado caso o apply tenha deixado o lock preso.
+          echo "🏗️ Destruindo recursos da AWS (usando o estado no S3)..."
+          terraform destroy -auto-approve -lock=false || true
+          
+          # 2. Agora que a AWS está limpa, podemos apagar o próprio backend (S3 e DynamoDB)
+          echo "🗑️ Executando cleanup final do bucket de estado e tabela de lock..."
+          chmod +x ../../../scripts/cleanup_tf_lab.sh || true
+          ../../../scripts/cleanup_tf_lab.sh "${{ vars.AWS_TF_BUCKET_NAME }}" "${{ vars.AWS_REGION }}" "${{ vars.TF_PROFILE }}" || true

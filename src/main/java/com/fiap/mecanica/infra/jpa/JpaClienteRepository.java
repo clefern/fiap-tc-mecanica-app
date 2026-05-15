@@ -9,11 +9,4 @@ public interface JpaClienteRepository extends JpaRepository<ClienteEntity, UUID>
   Optional<ClienteEntity> findByDocumento(String documento);
 
   boolean existsByDocumento(String documento);
-
-  // Explicitly expose common JpaRepository methods to satisfy compilation
-  Optional<ClienteEntity> findById(UUID id);
-
-  ClienteEntity save(ClienteEntity entity);
-
-  void deleteById(UUID id);
 }

@@ -7,6 +7,8 @@ import com.fiap.mecanica.domain.repository.RelatorioRepository;
 import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,8 @@ public class RelatorioServiceImpl implements RelatorioService {
 
   @Override
   @Transactional(readOnly = true)
-  @MonitoredOperation("relatorio.desempenhoMecanico")
+  @MonitoredOperation(type = MonitoredOperationType.REPORT_MECHANIC)
+  @MonitoredOperation(type = MonitoredOperationType.MECHANIC_PERFORMANCE)
   public List<RelatorioDesempenhoMecanico> gerarRelatorioDesempenho(
       LocalDate inicio, LocalDate fim) {
     log.info("[RELATORIO_DESEMPENHO_MECANICO] inicio={} fim={}", inicio, fim);
@@ -42,7 +45,7 @@ public class RelatorioServiceImpl implements RelatorioService {
 
   @Override
   @Transactional(readOnly = true)
-  @MonitoredOperation("relatorio.tempoMedioExecucaoOs")
+  @MonitoredOperation(type = MonitoredOperationType.REPORT_OS_AVERAGE_EXECUTION_TIME)
   public TempoMedioExecucaoOs obterTempoMedioExecucaoOs() {
     log.info("[RELATORIO_TEMPO_MEDIO_OS_GLOBAL]");
     return relatorioRepository.calcularTempoMedioExecucaoOs();
@@ -50,7 +53,7 @@ public class RelatorioServiceImpl implements RelatorioService {
 
   @Override
   @Transactional(readOnly = true)
-  @MonitoredOperation("relatorio.tempoMedioExecucaoOs.periodo")
+	@MonitoredOperation(type = MonitoredOperationType.REPORT_OS_AVERAGE_EXECUTION_TIME)
   public TempoMedioExecucaoOs obterTempoMedioExecucaoOsPorPeriodo(LocalDate inicio, LocalDate fim) {
     log.info("[RELATORIO_TEMPO_MEDIO_OS_PERIODO] inicio={} fim={}", inicio, fim);
     if (inicio == null || fim == null) {

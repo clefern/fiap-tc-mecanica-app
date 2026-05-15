@@ -2,6 +2,8 @@ package com.fiap.mecanica.presentation.controller;
 
 import com.fiap.mecanica.application.service.VeiculoService;
 import com.fiap.mecanica.domain.model.Veiculo;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.VeiculoApi;
 import com.fiap.mecanica.presentation.dto.VeiculoRequest;
 import com.fiap.mecanica.presentation.dto.VeiculoResponse;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class VeiculoController implements VeiculoApi {
 
   private final VeiculoService veiculoService;

@@ -1,41 +1,36 @@
 name: mecanica
 
+networks:
+  mecanica_net:
+    driver: bridge
+  sonar_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  sonar_data:
+  sonar_logs:
+  sonar_db:
+
 # ⚠️  TEAM NOTE: Always run with --build to pick up code changes!
 # Usage: docker compose up -d --build
 services:
 #  app:
 #    build:
 #      context: .
-#      dockerfile: Dockerfile
-#    image: mecanica-app:latest
+#      dockerfile: Dockerfile.deploy
 #    container_name: mecanica-app
 #    restart: unless-stopped
 #    ports:
 #      - '8080:8080'
-#    environment:
-#      DB_HOST: postgres
-#      DB_PORT: 5432
-#      DB_NAME: mecanica
-#      DB_USER: mecanica_user
-#      DB_PASSWORD: mecanica_pass
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mecanica
-#      SPRING_DATASOURCE_USERNAME: mecanica_user
-#      SPRING_DATASOURCE_PASSWORD: mecanica_pass
-#      SPRING_PROFILES_ACTIVE: dev
-#      SPRING_MAIL_HOST: mailhog
-#      SPRING_MAIL_PORT: 1025
-#      JAVA_OPTS: '-Xmx512m -Xms256m'
+#    env_file:
+#      - .env
 #    depends_on:
 #      postgres:
 #        condition: service_healthy
 #    networks:
 #      - mecanica_net
-#    healthcheck:
-#      test: ['CMD', 'curl', '-f', 'http://localhost:8080/actuator/health']
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-#      start_period: 60s
 #    deploy:
 #      resources:
 #        limits:
@@ -45,39 +40,39 @@ services:
 #          cpus: '0.5'
 #          memory: 512M
 
-  sonarqube:
-    image: sonarqube:community
-    profiles: ['audit']
-    depends_on:
-      - db
-    networks:
-      - sonar_net
-    environment:
-      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
-      SONAR_JDBC_USERNAME: sonar
-      SONAR_JDBC_PASSWORD: sonar
-    ports:
-      - '9000:9000'
-    volumes:
-      - sonar_data:/opt/sonarqube/data
-      - sonar_logs:/opt/sonarqube/logs
+#  sonarqube:
+#    image: sonarqube:community
+#    profiles: ['audit']
+#    depends_on:
+#      - sonarqube-db
+#    networks:
+#      - sonar_net
+#    environment:
+#      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+#      SONAR_JDBC_USERNAME: sonar
+#      SONAR_JDBC_PASSWORD: sonar
+#    ports:
+#      - '9000:9000'
+#    volumes:
+#      - sonar_data:/opt/sonarqube/data
+#      - sonar_logs:/opt/sonarqube/logs
 
-  db:
-    image: postgres:13
-    profiles: ['audit']
-    environment:
-      POSTGRES_USER: sonar
-      POSTGRES_PASSWORD: sonar
-      POSTGRES_DB: sonar
-    networks:
-      - sonar_net
-    volumes:
-      - sonar_db:/var/lib/postgresql
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U sonar -d sonar']
-      interval: 5s
-      timeout: 3s
-      retries: 10
+#  sonarqube-db:
+#    image: postgres:13
+#    profiles: ['audit']
+#    environment:
+#      POSTGRES_USER: sonar
+#      POSTGRES_PASSWORD: sonar
+#      POSTGRES_DB: sonar
+#    networks:
+#      - sonar_net
+#    volumes:
+#      - sonar_db:/var/lib/postgresql
+#    healthcheck:
+#      test: ['CMD-SHELL', 'pg_isready -U sonar -d sonar']
+#      interval: 5s
+#      timeout: 3s
+#      retries: 10
 
   postgres:
     image: postgres:16-alpine
@@ -88,7 +83,7 @@ services:
       POSTGRES_PASSWORD: mecanica_pass
       POSTGRES_DB: mecanica
     ports:
-      - '5433:5432'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -130,15 +125,18 @@ services:
       - '8025:8025' # Web UI
     networks:
       - mecanica_net
-networks:
-  mecanica_net:
-    driver: bridge
-  sonar_net:
-    driver: bridge
 
-volumes:
-  postgres_data:
-    driver: local
-  sonar_data:
-  sonar_logs:
-  sonar_db:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    container_name: mecanica-otel-collector
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    env_file:
+      - .env
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP HTTP receiver
+    networks:
+      - mecanica_net

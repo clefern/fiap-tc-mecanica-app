@@ -12,6 +12,8 @@ import com.fiap.mecanica.domain.model.Peca;
 import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
 import java.util.List;
 import java.util.UUID;
+
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,8 @@ public class EstoqueServiceImpl implements EstoqueService {
 
   @Override
   @Transactional
-  @MonitoredOperation("estoque.baixar")
+  @MonitoredOperation(type = MonitoredOperationType.INVENTORY_REMOVED)
+  @MonitoredOperation(type = MonitoredOperationType.INVENTORY_TURNOVER)
   public ItemEstocavel baixarEstoque(UUID referenciaId, TipoItem tipo, int quantidade) {
     log.info(
         "Processando baixa de estoque: tipo={}, referenciaId={}, quantidade={}",
@@ -48,7 +51,8 @@ public class EstoqueServiceImpl implements EstoqueService {
 
   @Override
   @Transactional
-  @MonitoredOperation("estoque.adicionar")
+  @MonitoredOperation(type = MonitoredOperationType.INVENTORY_ADDED)
+  @MonitoredOperation(type = MonitoredOperationType.INVENTORY_TURNOVER)
   public ItemEstocavel adicionarEstoque(UUID referenciaId, TipoItem tipo, int quantidade) {
     log.info(
         "Processando entrada de estoque: tipo={}, referenciaId={}, quantidade={}",
@@ -68,7 +72,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
   @Override
   @Transactional
-  @MonitoredOperation("estoque.atualizarParametros")
+  @MonitoredOperation(type = MonitoredOperationType.INVENTORY_UPDATED)
   public ItemEstocavel atualizarParametrosEstoque(
       UUID referenciaId, TipoItem tipo, Integer estoqueMinimo, Integer estoqueMaximo) {
     log.info(

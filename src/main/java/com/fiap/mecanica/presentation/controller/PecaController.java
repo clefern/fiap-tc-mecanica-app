@@ -2,6 +2,8 @@ package com.fiap.mecanica.presentation.controller;
 
 import com.fiap.mecanica.application.service.PecaService;
 import com.fiap.mecanica.domain.model.Peca;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.PecaApi;
 import com.fiap.mecanica.presentation.dto.PecaRequest;
 import com.fiap.mecanica.presentation.dto.PecaResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pecas")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class PecaController implements PecaApi {
 
   private final PecaService service;

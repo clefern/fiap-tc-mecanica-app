@@ -60,29 +60,22 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
-                        "/actuator/health",
-                        "/actuator/health/**")
+                        "/actuator/**"
+										)
                     .permitAll()
                     // Email action token flow: GET with ?token= — no JWT or API key required
                     .requestMatchers(HttpMethod.GET, "/api/integracoes/orcamentos/aprovacao")
                     .permitAll()
                     // Protected endpoints
-                    .requestMatchers("/actuator/**")
-                    .authenticated()
                     .anyRequest()
                     .authenticated())
         .headers(
             headers ->
                 headers
                     .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    .xssProtection(
-                        HeadersConfigurer.XXssConfig
-                            ::disable) // Deprecated in modern browsers, but explicit disable is
-                    // often safer than misconfiguration
                     .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")))
         .exceptionHandling(
             e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-        .authenticationProvider(authenticationProvider())
         .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -90,11 +83,11 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  public AuthenticationProvider authenticationProvider() {
+	@Bean
+  public AuthenticationProvider authenticationProvider(final PasswordEncoder encoder) {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
     authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
+    authProvider.setPasswordEncoder(encoder);
     return authProvider;
   }
 

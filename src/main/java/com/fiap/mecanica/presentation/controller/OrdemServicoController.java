@@ -6,6 +6,8 @@ import com.fiap.mecanica.domain.enums.StatusOS;
 import com.fiap.mecanica.domain.model.ItemOrdemServico;
 import com.fiap.mecanica.domain.model.OrdemServico;
 import com.fiap.mecanica.infra.config.security.UserContext;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.OrdemServicoApi;
 import com.fiap.mecanica.presentation.dto.AberturaOsCompletaRequest;
 import com.fiap.mecanica.presentation.dto.AdicionarItemRequest;
@@ -37,6 +39,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/ordens-servico")
 @SecurityRequirement(name = "bearerAuth")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class OrdemServicoController implements OrdemServicoApi {
 
   private final OrdemServicoService service;

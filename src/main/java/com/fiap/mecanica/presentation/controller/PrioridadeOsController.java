@@ -3,6 +3,8 @@ package com.fiap.mecanica.presentation.controller;
 import com.fiap.mecanica.application.service.prioridade.PrioridadeService;
 import com.fiap.mecanica.domain.enums.Prioridade;
 import com.fiap.mecanica.domain.model.OrdemServico;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.PrioridadeOsApi;
 import com.fiap.mecanica.presentation.dto.OrdemServicoResponse;
 import com.fiap.mecanica.presentation.mapper.OrdemServicoMapper;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/prioridade")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class PrioridadeOsController implements PrioridadeOsApi {
 
   private final PrioridadeService service;

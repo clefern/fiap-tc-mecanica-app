@@ -1,0 +1,120 @@
+name: Reusable — Build & Push ECR
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: false
+        type: string
+        default: '21'
+      aws-region:
+        required: true
+        type: string
+      ecr-repository:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+      GITHUB_TOKEN:
+        required: true
+    outputs:
+      image-uri:
+        description: "URI completa da imagem no ECR"
+        value: ${{ jobs.build.outputs.image-uri }}
+
+  workflow_dispatch:
+    inputs:
+      java-version:
+        description: 'Versão do JDK'
+        required: false
+        type: string
+        default: '21'
+      aws-region:
+        description: 'Região da AWS'
+        required: true
+        type: string
+        default: 'us-east-1'
+      ecr-repository:
+        description: 'Nome do repositório no ECR'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: 🏗️ Version, Build & Push
+    runs-on: ubuntu-latest
+
+    outputs:
+      image-uri: ${{ steps.meta.outputs.image-uri }}
+      version: ${{ steps.set-version.outputs.version }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
+
+      - name: 🏷️ Configure Git Identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: ⚙️ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: 🏷️ Bump Version
+        id: set-version
+        run: |
+          chmod +x ./scripts/semver.sh
+          NEXT=$(./scripts/semver.sh get-next-version)
+          ./scripts/semver.sh update-version "$NEXT"
+          echo "version=$NEXT" >> $GITHUB_OUTPUT
+          echo "Final Version: $NEXT"
+
+      - name: 🔨 Build Artifact
+        run: ./mvnw clean package -DskipTests --batch-mode --no-transfer-progress
+
+      - name: 🔐 Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: 🔑 Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: 🏷️ Generate Docker Metadata
+        id: meta
+        run: |
+          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}:${{ steps.set-version.outputs.version }}"
+          IMAGE_URI_LATEST="${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}:latest"
+          echo "image-uri=${IMAGE_URI}" >> $GITHUB_OUTPUT
+          echo "image-uri-latest=${IMAGE_URI_LATEST}" >> $GITHUB_OUTPUT
+
+      - name: 🐳 Build and Push Docker Image
+        run: |
+          docker build \
+            --file Dockerfile.deploy \
+            --tag ${{ steps.meta.outputs.image-uri }} \
+            --tag ${{ steps.meta.outputs.image-uri-latest }} \
+            --label "git-commit=${{ github.sha }}" \
+            .
+          docker push ${{ steps.meta.outputs.image-uri }}
+          docker push ${{ steps.meta.outputs.image-uri-latest }}

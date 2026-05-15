@@ -1,0 +1,96 @@
+name: Reusable — Deploy EKS
+
+on:
+  workflow_call:
+    inputs:
+      aws-region:
+        required: true
+        type: string
+      eks-cluster-name:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+      POSTGRES_USER:
+        required: true
+      POSTGRES_PASSWORD:
+        required: true
+      POSTGRES_DB:
+        required: true
+      SECURITY_JWT_SECRET_KEY:
+        required: true
+      ACTION_TOKEN_SECRET:
+        required: true
+      INTEGRATION_API_KEY:
+        required: true
+      MAIL_USERNAME:
+        required: false
+      MAIL_PASSWORD:
+        required: false
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Ambiente (lab, prod, etc)'
+        required: true
+        type: string
+        default: lab
+      aws-region:
+        description: 'AWS Region'
+        required: true
+        type: string
+        default: us-east-1
+      eks-cluster-name:
+        description: 'Nome do cluster EKS'
+        required: true
+        type: string
+        default: lab-fiap-cluster
+
+jobs:
+  deploy:
+    name: 🚀 K8s Deploy
+    runs-on: ubuntu-latest
+    env:
+      ENV: ${{ inputs.environment }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ${{ inputs.aws-region }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      SECURITY_JWT_SECRET_KEY: ${{ secrets.SECURITY_JWT_SECRET_KEY }}
+      ACTION_TOKEN_SECRET: ${{ secrets.ACTION_TOKEN_SECRET }}
+      INTEGRATION_API_KEY: ${{ secrets.INTEGRATION_API_KEY }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME || '' }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD || '' }}
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region "$AWS_REGION" \
+            --name ${{ inputs.eks-cluster-name }}
+
+      - name: Deploy to K8s
+        run: ./scripts/k8s-deploy.sh

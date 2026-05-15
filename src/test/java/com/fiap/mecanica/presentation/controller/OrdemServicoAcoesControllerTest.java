@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -31,14 +31,14 @@ class OrdemServicoAcoesControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private OsLifecycleService lifecycleService;
+  @MockitoBean private OsLifecycleService lifecycleService;
 
-  @MockBean private OrcamentoService orcamentoService;
+  @MockitoBean private OrcamentoService orcamentoService;
 
-  @MockBean(name = "osSecurity")
+  @MockitoBean(name = "osSecurity")
   private com.fiap.mecanica.infra.config.security.OsSecurity osSecurity;
 
-  @MockBean private JavaMailSender javaMailSender;
+  @MockitoBean private JavaMailSender javaMailSender;
 
   @Autowired private ObjectMapper objectMapper;
 

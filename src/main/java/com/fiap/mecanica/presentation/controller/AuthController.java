@@ -5,6 +5,8 @@ import com.fiap.mecanica.domain.model.TokenPair;
 import com.fiap.mecanica.domain.model.command.ResetPasswordCommand;
 import com.fiap.mecanica.infra.config.security.JwtService;
 import com.fiap.mecanica.infra.config.security.SecurityProperties;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.AuthApi;
 import com.fiap.mecanica.presentation.dto.auth.ForgotPasswordRequest;
 import com.fiap.mecanica.presentation.dto.auth.ResetPasswordRequest;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/oauth")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class AuthController implements AuthApi {
 
   private static final String ERROR_KEY = "error";

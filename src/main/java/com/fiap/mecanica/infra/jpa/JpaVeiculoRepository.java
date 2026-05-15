@@ -14,11 +14,4 @@ public interface JpaVeiculoRepository extends JpaRepository<VeiculoEntity, UUID>
   boolean existsByIdAndClienteId(UUID id, UUID clienteId);
 
   List<VeiculoEntity> findAllByClienteId(UUID clienteId);
-
-  // Explicitly expose common JpaRepository methods to satisfy compilation
-  Optional<VeiculoEntity> findById(UUID id);
-
-  VeiculoEntity save(VeiculoEntity entity);
-
-  void deleteById(UUID id);
 }

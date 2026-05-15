@@ -3,7 +3,7 @@ package com.fiap.mecanica.infra.seeding;
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CompletableFuture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,53 +14,36 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class DatabaseSeederTest {
 
-  @Mock private AsyncSeedingExecutor asyncSeedingExecutor;
+  @Mock private SeedingOrchestrator seedingOrchestrator;
 
   @InjectMocks private DatabaseSeeder databaseSeeder;
 
-  @Test
-  @DisplayName("Should seed successfully")
-  void shouldSeedSuccessfully() throws Exception {
+  @BeforeEach
+  void setUp() throws Exception {
     setSeedingEnabled(true);
-    when(asyncSeedingExecutor.seedAsync()).thenReturn(CompletableFuture.completedFuture(null));
-
-    databaseSeeder.run();
-
-    verify(asyncSeedingExecutor).seedAsync();
   }
 
   @Test
-  @DisplayName("Should retry on failure")
-  void shouldRetryOnFailure() throws Exception {
-    setSeedingEnabled(true);
-    when(asyncSeedingExecutor.seedAsync())
-        .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Fail 1")))
-        .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Fail 2")))
-        .thenReturn(CompletableFuture.completedFuture(null));
-
+  @DisplayName("Should execute seeding when enabled")
+  void shouldExecuteSeedingWhenEnabled() {
     databaseSeeder.run();
-
-    verify(asyncSeedingExecutor, times(3)).seedAsync();
+    verify(seedingOrchestrator, times(1)).seed();
   }
 
   @Test
-  @DisplayName("Should give up after max retries")
-  void shouldGiveUpAfterMaxRetries() throws Exception {
-    setSeedingEnabled(true);
-    when(asyncSeedingExecutor.seedAsync())
-        .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Fail")));
-
-    databaseSeeder.run();
-
-    verify(asyncSeedingExecutor, times(3)).seedAsync();
-  }
-
-  @Test
-  @DisplayName("Should skip if disabled")
-  void shouldSkipIfDisabled() throws Exception {
+  @DisplayName("Should skip seeding when disabled")
+  void shouldSkipSeedingWhenDisabled() throws Exception {
     setSeedingEnabled(false);
     databaseSeeder.run();
-    verify(asyncSeedingExecutor, never()).seedAsync();
+    verify(seedingOrchestrator, never()).seed();
+  }
+
+  @Test
+  @DisplayName("Should handle exceptions during seeding")
+  void shouldHandleExceptionsDuringSeeding() {
+    doThrow(new RuntimeException("Seeding Error")).when(seedingOrchestrator).seed();
+    databaseSeeder.run();
+    verify(seedingOrchestrator, times(1)).seed();
   }
 
   private void setSeedingEnabled(boolean enabled) throws Exception {

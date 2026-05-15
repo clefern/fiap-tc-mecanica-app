@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface PecaRepository {
+public interface PecaRepository extends BaseRepository {
   Peca save(Peca peca);
 
   Optional<Peca> findById(UUID id);

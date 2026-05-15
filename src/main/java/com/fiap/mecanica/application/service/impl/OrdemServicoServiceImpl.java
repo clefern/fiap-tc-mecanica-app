@@ -11,8 +11,11 @@ import com.fiap.mecanica.domain.exception.OrdemServicoNaoEncontradaException;
 import com.fiap.mecanica.domain.model.ItemOrdemServico;
 import com.fiap.mecanica.domain.model.OrdemServico;
 import com.fiap.mecanica.domain.repository.OrdemServicoRepository;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
 import java.util.List;
 import java.util.UUID;
+
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -48,6 +51,7 @@ public class OrdemServicoServiceImpl implements OrdemServicoService {
 
   @Override
   @Transactional
+  @MonitoredOperation(type = MonitoredOperationType.OS_CREATED)
   public OrdemServico criarOrdemServico(UUID clienteId, UUID veiculoId, String observacoes) {
     entityValidator.validar(clienteId, veiculoId);
 
@@ -63,6 +67,7 @@ public class OrdemServicoServiceImpl implements OrdemServicoService {
 
   @Override
   @Transactional
+	@MonitoredOperation(type = MonitoredOperationType.OS_CREATED)
   public OrdemServico abrirOsCompleta(
       UUID clienteId, UUID veiculoId, String observacoes, List<ItemOrdemServico> itens) {
     entityValidator.validar(clienteId, veiculoId);

@@ -17,6 +17,7 @@ import com.fiap.mecanica.domain.repository.OrcamentoRepository;
 import com.fiap.mecanica.domain.repository.OrdemServicoRepository;
 import com.fiap.mecanica.domain.repository.VeiculoRepository;
 import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.infrastructure.integration.estoque.EstoqueGateway;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -66,7 +67,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.gerar")
+  @MonitoredOperation(type = MonitoredOperationType.BUDGET_CREATED)
   public Orcamento gerarOrcamento(OrdemServico ordemServico) {
     if (orcamentoRepository.existsByOrdemServicoIdAndStatus(
         ordemServico.getId(), StatusOrcamento.GERADO)) {
@@ -173,7 +174,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.aprovar")
+  @MonitoredOperation(type = MonitoredOperationType.BUDGET_APPROVED)
   public Orcamento aprovar(UUID id) {
     log.info("[ORCAMENTO_APROVAR_INICIO] ID={}", id);
     Orcamento orcamento =
@@ -217,7 +218,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.aprovarPorOs")
+	@MonitoredOperation(type = MonitoredOperationType.BUDGET_APPROVED)
   public Orcamento aprovarPorOsId(UUID osId) {
     log.info("[ORCAMENTO_APROVAR_POR_OS] OS={}", osId);
     Orcamento orcamento =
@@ -232,7 +233,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.reprovar")
+  @MonitoredOperation(type = MonitoredOperationType.BUDGET_REPROVED)
   public Orcamento reprovar(UUID id) {
     log.info("[ORCAMENTO_REPROVAR_INICIO] ID={}", id);
     Orcamento orcamento =
@@ -251,7 +252,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.reprovarPorOs")
+	@MonitoredOperation(type = MonitoredOperationType.BUDGET_REPROVED)
   public Orcamento reprovarPorOsId(UUID osId) {
     log.info("[ORCAMENTO_REPROVAR_POR_OS] OS={}", osId);
     Orcamento orcamento =
@@ -266,7 +267,7 @@ public class OrcamentoServiceImpl implements OrcamentoService {
 
   @Override
   @Transactional
-  @MonitoredOperation("orcamento.cancelar")
+  @MonitoredOperation(type = MonitoredOperationType.BUDGET_CANCELLED)
   public Orcamento cancelar(UUID id) {
     log.info("[ORCAMENTO_CANCELAR_INICIO] ID={}", id);
     Orcamento orcamento =

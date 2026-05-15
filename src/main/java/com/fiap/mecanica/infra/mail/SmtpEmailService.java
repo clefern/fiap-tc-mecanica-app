@@ -14,6 +14,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -32,6 +33,7 @@ public class SmtpEmailService implements EmailSender {
   private String defaultFrom;
 
   @Override
+  @Retry(name = "mailSender")
   public void enviar(EmailMessage message) {
     try {
       MimeMessage mimeMessage = javaMailSender.createMimeMessage();
