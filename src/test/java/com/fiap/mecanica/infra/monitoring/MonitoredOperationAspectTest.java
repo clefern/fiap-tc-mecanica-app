@@ -1,64 +1,96 @@
 package com.fiap.mecanica.infra.monitoring;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.fiap.mecanica.application.service.impl.OsLifecycleServiceImpl;
+import com.fiap.mecanica.domain.model.OrdemServico;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
 
-@ExtendWith(MockitoExtension.class)
-class MonitoredOperationAspectTest {
+import java.lang.reflect.InvocationTargetException;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
-  private MeterRegistry meterRegistry;
-  private MonitoredOperationAspect aspect;
+import static com.fiap.mecanica.infra.monitoring.MonitoredOperationType.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-  @Mock private ProceedingJoinPoint pjp;
-  @Mock private MonitoredOperation monitoredOperation;
+class MonitoredOperationAspectTest extends Assertions {
+	static final String FUNCTION_NAME = "iniciarDiagnostico";
+	static final Class<?>[] PARAM_TYPES = new Class<?>[]{ UUID.class, UUID.class };
 
-  @BeforeEach
-  void setUp() {
-    meterRegistry = new SimpleMeterRegistry();
-    aspect = new MonitoredOperationAspect(meterRegistry);
-  }
+	final MeterRegistry registry = new SimpleMeterRegistry();
+	final MonitoredOperationAspect aspect = new MonitoredOperationAspect(registry);
 
-  @Test
-  @DisplayName("Should monitor operation success")
-  void shouldMonitorOperationSuccess() throws Throwable {
-    when(monitoredOperation.value()).thenReturn("test-operation");
-    when(pjp.getTarget()).thenReturn(new Object());
-    when(pjp.proceed()).thenReturn("result");
+	@MonitoredOperation(type = OS_CREATED)
+	@MonitoredOperation(type = OS_CYCLE_TIME)
+	interface AnnotatedTarget {
+		OrdemServico iniciarDiagnostico(UUID id, UUID mechId);
+	}
 
-    aspect.around(pjp, monitoredOperation);
+	@Test
+	void observabilityTest() throws Exception {
+		final var target = mock(AnnotatedTarget.class);
+		doAnswer(invocation -> {
+			Thread.sleep(1100L);
+			return Instancio.create(OrdemServico.class);
+		}).when(target).iniciarDiagnostico(any(), any());
 
-    verify(pjp).proceed();
-    Timer timer = meterRegistry.find("mecanica.service.execution").timer();
-    // Verify timer was created and recorded
-    // SimpleMeterRegistry records in memory, so we can't easily check count > 0 without delay,
-    // but existence proves the code path was taken.
-    assert timer != null;
-  }
+		final var method = AnnotatedTarget.class.getMethod(FUNCTION_NAME, PARAM_TYPES);
+		final var invocation = new ProxyMethodInvocationMock(
+			target,
+			method,
+			new Object[]{ UUID.randomUUID(), UUID.randomUUID() }
+		);
 
-  @Test
-  @DisplayName("Should monitor operation failure")
-  void shouldMonitorOperationFailure() throws Throwable {
-    when(monitoredOperation.value()).thenReturn("test-operation-error");
-    when(pjp.getTarget()).thenReturn(new Object());
-    when(pjp.proceed()).thenThrow(new RuntimeException("Error"));
+		final var data = assertDoesNotThrow(() -> aspect.observability(
+			new MethodInvocationProceedingJoinPoint(invocation)
+		));
 
-    assertThatThrownBy(() -> aspect.around(pjp, monitoredOperation))
-        .isInstanceOf(RuntimeException.class);
+		assertInstanceOf(OrdemServico.class, data);
 
-    verify(pjp).proceed();
-    Timer timer = meterRegistry.find("mecanica.service.execution").tag("status", "error").timer();
-    assert timer != null;
-  }
+		{
+			final var metric = registry.find(OS_CREATED.value());
+			assertNotNull(metric);
+			final var counter = metric.counter();
+			assertNotNull(counter);
+			assertEquals(1.0, counter.count());
+		}
+		{
+			final var metric = registry.find(OS_CYCLE_TIME.value());
+			assertNotNull(metric);
+			final var timer = metric.timer();
+			assertNotNull(timer);
+			assertTrue(timer.totalTime(TimeUnit.SECONDS) >= 1L);
+		}
+	}
+
+	@Test
+	void observabilityErrorTest() throws Exception {
+		final var target = mock(AnnotatedTarget.class);
+		doThrow(new RuntimeException("batata")).when(target).iniciarDiagnostico(any(), any());
+
+		final var method = AnnotatedTarget.class.getMethod(FUNCTION_NAME, PARAM_TYPES);
+		final var invocation = new ProxyMethodInvocationMock(
+			target,
+			method,
+			new Object[]{ UUID.randomUUID(), UUID.randomUUID() }
+		);
+
+		// The aspect rethrows the exception, but ProxyMethodInvocationMock (using method.invoke) 
+		// wraps it in InvocationTargetException.
+		assertThrows(java.lang.reflect.InvocationTargetException.class, () -> aspect.observability(
+			new MethodInvocationProceedingJoinPoint(invocation)
+		));
+
+		{
+			final var metric = registry.find(APPLICATION_INTEGRATION_ERROR.value());
+			assertNotNull(metric);
+			final var counter = metric.counter();
+			assertNotNull(counter);
+			assertEquals(1D, counter.count());
+		}
+	}
 }

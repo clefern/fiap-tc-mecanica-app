@@ -4,6 +4,8 @@ import com.fiap.mecanica.application.service.OrcamentoService;
 import com.fiap.mecanica.domain.model.OrdemServico;
 import com.fiap.mecanica.domain.repository.OrdemServicoRepository;
 import com.fiap.mecanica.infra.config.security.ActionTokenService;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.IntegracaoOrcamentoApi;
 import com.fiap.mecanica.presentation.dto.AprovacaoOrcamentoExternaRequest;
 import com.fiap.mecanica.presentation.dto.DecisaoOrcamento;
@@ -26,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/integracoes/orcamentos")
 @RequiredArgsConstructor
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class IntegracaoOrcamentoController implements IntegracaoOrcamentoApi {
 
   private static final Logger log = LoggerFactory.getLogger(IntegracaoOrcamentoController.class);

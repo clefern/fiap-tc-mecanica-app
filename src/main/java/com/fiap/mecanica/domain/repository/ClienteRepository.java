@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * Port de repositório para Cliente (Camada de Domínio). Implementações ficam na camada de Infra.
  */
-public interface ClienteRepository {
+public interface ClienteRepository extends BaseRepository {
 
   Optional<Cliente> findById(UUID id);
 

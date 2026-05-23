@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface OrcamentoRepository {
+public interface OrcamentoRepository extends BaseRepository {
   Orcamento save(Orcamento orcamento);
 
   Optional<Orcamento> findById(UUID id);

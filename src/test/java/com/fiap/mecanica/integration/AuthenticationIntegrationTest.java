@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 class AuthenticationIntegrationTest {
 
-  @MockBean private JavaMailSender javaMailSender;
+  @MockitoBean private JavaMailSender javaMailSender;
 
   @Autowired private MockMvc mockMvc;
 

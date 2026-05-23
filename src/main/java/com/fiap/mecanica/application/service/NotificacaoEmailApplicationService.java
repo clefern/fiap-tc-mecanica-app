@@ -11,12 +11,15 @@ import com.fiap.mecanica.domain.repository.MecanicoRepository;
 import com.fiap.mecanica.infra.config.security.ActionTokenService;
 import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
 import com.fiap.mecanica.presentation.dto.DecisaoOrcamento;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.fiap.mecanica.infra.monitoring.MonitoredOperationType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +35,9 @@ public class NotificacaoEmailApplicationService {
   @Value("${mecanica.mail.approval-base-url:}")
   private String approvalBaseUrl;
 
-  @MonitoredOperation("email.enviarOrcamento")
+  @MonitoredOperation(type = EMAIL_SEND_OS_QUOTE)
+  @MonitoredOperation(type = EMAIL_DELIVERY_RATE)
+  @MonitoredOperation(type = REPORT_PDF_GENERATION_TIME)
   public void enviarOrcamento(
       Orcamento orcamento, Cliente cliente, Veiculo veiculo, byte[] pdfBytes) {
     List<String> to = List.of(cliente.getEmail().value());
@@ -93,7 +98,8 @@ public class NotificacaoEmailApplicationService {
     emailSender.enviar(message);
   }
 
-  @MonitoredOperation("email.enviarConfirmacaoOs")
+  @MonitoredOperation(type = EMAIL_SEND_OS_CONFIRMATION)
+  @MonitoredOperation(type = EMAIL_DELIVERY_RATE)
   public void enviarConfirmacaoAbertura(OrdemServico os, Cliente cliente, Veiculo veiculo) {
     List<String> to = List.of(cliente.getEmail().value());
     List<String> bcc =

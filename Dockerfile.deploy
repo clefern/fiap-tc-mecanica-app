@@ -1,7 +1,18 @@
+FROM curlimages/curl:8.18.0 AS agent-downloader
+
+ARG OTEL_AGENT_VERSION=2.26.1
+
+RUN curl -sSfL \
+	"https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
+  -o /tmp/otel.jar
+
 FROM gcr.io/distroless/java21-debian13:nonroot
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY --from=agent-downloader --chown=nonroot:nonroot /tmp/otel.jar /app/
+COPY --chown=nonroot:nonroot target/mecanica*.jar /app/app.jar
+
+ENTRYPOINT [ "java", "-javaagent:/app/otel.jar", "-jar" ]
 
 CMD [ "app.jar" ]

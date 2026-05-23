@@ -2,6 +2,8 @@ package com.fiap.mecanica.presentation.controller;
 
 import com.fiap.mecanica.application.service.ClienteService;
 import com.fiap.mecanica.domain.model.Cliente;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.ClienteApi;
 import com.fiap.mecanica.presentation.dto.ClienteRequest;
 import com.fiap.mecanica.presentation.dto.ClienteResponse;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/clientes")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class ClienteController implements ClienteApi {
 
   private final ClienteService clienteService;

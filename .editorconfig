@@ -12,3 +12,6 @@ trim_trailing_whitespace = true
 
 [*.{tf,tfvars,yml,yaml}]
 indent_style = space
+
+[logback*.xml]
+max_line_length = off

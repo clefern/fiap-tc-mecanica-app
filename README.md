@@ -1,30 +1,9 @@
-# Mecânica API — Aplicação (Fase 3)
+# Mecânica API
 
 > Backend de sistema integrado para gestão de oficinas mecânicas.
 > **Tech Challenge — Pós-Graduação em Arquitetura de Software (FIAP, Grupo 14SOAT)**
 
 Java 21 · Spring Boot 3.3 · PostgreSQL · Arquitetura Hexagonal + DDD
-
----
-
-## 🧩 Split de repositórios — Fase 3
-
-A partir da Fase 3, o projeto foi separado em **4 repositórios independentes** com CI/CD próprio:
-
-| Repo | Conteúdo |
-|---|---|
-| **`fiap-tc-mecanica-app`** | **Este repo** — Aplicação Java + Spring Boot |
-| [`fiap-tc-mecanica-infra-k8s`](https://github.com/clefern/fiap-tc-mecanica-infra-k8s) | Terraform do cluster EKS + Kustomize manifests (antes em `infra/` + `k8s/` deste repo) |
-| [`fiap-tc-mecanica-infra-db`](https://github.com/clefern/fiap-tc-mecanica-infra-db) | Terraform do RDS PostgreSQL gerenciado |
-| [`fiap-tc-mecanica-lambda`](https://github.com/clefern/fiap-tc-mecanica-lambda) | Function Serverless de autenticação CPF → JWT |
-
-> O repo original [`fiap-tc-mecanica-java`](https://github.com/clefern/fiap-tc-mecanica-java) permanece como entrega das Fases 1 e 2 e **não recebe mais commits**.
-
-### Itens a refatorar nesta entrega
-
-- `scripts/k8s-deploy.sh`, `scripts/bootstrap_tf_lab.sh`, `scripts/cleanup_tf_lab.sh`, `scripts/connect-eks.sh` — herdados do monorepo, movem-se para `fiap-tc-mecanica-infra-k8s` na próxima leva
-- Workflows de CD (`cd.yml`, `infra.yml`, `deploy.yml`, `build.yml`, `cleanup.yml`) foram **removidos**; serão recriados no próximo ciclo com triggers automáticos por branch (`develop` → homolog, `main` → prod) chamando os outros repos via `repository_dispatch`
-- Documentação em `docs/` ainda menciona `infra/` e `k8s/` em alguns pontos — atualizar para apontar para os repos externos
 
 ---
 

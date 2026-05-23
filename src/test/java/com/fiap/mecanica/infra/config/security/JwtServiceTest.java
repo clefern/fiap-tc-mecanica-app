@@ -6,10 +6,9 @@ import static org.mockito.Mockito.when;
 
 import com.fiap.mecanica.infra.jpa.JpaRevokedTokenRepository;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,10 +84,10 @@ class JwtServiceTest {
     // Generate expired token manually
     String token =
         Jwts.builder()
-            .setSubject(user.getUsername())
-            .setIssuedAt(new Date(System.currentTimeMillis() - 10000))
-            .setExpiration(new Date(System.currentTimeMillis() - 1000))
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .subject(user.getUsername())
+            .issuedAt(new Date(System.currentTimeMillis() - 10000))
+            .expiration(new Date(System.currentTimeMillis() - 1000))
+            .signWith(getSignInKey(), Jwts.SIG.HS256)
             .compact();
 
     // isTokenValid checks expiration
@@ -148,10 +147,10 @@ class JwtServiceTest {
     // Create expired token
     String token =
         Jwts.builder()
-            .setSubject("user")
-            .setIssuedAt(new Date(System.currentTimeMillis() - 10000))
-            .setExpiration(new Date(System.currentTimeMillis() - 1000))
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .subject("user")
+            .issuedAt(new Date(System.currentTimeMillis() - 10000))
+            .expiration(new Date(System.currentTimeMillis() - 1000))
+            .signWith(getSignInKey(), Jwts.SIG.HS256)
             .compact();
 
     jwtService.revokeToken(token);
@@ -183,7 +182,7 @@ class JwtServiceTest {
     org.assertj.core.api.Assertions.assertThat(role).isEqualTo("admin");
   }
 
-  private Key getSignInKey() {
+  private SecretKey getSignInKey() {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
   }

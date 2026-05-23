@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface InsumoRepository {
+public interface InsumoRepository extends BaseRepository {
   Insumo save(Insumo insumo);
 
   Optional<Insumo> findById(UUID id);

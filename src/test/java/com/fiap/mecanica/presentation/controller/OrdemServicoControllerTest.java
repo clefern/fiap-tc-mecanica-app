@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -49,17 +49,17 @@ class OrdemServicoControllerTest {
   @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private OrdemServicoService service;
+  @MockitoBean private OrdemServicoService service;
 
-  @MockBean private OsItemService itemService;
+  @MockitoBean private OsItemService itemService;
 
   // Security Mocks
-  @MockBean(name = "osSecurity")
+  @MockitoBean(name = "osSecurity")
   private OsSecurity osSecurity;
 
-  @MockBean private UserContext userContext;
+  @MockitoBean private UserContext userContext;
 
-  @MockBean private JavaMailSender javaMailSender;
+  @MockitoBean private JavaMailSender javaMailSender;
 
   @Test
   @DisplayName("ADMIN: Deve criar ordem de serviço com sucesso")

@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface OrdemServicoRepository {
+public interface OrdemServicoRepository extends BaseRepository {
   OrdemServico save(OrdemServico ordemServico);
 
   Optional<OrdemServico> findById(UUID id);

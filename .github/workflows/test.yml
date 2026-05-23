@@ -42,3 +42,11 @@ jobs:
           name: coverage-report
           path: target/site/jacoco/
           retention-days: 7
+
+      - name: 📊 Resumo de Cobertura
+        if: always()
+        run: |
+          if [ -f target/site/jacoco/index.html ]; then
+            echo "### 📊 Relatório de Cobertura" >> $GITHUB_STEP_SUMMARY
+            echo "O relatório de cobertura do JaCoCo foi gerado e está disponível nos artefatos." >> $GITHUB_STEP_SUMMARY
+          fi

@@ -2,6 +2,8 @@ package com.fiap.mecanica.presentation.controller;
 
 import com.fiap.mecanica.application.service.ServicoService;
 import com.fiap.mecanica.domain.model.Servico;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperation;
+import com.fiap.mecanica.infra.monitoring.MonitoredOperationType;
 import com.fiap.mecanica.presentation.api.ServicoApi;
 import com.fiap.mecanica.presentation.dto.ServicoRequest;
 import com.fiap.mecanica.presentation.dto.ServicoResponse;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/servicos")
+@MonitoredOperation(type = MonitoredOperationType.APPLICATION_LATENCY_API)
 public class ServicoController implements ServicoApi {
 
   private final ServicoService service;

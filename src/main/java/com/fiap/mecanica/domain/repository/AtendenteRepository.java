@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface AtendenteRepository {
+public interface AtendenteRepository extends BaseRepository {
 
   Optional<Atendente> findById(UUID id);
 

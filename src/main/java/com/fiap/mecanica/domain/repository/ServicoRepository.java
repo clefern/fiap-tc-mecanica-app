@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface ServicoRepository {
+public interface ServicoRepository extends BaseRepository {
   Servico save(Servico servico);
 
   Optional<Servico> findById(UUID id);

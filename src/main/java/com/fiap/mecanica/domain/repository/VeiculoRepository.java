@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /** Port de repositório para Veiculo (Camada de Domínio). */
-public interface VeiculoRepository {
+public interface VeiculoRepository extends BaseRepository {
 
   Optional<Veiculo> findById(UUID id);
 

@@ -3,7 +3,7 @@ package com.fiap.mecanica;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -14,7 +14,7 @@ import org.springframework.test.context.TestPropertySource;
     properties = {"spring.flyway.enabled=false", "spring.jpa.hibernate.ddl-auto=create-drop"})
 class MecanicaApplicationTest {
 
-  @MockBean private JavaMailSender javaMailSender;
+  @MockitoBean private JavaMailSender javaMailSender;
 
   @Test
   @DisplayName("Deve carregar o contexto da aplicação")
