@@ -1,8 +1,9 @@
 ######################################################
 # CI — Testes automáticos
 # Dispara automaticamente em push e pull request.
-# Para infra, build e deploy, use o workflow manual:
-#   Actions → "Provision & Deploy" → Run workflow
+# Para infra, build e deploy, use os workflows manuais em `.github/workflows/`:
+#   deploy.yml — build ECR + rollout no EKS
+#   build-push.yml — só imagem (reutilizável)
 ######################################################
 name: CI
 
