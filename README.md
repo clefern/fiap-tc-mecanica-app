@@ -106,6 +106,63 @@ CI/CD: Push → Maven + testes → Docker + Trivy → ECR → kubectl apply
 
 ---
 
+## Fase 3 — Operação corporativa: 4 repos, Lambda CPF, RDS, Traefik, OTel/New Relic
+
+Objetivo: elevar a aplicação a nível de operação corporativa — autenticação serverless, banco gerenciado, API Gateway profissional, observabilidade ponta a ponta.
+
+**O que foi entregue:**
+
+- **Separação em 4 repositórios independentes** com CI/CD próprio:
+  - [`fiap-tc-mecanica-app`](https://github.com/clefern/fiap-tc-mecanica-app) — esta aplicação Spring Boot
+  - [`fiap-tc-mecanica-infra-k8s`](https://github.com/clefern/fiap-tc-mecanica-infra-k8s) — Terraform EKS + Traefik + OTel Collector + Kustomize
+  - [`fiap-tc-mecanica-infra-db`](https://github.com/clefern/fiap-tc-mecanica-infra-db) — Terraform RDS PostgreSQL (consome VPC via `terraform_remote_state` do `infra-k8s`)
+  - [`fiap-tc-mecanica-lambda`](https://github.com/clefern/fiap-tc-mecanica-lambda) — Function Serverless CPF→JWT (Node.js 20 + TypeScript + Terraform)
+- **Autenticação de cliente via CPF** ([ADR-032](./docs/ADRs/ADR-032-autenticacao-cpf-via-lambda.md)): `POST /auth` no Traefik → Lambda valida CPF (módulo 11) → busca cliente no RDS → emite JWT HS256 com mesma `SECURITY_JWT_SECRET_KEY` do app. `JwtAuthenticationFilter` valida transparentemente. `AuthController.getToken` (email + senha) fica `@Deprecated` para clientes, mantido para staff interna.
+- **Traefik como API Gateway** ([ADR-033](./docs/ADRs/ADR-033-traefik-api-gateway.md)) substituindo NGINX: IngressRoute com 3 rotas (`/auth → Lambda`, `/api → app` com rate-limit, `/ → default`).
+- **RDS PostgreSQL gerenciado** ([ADR-035](./docs/ADRs/ADR-035-rds-postgresql-gerenciado.md)) substituindo Postgres em pod K8s; backup automatizado 7 dias, mesma VPC do EKS, secret group restritivo (ingress 5432 só do VPC CIDR).
+- **Observabilidade OTel + New Relic** ([ADR-034](./docs/ADRs/ADR-034-observabilidade-opentelemetry-newrelic.md)):
+  - OpenTelemetry Collector DaemonSet recebe OTLP + hostmetrics + kubeletstats; exporta pra New Relic (`https://otlp.nr-data.net`)
+  - App tem OTel Java Agent v2.26.1 no Dockerfile + Micrometer OTLP exporter + Logback JSON
+  - `MonitoredOperationAspect` instrumenta 14+ métodos críticos com tags `status/operation/service/error_type`
+  - `CorrelationIdFilter` propaga `X-Correlation-ID` em logs estruturados (MDC)
+  - Auditoria de OS: 3 eventos novos + `OsHistoryListener` + tabela `os_history` (migration V17) → métricas de ciclo de vida
+  - Dashboards New Relic como código (2 páginas) + 3 alertas NRQL (high_error_rate, os_process_failure, app_downtime)
+- **CI/CD reusable workflows**: build (ECR push + semver), deploy (rollout EKS com timeout), infra (Terraform apply orquestrado). Branch protection ativa em `main` e `develop` nos 4 repos (PR obrigatório, 1 approval mínimo).
+
+**Fluxo de autenticação de cliente (Fase 3):**
+
+```
+Cliente                  Traefik              API Gateway AWS         Lambda             RDS              Mecânica App
+  │                         │                       │                   │                  │                   │
+  │── POST /auth {cpf} ────►│                       │                   │                  │                   │
+  │                         │── ServersTransport ──►│                   │                  │                   │
+  │                         │   (SNI + Host hdr)    │── invoke ────────►│                  │                   │
+  │                         │                       │                   │── findByDoc ────►│                   │
+  │                         │                       │                   │◄── Cliente ──────│                   │
+  │                         │                       │                   │                                      │
+  │                         │                       │                   │   sign JWT HS256                     │
+  │                         │                       │                   │   (subject=email, role=CLIENTE)      │
+  │                         │                       │◄── 200 JWT ───────│                                      │
+  │                         │◄── 200 JWT ───────────│                                                          │
+  │◄── 200 {access_token} ──│                                                                                  │
+  │                                                                                                            │
+  │── GET /api/clientes/documento/{cpf}  Authorization: Bearer <jwt> ─────────────────────────────────────────►│
+  │                                                                                                            │── JwtAuthFilter
+  │                                                                                                            │   valida HS256
+  │                                                                                                            │   loadUserBy(email)
+  │                                                                                                            │── @PreAuthorize
+  │                                                                                                            │   isOwnerByDoc
+  │◄── 200 {cliente} ──────────────────────────────────────────────────────────────────────────────────────────│
+```
+
+**Documentação adicional Fase 3:**
+
+- [docs/ADRs/](./docs/ADRs/) — ADR-032 (auth CPF), ADR-033 (Traefik), ADR-034 (OTel+NR), ADR-035 (RDS)
+- [docs/RFCs/](./docs/RFCs/) — RFC-001 (cloud), RFC-002 (banco), RFC-003 (auth CPF) — propostas com alternativas
+- Diagramas C4 atualizados em [docs/arquitetura/diagramas.md](./docs/arquitetura/diagramas.md)
+
+---
+
 ## Quick Start
 
 **Pré-requisito:** Docker
