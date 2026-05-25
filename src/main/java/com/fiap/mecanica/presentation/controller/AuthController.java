@@ -71,8 +71,23 @@ public class AuthController implements AuthApi {
     this.bucket = Bucket.builder().addLimit(limit).build();
   }
 
+  /**
+   * Emite token via OAuth 2.0 password grant (email + senha).
+   *
+   * <p><b>Uso restrito a perfis internos</b> (ADMIN, ATENDENTE, MECANICO). Para clientes finais,
+   * a Fase 3 do projeto direciona a autenticação para a Function Serverless de CPF — ver
+   * ADR-032 (`docs/ADRs/ADR-032-autenticacao-cpf-via-lambda.md`) e o IngressRoute do Traefik
+   * (`fiap-tc-mecanica-infra-k8s/k8s/base/app-ingressroute.yaml`) que roteia `POST /auth` para
+   * a Lambda CPF→JWT. O JWT emitido pela Lambda é validado por {@code JwtAuthenticationFilter}
+   * transparentemente (mesma secret HS256).
+   *
+   * @deprecated for client (CPF) authentication. Clients should use {@code POST /auth} on the
+   *     Traefik gateway, which routes to the Serverless Lambda. This endpoint remains supported
+   *     for internal staff (ADMIN, ATENDENTE, MECANICO) login by email + password.
+   */
   @Override
   @PostMapping("/token")
+  @Deprecated(since = "3.0.0")
   public ResponseEntity<Object> getToken(@RequestBody @Valid TokenRequest request) {
     if (!bucket.tryConsume(1)) {
       return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
