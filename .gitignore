@@ -8,10 +8,9 @@ pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
-.mvn/
-mvnw
-mvnw.cmd
-!.mvn/wrapper/maven-wrapper.jar
+# NÃO ignorar Maven wrapper — precisa ser versionado para CI rodar `./mvnw test`.
+# Apenas saídas locais transitórias do wrapper são ignoradas.
+.mvn/wrapper/maven-wrapper.properties.bak
 !**/src/main/**/target/
 !**/src/test/**/target/
 
