@@ -497,3 +497,138 @@ CI/CD: GitHub Actions
        → kubectl apply -k k8s/overlays/<env>/
        → Flyway migrations (boot automático)
 ```
+
+---
+
+## Infraestrutura AWS (Fase 3 — operação corporativa)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  VPC us-east-1 (compartilhada — Single source of truth: fiap-tc-mecanica-infra-k8s)│
+│                                                                                 │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  Subnets públicas                                                      │    │
+│  │  NAT Gateway · NLB → Traefik (substitui NGINX)                         │    │
+│  └────────────────────────────────────┬───────────────────────────────────┘    │
+│                                       │                                        │
+│  ┌────────────────────────────────────▼───────────────────────────────────┐    │
+│  │  EKS Cluster 1.33 (subnets privadas)                                   │    │
+│  │                                                                        │    │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐     │    │
+│  │  │ Traefik v3       │  │ mecanica-app     │  │ OTel Collector   │     │    │
+│  │  │ IngressRoute:    │  │ Spring Boot 3.3  │  │ (DaemonSet)      │     │    │
+│  │  │ /auth ──► API GW │  │ Java 21 + OTel   │──│ OTLP receivers   │     │    │
+│  │  │ /api ──► app     │  │ agent (sidecar)  │  │ hostmetrics      │     │    │
+│  │  │ rate-limit 50/s  │  │ HPA 1-10 (CPU)   │  │ kubeletstats     │     │    │
+│  │  └────────┬─────────┘  └─────────┬────────┘  └────────┬─────────┘     │    │
+│  │           │                      │                    │ OTLP HTTP     │    │
+│  │           │ SNI                  │ JDBC               │               │    │
+│  └───────────┼──────────────────────┼────────────────────┼───────────────┘    │
+│              │                      │                    │                    │
+│  ┌───────────▼─────────┐  ┌─────────▼──────────┐         │                    │
+│  │ AWS API Gateway     │  │ AWS RDS PostgreSQL │         │                    │
+│  │ POST /auth → Lambda │  │ 16 · db.t3.small   │         │                    │
+│  └───────────┬─────────┘  │ Multi-AZ (prod)    │         │                    │
+│              │            │ subnet privada     │         │                    │
+│  ┌───────────▼─────────┐  │ backup 7 dias      │         │                    │
+│  │ Lambda CPF→JWT      │  │ SG: 5432 from VPC  │         │                    │
+│  │ Node.js 20 ARM64    │──┤ CIDR só            │         │                    │
+│  │ · valida CPF        │  └────────────────────┘         │                    │
+│  │ · busca cliente RDS │                                 │                    │
+│  │ · JWT HS256 (mesma  │                                 │                    │
+│  │   secret do app)    │                                 │                    │
+│  └─────────────────────┘                                 │                    │
+│                                                          │                    │
+│  ECR · Cert-Manager · Metrics Server · ALB Controller    │                    │
+└──────────────────────────────────────────────────────────┼────────────────────┘
+                                                           │ OTLP
+                                                           ▼
+                                                ┌────────────────────────┐
+                                                │ New Relic              │
+                                                │ https://otlp.nr-data.net│
+                                                │ · 2 dashboards (IaC)   │
+                                                │ · 3 alertas NRQL       │
+                                                │ · 100GB/mês free tier  │
+                                                └────────────────────────┘
+
+Repos separados (cada um com CI/CD próprio):
+  fiap-tc-mecanica-app        (este Spring Boot)
+  fiap-tc-mecanica-infra-k8s  (EKS + Traefik + OTel + Kustomize)
+  fiap-tc-mecanica-infra-db   (RDS via terraform_remote_state)
+  fiap-tc-mecanica-lambda     (Node.js + Terraform Lambda + API GW)
+```
+
+---
+
+## Diagrama de Sequência — Autenticação de Cliente por CPF (Fase 3)
+
+```
+Cliente          Traefik          API Gateway AWS       Lambda            RDS             App (mecanica)
+   │                │                    │                 │                │                  │
+   │ POST /auth     │                    │                 │                │                  │
+   │ {cpf: "..."}   │                    │                 │                │                  │
+   ├───────────────►│                    │                 │                │                  │
+   │                │ via ServersTrans-  │                 │                │                  │
+   │                │ port (SNI + Host)  │                 │                │                  │
+   │                ├───────────────────►│                 │                │                  │
+   │                │                    │ invoke          │                │                  │
+   │                │                    ├────────────────►│                │                  │
+   │                │                    │                 │ valida CPF     │                  │
+   │                │                    │                 │ (módulo 11)    │                  │
+   │                │                    │                 │                │                  │
+   │                │                    │                 │ findByDocumento│                  │
+   │                │                    │                 ├───────────────►│                  │
+   │                │                    │                 │◄───────────────┤                  │
+   │                │                    │                 │  Cliente +     │                  │
+   │                │                    │                 │  email + ativo │                  │
+   │                │                    │                 │                │                  │
+   │                │                    │                 │ sign JWT HS256 │                  │
+   │                │                    │                 │ {sub: email,   │                  │
+   │                │                    │                 │  id: UUID,     │                  │
+   │                │                    │                 │  role: CLIENTE,│                  │
+   │                │                    │                 │  exp: now+1h}  │                  │
+   │                │                    │                 │ secret =       │                  │
+   │                │                    │                 │ SECURITY_JWT_  │                  │
+   │                │                    │                 │ SECRET_KEY     │                  │
+   │                │                    │                 │ (mesma do app) │                  │
+   │                │                    │◄────────────────┤                │                  │
+   │                │                    │ 200 + JWT       │                │                  │
+   │                │◄───────────────────┤                 │                │                  │
+   │◄───────────────┤                    │                 │                │                  │
+   │ 200 OK         │                    │                 │                │                  │
+   │ {access_token, │                    │                 │                │                  │
+   │  cliente: {…}} │                    │                 │                │                  │
+   │                │                    │                                                     │
+   │ GET /api/clientes/documento/{cpf}                                                         │
+   │ Authorization: Bearer <jwt>                                                                │
+   ├───────────────►│                                                                          │
+   │                │ /api ──► mecanica-service                                                │
+   │                ├──────────────────────────────────────────────────────────────────────────►│
+   │                │                                                                          │
+   │                │                                                              JwtAuthFilter│
+   │                │                                                              extractUser  │
+   │                │                                                              loadByEmail  │
+   │                │                                                              isTokenValid │
+   │                │                                                              (verifica    │
+   │                │                                                              assinatura   │
+   │                │                                                              HS256 com    │
+   │                │                                                              mesma secret)│
+   │                │                                                                          │
+   │                │                                                              @PreAuthorize│
+   │                │                                                              hasRole      │
+   │                │                                                              ('CLIENTE')  │
+   │                │                                                              AND          │
+   │                │                                                              isOwnerByDoc │
+   │                │                                                                          │
+   │                │◄─────────────────────────────────────────────────────────────────────────┤
+   │◄───────────────┤                                                              200 {cliente}│
+   │ 200 OK         │                                                                          │
+```
+
+**Pontos-chave:**
+
+- A `SECURITY_JWT_SECRET_KEY` é a **única** chave em todo o sistema — injetada via K8s Secret no app E como variável Terraform no Lambda (idealmente via AWS Secrets Manager, hoje via env var compartilhada).
+- O `JwtAuthenticationFilter` do app **não sabe e não precisa saber** se o JWT veio da Lambda ou de `/oauth/token` — qualquer JWT HS256 válido com `subject = email_existente` é aceito.
+- O `@PreAuthorize` com `@securityService.isOwnerByDocumento(authentication, #documento)` garante object-level security: cliente só vê seus próprios dados.
+- Cobertura de testes deste fluxo: `src/test/java/com/fiap/mecanica/integration/JwtFromExternalIssuerIT.java` (3 cenários: aceito, subject desconhecido, secret errada).
+

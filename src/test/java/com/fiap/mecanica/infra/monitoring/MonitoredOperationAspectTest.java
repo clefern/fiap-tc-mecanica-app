@@ -85,8 +85,14 @@ class MonitoredOperationAspectTest extends Assertions {
 			new MethodInvocationProceedingJoinPoint(invocation)
 		));
 
+		// O aspect sempre incrementa APPLICATION_ERROR em qualquer erro (linha 73 do
+		// MonitoredOperationAspect). APPLICATION_INTEGRATION_ERROR é específico para
+		// adapters de integração (BaseRepository/EmailSender/NotificationService/
+		// PdfService) — o mock genérico AnnotatedTarget deste teste não é nenhum desses,
+		// portanto não dispara o counter de integração. Para validar a contagem de erro
+		// em qualquer target, usamos o counter universal APPLICATION_ERROR.
 		{
-			final var metric = registry.find(APPLICATION_INTEGRATION_ERROR.value());
+			final var metric = registry.find(APPLICATION_ERROR.value());
 			assertNotNull(metric);
 			final var counter = metric.counter();
 			assertNotNull(counter);
