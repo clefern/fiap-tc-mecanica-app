@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Mecânica API — Fase 3 | Grupo 14SOAT | FIAP 2025/2026</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
+			:root {
+				--fiap-blue: #0f1f3d;
+				--fiap-blue2: #1e3a5f;
+				--accent: #f97316;
+				--accent-light: #fff7ed;
+				--text: #1e293b;
+				--text-muted: #64748b;
+				--border: #e2e8f0;
+				--bg-alt: #f8fafc;
+				--success: #16a34a;
+				--warning: #d97706;
+				--error: #dc2626;
+				--card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+				--phase3: #059669;
+				--phase3-deep: #047857;
+				--phase3-light: #ecfdf5;
+			}
+
+			*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+			html { font-size: 13px; }
+			body {
+				font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+				color: var(--text);
+				background: #fff;
+				line-height: 1.65;
+			}
+
+			.page {
+				width: 210mm;
+				min-height: 297mm;
+				padding: 18mm 20mm 22mm;
+				margin: 0 auto;
+				position: relative;
+				background: #fff;
+				page-break-after: always;
+				break-after: page;
+			}
+			.page:last-child { page-break-after: avoid; }
+
+			/* ── COVER ── */
+			.cover {
+				background: linear-gradient(145deg, #022c22 0%, #064e3b 45%, #047857 100%);
+				color: #fff;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				padding: 0;
+				min-height: 297mm;
+			}
+			.cover-inner { padding: 30mm 24mm; }
+
+			.cover-badge {
+				display: inline-block;
+				background: rgba(249, 115, 22, 0.18);
+				border: 1px solid rgba(249, 115, 22, 0.45);
+				color: #fed7aa;
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				padding: 4px 14px;
+				border-radius: 99px;
+				margin-bottom: 14px;
+			}
+			.cover-phase-badge {
+				display: inline-block;
+				background: rgba(5, 150, 105, 0.35);
+				border: 1px solid rgba(110, 231, 183, 0.55);
+				color: #a7f3d0;
+				font-size: 12px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				padding: 6px 20px;
+				border-radius: 99px;
+				margin-bottom: 28px;
+			}
+			.cover-icon {
+				width: 80px;
+				height: 80px;
+				background: linear-gradient(135deg, var(--accent) 0%, #ea580c 100%);
+				border-radius: 20px;
+				margin: 0 auto 28px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 36px;
+				box-shadow: 0 8px 32px rgba(249, 115, 22, 0.4);
+			}
+			.cover h1 {
+				font-size: 44px;
+				font-weight: 800;
+				letter-spacing: -0.02em;
+				margin-bottom: 10px;
+				color: #fff;
+			}
+			.cover h2 {
+				font-size: 15px;
+				font-weight: 400;
+				color: #a7f3d0;
+				margin-bottom: 40px;
+				letter-spacing: 0.01em;
+			}
+			.cover-divider {
+				width: 60px;
+				height: 3px;
+				background: var(--accent);
+				margin: 0 auto 40px;
+				border-radius: 2px;
+			}
+			.cover-meta {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				color: #d1fae5;
+				font-size: 12px;
+			}
+			.cover-meta strong { color: #fff; }
+			.cover-stack {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 8px;
+				margin-top: 40px;
+			}
+			.chip {
+				background: rgba(255, 255, 255, 0.1);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				color: #e2e8f0;
+				padding: 4px 12px;
+				border-radius: 99px;
+				font-size: 10.5px;
+				font-weight: 500;
+			}
+			.chip-phase3 {
+				background: rgba(5, 150, 105, 0.28);
+				border: 1px solid rgba(110, 231, 183, 0.45);
+				color: #a7f3d0;
+			}
+
+			/* ── SECTION HEADERS ── */
+			.section-header { margin-bottom: 14px; }
+			.section-label {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--phase3);
+				margin-bottom: 4px;
+			}
+			.section-title {
+				font-size: 22px;
+				font-weight: 800;
+				color: var(--fiap-blue);
+				letter-spacing: -0.02em;
+				line-height: 1.2;
+			}
+			.section-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+			.section-rule {
+				width: 40px;
+				height: 3px;
+				background: var(--phase3);
+				border-radius: 2px;
+				margin-top: 6px;
+			}
+
+			/* ── CARDS ── */
+			.card {
+				background: #fff;
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				padding: 12px 16px;
+				box-shadow: var(--card-shadow);
+			}
+			.card-title {
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+				margin-bottom: 8px;
+			}
+
+			/* ── GRID ── */
+			.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+			.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+			.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+			/* ── TABLES ── */
+			table { width: 100%; border-collapse: collapse; font-size: 11.5px; table-layout: fixed; overflow-wrap: break-word; }
+			th { background: var(--fiap-blue); color: #fff; font-weight: 600; padding: 6px 10px; text-align: left; font-size: 11px; letter-spacing: .03em; }
+			th:first-child { border-radius: 6px 0 0 0; }
+			th:last-child { border-radius: 0 6px 0 0; }
+			td { padding: 5px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+			tr:nth-child(even) td { background: var(--bg-alt); }
+			tr:last-child td { border-bottom: none; }
+
+			/* ── BADGES ── */
+			.badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+				padding: 2px 8px;
+				border-radius: 99px;
+				font-size: 11px;
+				font-weight: 600;
+			}
+			.badge-success { background: #dcfce7; color: #15803d; }
+			.badge-warning { background: #fef9c3; color: #a16207; }
+			.badge-error { background: #fee2e2; color: #b91c1c; }
+			.badge-info { background: #dbeafe; color: #1d4ed8; }
+			.badge-phase3 { background: #d1fae5; color: #047857; }
+			.badge-pending { background: #fef3c7; color: #92400e; }
+
+			/* ── STAT BOXES ── */
+			.stat-box {
+				background: linear-gradient(135deg, #022c22 0%, #047857 100%);
+				color: #fff;
+				border-radius: 10px;
+				padding: 16px;
+				text-align: center;
+			}
+			.stat-number {
+				font-size: 30px;
+				font-weight: 800;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.stat-label {
+				font-size: 11px;
+				font-weight: 500;
+				margin-top: 6px;
+				color: #a7f3d0;
+			}
+
+			/* ── ARCH DIAGRAM ── */
+			.arch-diagram { background: var(--fiap-blue); color: #e2e8f0; border-radius: 10px; padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 9.5px; line-height: 1.5; overflow: hidden; }
+			.arch-diagram pre { white-space: pre; font-size: 8.5px; line-height: 1.4; overflow: hidden; color: #cbd5e1; }
+			.arch-diagram .layer-title { color: var(--accent); font-weight: 700; }
+			.arch-diagram .layer-item { color: #6ee7b7; }
+			.arch-diagram .arrow { color: #64748b; }
+
+			/* ── FEATURE LIST ── */
+			.feature-list {
+				list-style: none;
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+			}
+			.feature-list li {
+				display: flex;
+				align-items: flex-start;
+				gap: 10px;
+				font-size: 12.5px;
+			}
+			.feature-list li::before {
+				content: "▸";
+				color: var(--phase3);
+				font-weight: 700;
+				flex-shrink: 0;
+				margin-top: 1px;
+			}
+
+			/* ── PIPELINE ── */
+			.pipeline {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				flex-wrap: wrap;
+				margin: 14px 0;
+			}
+			.pipeline-step {
+				background: var(--fiap-blue);
+				color: #fff;
+				padding: 6px 14px;
+				border-radius: 6px;
+				font-size: 11px;
+				font-weight: 600;
+				white-space: nowrap;
+			}
+			.pipeline-arrow {
+				color: var(--phase3);
+				font-size: 16px;
+				font-weight: 700;
+			}
+
+			/* ── LINKS ── */
+			a { color: var(--phase3-deep); text-decoration: none; }
+			.link-card {
+				background: #fff;
+				border: 1px solid var(--border);
+				border-left: 4px solid var(--phase3);
+				border-radius: 6px;
+				padding: 12px 16px;
+				margin-bottom: 12px;
+				box-shadow: var(--card-shadow);
+			}
+			.link-card .link-type {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--text-muted);
+			}
+			.link-card .link-value {
+				font-size: 12.5px;
+				margin-top: 3px;
+				word-break: break-all;
+			}
+			.link-card .link-desc {
+				font-size: 11px;
+				color: var(--text-muted);
+				margin-top: 3px;
+			}
+
+			.placeholder-box {
+				background: #fffbeb;
+				border: 2px dashed #f59e0b;
+				border-radius: 8px;
+				padding: 12px 16px;
+				margin-top: 8px;
+			}
+			.placeholder-box .ph-title { font-weight: 700; color: #92400e; font-size: 12px; }
+			.placeholder-box .ph-sub { font-size: 10.5px; color: #a16207; margin-top: 3px; }
+
+			/* ── HIGHLIGHT ── */
+			.highlight {
+				background: var(--phase3-light);
+				border-left: 4px solid var(--phase3);
+				border-radius: 0 6px 6px 0;
+				padding: 12px 16px;
+				font-size: 12.5px;
+			}
+			.highlight strong { color: var(--fiap-blue); }
+
+			/* ── PHASE HEADER BANNER ── */
+			.phase-banner {
+				background: linear-gradient(135deg, #022c22 0%, #047857 100%);
+				color: #fff;
+				border-radius: 8px;
+				padding: 14px 20px;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				margin-bottom: 20px;
+			}
+			.phase-banner .pb-num {
+				font-size: 32px;
+				font-weight: 800;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.phase-banner .pb-label {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: #a7f3d0;
+			}
+			.phase-banner .pb-title { font-size: 18px; font-weight: 700; }
+			.phase-banner .pb-desc {
+				font-size: 11.5px;
+				color: #a7f3d0;
+				margin-top: 2px;
+			}
+
+			/* ── TEAM CARDS ── */
+			.team-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; box-shadow: var(--card-shadow); }
+			.team-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #022c22 0%, #047857 100%); color: #fff; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+			.team-name { font-weight: 700; font-size: 13px; color: var(--fiap-blue); }
+			.team-email { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+			.team-role { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--phase3); margin-top: 6px; }
+
+			/* ── REPO CARDS ── */
+			.repo-card {
+				background: #fff;
+				border: 1px solid var(--border);
+				border-top: 3px solid var(--phase3);
+				border-radius: 8px;
+				padding: 14px 16px;
+				box-shadow: var(--card-shadow);
+			}
+			.repo-card .repo-name {
+				font-family: 'Courier New', monospace;
+				font-size: 12px;
+				font-weight: 700;
+				color: var(--fiap-blue);
+				margin-bottom: 4px;
+			}
+			.repo-card .repo-role {
+				font-size: 10px;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--phase3);
+				margin-bottom: 8px;
+			}
+			.repo-card .repo-desc {
+				font-size: 11.5px;
+				color: var(--text);
+				line-height: 1.5;
+			}
+
+			/* ── PREVENT PAGE BREAK INSIDE CONTENT BLOCKS ── */
+			.card, .link-card, .highlight, .stat-box, .team-card, .phase-banner, .repo-card,
+			.grid-2, .grid-3, .grid-4, .arch-diagram, .pipeline {
+				page-break-inside: avoid;
+				break-inside: avoid;
+			}
+			tr { page-break-inside: avoid; break-inside: avoid; }
+			.section-header { page-break-after: avoid; break-after: avoid; }
+
+			/* ── PREVENT HORIZONTAL OVERFLOW ── */
+			code { word-break: break-all; }
+			pre { overflow-x: hidden; white-space: pre-wrap; }
+
+			@media print {
+				html { font-size: 11px; }
+				.page {
+					margin: 0;
+					box-shadow: none;
+					padding: 0;
+					min-height: auto;
+					width: auto;
+					page-break-after: always;
+					break-after: page;
+				}
+				.cover {
+					margin: -18mm -20mm;
+					padding: 18mm 20mm;
+					min-height: 100vh;
+				}
+				a { color: inherit; }
+				.card, .link-card, .highlight, .grid-2, .grid-3, .grid-4,
+				.arch-diagram, .pipeline, .stat-box, .repo-card {
+					page-break-inside: avoid !important;
+					break-inside: avoid !important;
+				}
+				.section-header { page-break-after: avoid !important; break-after: avoid !important; }
+				pre { overflow-x: hidden; white-space: pre-wrap; }
+			}
+			@page { size: A4 portrait; margin: 12mm 16mm; }
+		</style>
+	</head>
+	<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 1 — CAPA
+════════════════════════════════════════════════════════════ -->
+<div class="page cover">
+	<div class="cover-inner">
+		<div class="cover-badge">Tech Challenge — Pós-Graduação em Arquitetura de Software</div>
+		<div class="cover-phase-badge">🛡️ Fase 3 — Operação Corporativa</div>
+
+		<div class="cover-icon">⚙️</div>
+
+		<h1>Mecânica API</h1>
+		<h2>Sistema Distribuído com Auth Serverless, Banco Gerenciado e Observabilidade Ponta a Ponta</h2>
+		<div class="cover-divider"></div>
+
+		<div class="cover-meta">
+			<p><strong>Entrega Fase 3</strong> — Segurança, Escalabilidade e Observabilidade Corporativa</p>
+			<p><strong>Grupo 14SOAT</strong> &nbsp;·&nbsp; Turma SOAT — FIAP</p>
+			<p><strong>Período:</strong> 2025 / 2026 &nbsp;·&nbsp; <strong>Entrega:</strong> Maio 2026</p>
+		</div>
+
+		<div class="cover-stack">
+			<span class="chip chip-phase3">4 Repositórios Separados</span>
+			<span class="chip chip-phase3">Lambda CPF → JWT</span>
+			<span class="chip chip-phase3">RDS PostgreSQL 16</span>
+			<span class="chip chip-phase3">Traefik API Gateway</span>
+			<span class="chip chip-phase3">OpenTelemetry + New Relic</span>
+			<span class="chip">Branch Protection × 8</span>
+			<span class="chip">Terraform IaC</span>
+			<span class="chip">CD Orquestrado</span>
+			<span class="chip">1061 testes</span>
+		</div>
+
+		<div style="margin-top: 32px; text-align: center;">
+			<div style="font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 12px;">Equipe — Grupo 14SOAT</div>
+			<div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+				<div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 16px; text-align: center; min-width: 140px;">
+					<div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">CF</div>
+					<div style="font-weight: 700; font-size: 12px; color: #fff;">Cleber Fernandes</div>
+					<div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+				</div>
+				<div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 16px; text-align: center; min-width: 140px;">
+					<div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">CL</div>
+					<div style="font-weight: 700; font-size: 12px; color: #fff;">Christian Felipe F. de Lima</div>
+					<div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+				</div>
+				<div style="background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 10px; padding: 14px 16px; text-align: center; min-width: 140px;">
+					<div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #fb923c 100%); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">GS</div>
+					<div style="font-weight: 700; font-size: 12px; color: #fff;">Gabriel J. A. Schuina</div>
+					<div style="font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px;">Software Engineer</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 2 — LINKS DE ENTREGA
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Entregáveis Fase 3</div>
+		<div class="section-title">Links e Artefatos de Entrega</div>
+		<div class="section-subtitle">4 repositórios separados · Vídeo · Documentação · Collaborator <code>soat-architecture</code></div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">4 Repositórios GitHub (públicos)</div>
+		<div class="grid-2" style="gap: 10px;">
+			<div class="repo-card">
+				<div class="repo-name">fiap-tc-mecanica-app</div>
+				<div class="repo-role">Aplicação Spring Boot</div>
+				<div class="repo-desc">
+					<a href="https://github.com/clefern/fiap-tc-mecanica-app">github.com/clefern/fiap-tc-mecanica-app</a><br/>
+					Backend Java 21 + Spring Boot 3.3, JWT validado pelo <code>JwtAuthenticationFilter</code>, 1061 testes
+				</div>
+			</div>
+			<div class="repo-card">
+				<div class="repo-name">fiap-tc-mecanica-infra-k8s</div>
+				<div class="repo-role">Cluster EKS + Traefik + OTel</div>
+				<div class="repo-desc">
+					<a href="https://github.com/clefern/fiap-tc-mecanica-infra-k8s">github.com/clefern/fiap-tc-mecanica-infra-k8s</a><br/>
+					Terraform (VPC, EKS 1.33, ECR), Traefik IngressRoute, OpenTelemetry Collector, dashboards New Relic IaC
+				</div>
+			</div>
+			<div class="repo-card">
+				<div class="repo-name">fiap-tc-mecanica-infra-db</div>
+				<div class="repo-role">RDS PostgreSQL 16</div>
+				<div class="repo-desc">
+					<a href="https://github.com/clefern/fiap-tc-mecanica-infra-db">github.com/clefern/fiap-tc-mecanica-infra-db</a><br/>
+					Terraform RDS gerenciado, consome VPC via <code>terraform_remote_state</code> de <code>infra-k8s</code>
+				</div>
+			</div>
+			<div class="repo-card">
+				<div class="repo-name">fiap-tc-mecanica-lambda</div>
+				<div class="repo-role">Function Serverless CPF → JWT</div>
+				<div class="repo-desc">
+					<a href="https://github.com/clefern/fiap-tc-mecanica-lambda">github.com/clefern/fiap-tc-mecanica-lambda</a><br/>
+					Node.js 20 + TypeScript, valida CPF (módulo 11), emite JWT HS256 com mesma secret do app
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="link-card">
+		<div class="link-type">Vídeo Demonstrativo — YouTube</div>
+		<div class="link-value">
+			<a href="https://youtu.be/PENDING-FASE-3" target="_blank">https://youtu.be/PENDING-FASE-3</a>
+		</div>
+		<div class="link-desc">
+			Roteiro (≤ 15 min): arquitetura dos 4 repos · CI/CD em ação · autenticação CPF via Lambda · consumo de APIs protegidas · dashboards New Relic + logs com correlationId · encerramento
+		</div>
+		<div class="placeholder-box">
+			<div class="ph-title">⚠️ Link a substituir antes da submissão no Portal do Aluno</div>
+			<div class="ph-sub">Edite <code>presentation-fase3.html</code> com a URL real e rode <code>./gerar-pdf-fase3.sh</code> novamente.</div>
+		</div>
+	</div>
+
+	<div class="link-card">
+		<div class="link-type">Confirmação — Collaborator soat-architecture</div>
+		<div class="link-value">Adicionado como <code>read</code> nos 4 repositórios (atende EXT-003)</div>
+		<div class="link-desc">
+			Verificável em <code>github.com/clefern/&lt;repo&gt;/settings/access</code> — listado junto com clefern, Overz, aniusch
+		</div>
+	</div>
+
+	<div class="grid-2" style="gap: 12px; margin-top: 14px;">
+		<div class="card" style="background: var(--bg-alt);">
+			<div class="card-title" style="color: var(--phase3);">Documentação Arquitetural</div>
+			<ul class="feature-list" style="font-size: 11.5px;">
+				<li><a href="https://github.com/clefern/fiap-tc-mecanica-app/blob/main/docs/ADRs/ADR-032-autenticacao-cpf-via-lambda.md">ADR-032</a> — Auth CPF via Lambda Serverless</li>
+				<li><a href="https://github.com/clefern/fiap-tc-mecanica-app/blob/main/docs/ADRs/ADR-033-traefik-api-gateway.md">ADR-033</a> — Traefik substitui NGINX</li>
+				<li><a href="https://github.com/clefern/fiap-tc-mecanica-app/blob/main/docs/ADRs/ADR-034-observabilidade-opentelemetry-newrelic.md">ADR-034</a> — OpenTelemetry + New Relic</li>
+				<li><a href="https://github.com/clefern/fiap-tc-mecanica-app/blob/main/docs/ADRs/ADR-035-rds-postgresql-gerenciado.md">ADR-035</a> — RDS PostgreSQL gerenciado</li>
+				<li><a href="https://github.com/clefern/fiap-tc-mecanica-app/tree/main/docs/RFCs">RFCs 001/002/003</a> — Cloud, Banco, Auth CPF</li>
+			</ul>
+		</div>
+		<div class="card" style="background: var(--bg-alt);">
+			<div class="card-title" style="color: var(--phase3);">Como Deploy — CD Orquestrado</div>
+			<ul class="feature-list" style="font-size: 11.5px;">
+				<li>GitHub → <code>infra-k8s</code> → Actions → <strong>Provision &amp; Deploy</strong></li>
+				<li>Sequência: setup → db → lambda → k8s → app</li>
+				<li>Manual via <code>workflow_dispatch</code> (1-click)</li>
+				<li>Secrets: AWS OIDC, New Relic license, JWT secret</li>
+				<li>Branch protection: PR + 1 approval obrigatório</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="highlight" style="margin-top: 14px;">
+		<strong>Escopo da Fase 3:</strong> Elevar a aplicação a nível de operação corporativa — separação em 4 repositórios independentes com CI/CD próprio, autenticação serverless de clientes por CPF, banco PostgreSQL gerenciado, API Gateway profissional (Traefik), observabilidade ponta a ponta (OpenTelemetry + New Relic) e governança de branches (protection + collaborator obrigatório).
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 3 — CONFORMIDADE (parte 1: Auth + Repos + Infra)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Conformidade — Fase 3</div>
+		<div class="section-title">Requisitos vs Entregáveis (parte 1)</div>
+		<div class="section-subtitle">Mapeamento direto contra o PDF oficial 13SOAT — Autenticação, Repositórios, Infraestrutura</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">1. Autenticação e API Gateway</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>AUTH-001 — API Gateway implementado</td><td><span class="badge badge-success">✅ OK</span></td><td>Traefik v3.0.9 + IngressRoute (<code>infra-k8s/k8s/base/app-ingressroute.yaml</code>) com 3 rotas (auth/api/default) + middleware rate-limit 50 req/s</td></tr>
+			<tr><td>AUTH-002 — Rotas sensíveis protegidas por auth CPF</td><td><span class="badge badge-success">✅ OK</span></td><td><code>JwtAuthenticationFilter</code> valida JWT HS256 da Lambda transparentemente; <code>AuthController.getToken</code> (email/senha) marcado <code>@Deprecated</code> para clientes</td></tr>
+			<tr><td>AUTH-003 — Function Serverless (valida CPF + consulta cliente + emite JWT)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>lambda/src/handler.ts</code> — valida CPF módulo 11 → <code>findByDocumento</code> no RDS → JWT HS256 com <code>subject = email</code></td></tr>
+		</table>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">2. Estrutura de Repositórios e CI/CD</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>REPO-001 — Repo Lambda (Serverless)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>github.com/clefern/fiap-tc-mecanica-lambda</code></td></tr>
+			<tr><td>REPO-002 — Repo Infra K8s (Terraform)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>github.com/clefern/fiap-tc-mecanica-infra-k8s</code></td></tr>
+			<tr><td>REPO-003 — Repo Infra Banco Gerenciado (Terraform)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>github.com/clefern/fiap-tc-mecanica-infra-db</code> (consome VPC via <code>terraform_remote_state</code>)</td></tr>
+			<tr><td>REPO-004 — Repo Aplicação principal</td><td><span class="badge badge-success">✅ OK</span></td><td><code>github.com/clefern/fiap-tc-mecanica-app</code> — Spring Boot 3.3</td></tr>
+			<tr><td>BRANCH-001 — Branch <code>main</code> protegida + PR obrigatório</td><td><span class="badge badge-success">✅ OK</span></td><td>Branch protection ativa em <code>main</code> e <code>develop</code> nos 4 repos (8 protections) — PR + 1 approval, no force/direct push</td></tr>
+			<tr><td>CICD-001 — CI automático (build + testes)</td><td><span class="badge badge-success">✅ OK</span></td><td>4 workflows CI ativos · Maven + JaCoCo (app) · TypeScript build + Vitest (lambda) · Terraform fmt + validate (infra-*)</td></tr>
+			<tr><td>CICD-002 — CD para homologação/produção</td><td><span class="badge badge-success">✅ OK</span></td><td><strong>Provision &amp; Deploy</strong> orquestrado em <code>infra-k8s/.github/workflows/cd.yml</code> — setup → db → lambda → k8s → app</td></tr>
+		</table>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">3. Infraestrutura Cloud (AWS)</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>API Gateway (controle + roteamento)</td><td><span class="badge badge-success">✅ OK</span></td><td>Traefik (in-cluster, IngressRoute) + AWS API Gateway HTTP (fronting Lambda)</td></tr>
+			<tr><td>Function Serverless (autenticação)</td><td><span class="badge badge-success">✅ OK</span></td><td>AWS Lambda + IAM + SG + API Gateway via Terraform (<code>lambda/infra/conf/2-lambda-auth.tf</code>)</td></tr>
+			<tr><td>Banco de Dados Gerenciado</td><td><span class="badge badge-success">✅ OK</span></td><td>AWS RDS PostgreSQL 16 (<code>db.t3.small</code>), Multi-AZ ready, backup 7 dias, SG restrito ao VPC CIDR</td></tr>
+			<tr><td>Cluster Kubernetes escalável</td><td><span class="badge badge-success">✅ OK</span></td><td>AWS EKS 1.33 + node group <code>t3.large</code> + HPA (CPU 70% / Mem 80%, min 1 / max 10)</td></tr>
+			<tr><td>Terraform para provisionamento</td><td><span class="badge badge-success">✅ OK</span></td><td>3 stacks Terraform independentes (<code>infra-k8s</code>, <code>infra-db</code>, <code>lambda/infra</code>) compartilhando state via <code>terraform_remote_state</code></td></tr>
+		</table>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 4 — CONFORMIDADE (parte 2: OBS + DOC + EXT)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Conformidade — Fase 3</div>
+		<div class="section-title">Requisitos vs Entregáveis (parte 2)</div>
+		<div class="section-subtitle">Observabilidade · Documentação Arquitetural · Entregáveis Externos</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">4. Monitoramento e Observabilidade</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>OBS-001 — APM (Datadog ou New Relic)</td><td><span class="badge badge-success">✅ OK</span></td><td>New Relic OTLP (free tier 100GB/mês) — <code>infra-k8s/k8s/base/otel-collector-configmap.yaml</code> aponta para <code>otlp.nr-data.net</code></td></tr>
+			<tr><td>OBS-002 — Latência APIs + CPU/Mem + uptime</td><td><span class="badge badge-success">✅ OK</span></td><td>OpenTelemetry Collector DaemonSet: <code>otlp + hostmetrics + kubeletstats</code>. App tem OTel Java Agent v2.26.1 + Micrometer OTLP. <code>MonitoredOperationAspect</code> instrumenta 14+ métodos</td></tr>
+			<tr><td>OBS-003 — Alertas para falhas de OS</td><td><span class="badge badge-success">✅ OK</span></td><td>3 alertas NRQL como IaC em <code>infra/conf/17-observability.tf</code>: <code>high_error_rate</code> (&gt;5%/5min), <code>os_process_failure</code>, <code>app_downtime</code> (loss-of-signal)</td></tr>
+			<tr><td>OBS-004 — Logs JSON estruturados + correlationId</td><td><span class="badge badge-success">✅ OK</span></td><td><code>logback-spring.xml</code> com <code>LogstashLogbackEncoder</code> + async appender 8192. <code>CorrelationIdFilter</code> propaga <code>X-Correlation-ID</code> via MDC. Profile <code>!local</code> emite JSON</td></tr>
+			<tr><td>OBS-005 — Dashboards (volume OS, tempo por status, erros)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>newrelic_one_dashboard</code> com 2 páginas: <strong>Visão de Negócio</strong> (OS criadas, latência APIs, ciclo de vida) + <strong>Infraestrutura</strong> (CPU/Mem/JVM heap)</td></tr>
+		</table>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 5 — CONFORMIDADE (parte 3: DOC + EXT + stats)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Conformidade — Fase 3</div>
+		<div class="section-title">Requisitos vs Entregáveis (continuação)</div>
+		<div class="section-subtitle">Documentação Arquitetural · Entregáveis Externos · Estatísticas finais</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">5. Documentação Arquitetural</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>DOC-001 — Diagrama de Componentes (cloud, APIs, banco, monitoramento)</td><td><span class="badge badge-success">✅ OK</span></td><td><code>app/docs/arquitetura/diagramas.md</code> — C4 Containers atualizado com Traefik, Lambda, RDS, OTel, New Relic + diagrama de Infraestrutura Cloud Fase 3</td></tr>
+			<tr><td>DOC-002 — Diagrama de Sequência (auth + abertura de OS)</td><td><span class="badge badge-success">✅ OK</span></td><td>Sequência completa Cliente → Traefik → API GW → Lambda → RDS → JWT → app (em <code>docs/arquitetura/diagramas.md</code> e neste PDF, página 5)</td></tr>
+			<tr><td>DOC-003 — RFCs</td><td><span class="badge badge-success">✅ OK</span></td><td><code>app/docs/RFCs/</code> — RFC-001 (cloud AWS), RFC-002 (banco RDS), RFC-003 (auth CPF Lambda) — cada um com alternativas avaliadas</td></tr>
+			<tr><td>DOC-004 — ADRs</td><td><span class="badge badge-success">✅ OK</span></td><td>35 ADRs em <code>docs/ADRs/</code>. Fase 3 adicionou: ADR-032 (Auth CPF), ADR-033 (Traefik), ADR-034 (OTel+NR), ADR-035 (RDS)</td></tr>
+			<tr><td>DOC-005 — Justificativa banco + ER + relacionamentos</td><td><span class="badge badge-success">✅ OK</span></td><td>ADR-001 (PostgreSQL) + ADR-035 (RDS gerenciado) + ER Mermaid em <code>docs/arquitetura/diagramas.md</code> (13+ tabelas, PKs/FKs/UKs, herança Joined Table)</td></tr>
+		</table>
+	</div>
+
+	<div class="card">
+		<div class="card-title" style="color: var(--phase3);">6. Entregáveis Externos (Portal do Aluno)</div>
+		<table>
+			<tr><th style="width:40%">Requisito</th><th style="width:12%">Status</th><th>Evidência</th></tr>
+			<tr><td>EXT-001 — README.md em cada um dos 4 repos</td><td><span class="badge badge-success">✅ OK</span></td><td>READMEs com propósito, stack, setup, deploy, diagrama, link Swagger nos 4 repos</td></tr>
+			<tr><td>EXT-002 — Vídeo demonstrativo ≤ 15 min</td><td><span class="badge badge-pending">⏳ Pendente</span></td><td>Roteiro definido (página 2). Equipe agendou gravação</td></tr>
+			<tr><td>EXT-003 — PDF entrega no Portal (links 4 repos + vídeo + docs + soat-architecture)</td><td><span class="badge badge-success">✅ OK</span></td><td>Este documento + collaborator <code>soat-architecture</code> confirmado nos 4 repos</td></tr>
+		</table>
+	</div>
+
+	<div class="grid-3" style="gap: 12px; margin-top: 14px;">
+		<div class="stat-box"><div class="stat-number">35</div><div class="stat-label">ADRs Documentados</div></div>
+		<div class="stat-box"><div class="stat-number">3</div><div class="stat-label">RFCs Criados</div></div>
+		<div class="stat-box"><div class="stat-number">28/28</div><div class="stat-label">Itens da Rubrica Atendidos</div></div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 5 — ARQUITETURA: 4 REPOSITÓRIOS
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Arquitetura — Fase 3</div>
+		<div class="section-title">4 Repositórios Independentes</div>
+		<div class="section-subtitle">Separação de responsabilidades com Terraform state compartilhado via <code>terraform_remote_state</code></div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="grid-2" style="gap: 14px; margin-bottom: 16px;">
+		<div class="repo-card">
+			<div class="repo-name">fiap-tc-mecanica-app</div>
+			<div class="repo-role">Spring Boot · Domínio + REST + Validação JWT</div>
+			<div class="repo-desc">
+				Java 21 · Spring Boot 3.3 · Hexagonal + DDD · 17 migrations Flyway · 1061 testes
+				<br/><br/>
+				<strong>Responsabilidade:</strong> APIs de domínio (Cliente, Veículo, OS, Orçamento, Estoque), JwtAuthenticationFilter aceita JWT HS256 (mesma secret da Lambda), AuthController interno (staff: email/senha).
+				<br/><br/>
+				<strong>Workflows CI/CD:</strong> <code>ci.yml</code>, <code>test.yml</code>, <code>build-push.yml</code> (ECR), <code>deploy.yml</code> (EKS rollout), <code>infra.yml</code>, <code>cleanup.yml</code>
+			</div>
+		</div>
+		<div class="repo-card">
+			<div class="repo-name">fiap-tc-mecanica-infra-k8s</div>
+			<div class="repo-role">Cluster EKS + Traefik + OTel + Dashboards</div>
+			<div class="repo-desc">
+				Terraform (VPC, EKS 1.33, ECR, node group) · Kustomize (base + overlays develop/lab/prod/rds/local) · Helm releases (Traefik, Cert-Manager, ALB Controller, EBS CSI, Metrics Server) · Dashboards New Relic como IaC
+				<br/><br/>
+				<strong>Single source of truth da VPC</strong> — outros stacks consomem via <code>terraform_remote_state</code>.
+				<br/><br/>
+				<strong>CD orquestrador</strong> em <code>cd.yml</code> (Provision &amp; Deploy): chama setup → db → lambda → k8s → app.
+			</div>
+		</div>
+		<div class="repo-card">
+			<div class="repo-name">fiap-tc-mecanica-infra-db</div>
+			<div class="repo-role">RDS PostgreSQL 16 Gerenciado</div>
+			<div class="repo-desc">
+				Terraform RDS apenas — sem duplicação de VPC/EKS. Consome <code>vpc_id</code>, <code>subnet_ids</code>, <code>vpc_cidr</code> via <code>data.terraform_remote_state.k8s</code>.
+				<br/><br/>
+				Outputs: <code>rds_endpoint</code>, <code>rds_port</code>, <code>rds_master_password</code> (sensitive). Backup 7 dias, SG restrito.
+				<br/><br/>
+				<strong>Refatorado</strong> pra eliminar a duplicação de 16 arquivos <code>.tf</code> herdada da Fase 2 (commit <code>0fc6a65</code>).
+			</div>
+		</div>
+		<div class="repo-card">
+			<div class="repo-name">fiap-tc-mecanica-lambda</div>
+			<div class="repo-role">Function Serverless CPF → JWT</div>
+			<div class="repo-desc">
+				Node.js 20 + TypeScript · valida CPF (módulo 11) · busca cliente no RDS · emite JWT HS256
+				<br/><br/>
+				<strong>Terraform IaC próprio</strong> em <code>lambda/infra/</code>: <code>2-lambda-auth.tf</code> (IAM + Lambda + SG + API Gateway), consome remote states de <code>infra-k8s</code> e <code>infra-db</code>.
+				<br/><br/>
+				Scripts: <code>bootstrap_tf_lab.sh</code>, <code>deploy-auth-lambda.sh</code>, <code>wire-traefik-auth-gateway.sh</code>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 7 — ARQUITETURA: TERRAFORM STATE SHARING
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Arquitetura — Fase 3</div>
+		<div class="section-title">Compartilhamento de Estado entre os 4 Repos</div>
+		<div class="section-subtitle"><code>terraform_remote_state</code> elimina duplicação · Branch protection ×8 · Collaborator <code>soat-architecture</code></div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card">
+		<div class="card-title" style="color: var(--phase3);">Fluxo de Provisionamento (Terraform state sharing)</div>
+		<div class="arch-diagram">
+<pre>
+   infra-k8s (single source of truth da VPC)
+   ├─ output: vpc_id, subnet_ids, vpc_cidr, cluster_name, ecr_repository
+   │      │
+   │      ▼
+   │   ┌──────────────────────────────────────────────────────┐
+   │   │  infra-db                                            │
+   │   │  data "terraform_remote_state" "k8s" { ... }         │
+   │   │  RDS PostgreSQL gerenciado na mesma VPC              │
+   │   │  output: rds_endpoint, rds_port, rds_master_password │
+   │   └──────────────────────────────────────────────────────┘
+   │             │
+   │             ▼
+   │   ┌──────────────────────────────────────────────────────┐
+   └──►│  lambda/infra                                        │
+       │  data "terraform_remote_state" "k8s" { ... }         │
+       │  data "terraform_remote_state" "db"  { ... }         │
+       │  Lambda + IAM + SG + API Gateway na mesma VPC        │
+       │  ingress 5432 da Lambda SG no RDS SG                 │
+       └──────────────────────────────────────────────────────┘
+</pre>
+		</div>
+	</div>
+
+	<div class="highlight" style="margin-top: 12px;">
+		<strong>Branch protection ativa</strong> em <code>main</code> e <code>develop</code> nos 4 repos: PR obrigatório, 1 approval mínimo, no force-push, no deletions, status checks. Repos públicos (Actions ilimitado no free tier). Collaborator <code>soat-architecture</code> confirmado nos 4.
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 6 — FLUXO DE AUTENTICAÇÃO CPF (SEQUÊNCIA)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Autenticação Serverless — Fase 3</div>
+		<div class="section-title">Fluxo Cliente → CPF → JWT → APIs Protegidas</div>
+		<div class="section-subtitle">Opção A do ADR-032: app NÃO ganha controller novo · JwtAuthenticationFilter valida JWT da Lambda transparentemente</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">Diagrama de Sequência</div>
+		<div class="arch-diagram">
+<pre>
+Cliente        Traefik       API Gateway AWS     Lambda          RDS         mecanica-app
+   │              │                 │              │              │                 │
+   │ POST /auth   │                 │              │              │                 │
+   │ {cpf: "..."} │                 │              │              │                 │
+   ├─────────────►│                 │              │              │                 │
+   │              │ ServersTransport│              │              │                 │
+   │              │ (SNI + Host)    │              │              │                 │
+   │              ├────────────────►│              │              │                 │
+   │              │                 │ invoke       │              │                 │
+   │              │                 ├─────────────►│              │                 │
+   │              │                 │              │ valida CPF   │                 │
+   │              │                 │              │ (módulo 11)  │                 │
+   │              │                 │              │              │                 │
+   │              │                 │              │ findByDoc    │                 │
+   │              │                 │              ├─────────────►│                 │
+   │              │                 │              │◄─────────────┤ Cliente+email   │
+   │              │                 │              │                                │
+   │              │                 │              │ sign JWT HS256                 │
+   │              │                 │              │ {sub: email, id: UUID,         │
+   │              │                 │              │  role: CLIENTE, exp: +1h}      │
+   │              │                 │              │ secret = SECURITY_JWT_         │
+   │              │                 │              │ SECRET_KEY (mesma do app)      │
+   │              │                 │◄─────────────┤ 200 + JWT                      │
+   │              │◄────────────────┤                                                │
+   │◄─────────────┤ 200 OK {access_token, cliente: {...}}                            │
+   │              │                                                                  │
+   │ GET /api/clientes/documento/{cpf}                                                │
+   │ Authorization: Bearer &lt;jwt&gt;                                                  │
+   ├─────────────►│ /api → mecanica-service                                          │
+   │              ├─────────────────────────────────────────────────────────────────►│
+   │              │                                                                  │
+   │              │                                  JwtAuthenticationFilter:        │
+   │              │                                  ▸ extractUsername(jwt) = email  │
+   │              │                                  ▸ loadByEmail → UserDetails     │
+   │              │                                  ▸ isTokenValid (HS256 + secret) │
+   │              │                                  ▸ SecurityContextHolder.set     │
+   │              │                                                                  │
+   │              │                                  @PreAuthorize:                  │
+   │              │                                  hasRole('CLIENTE') AND          │
+   │              │                                  isOwnerByDocumento(auth, #cpf)  │
+   │              │◄────────────────────────────────────────────────────────────────┤
+   │◄─────────────┤ 200 {cliente: {id, email, nome, telefone, ...}}                  │
+</pre>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 9 — AUTH CPF: CONTRATO + DECISÃO + COBERTURA
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Autenticação Serverless — Fase 3</div>
+		<div class="section-title">Contrato do JWT e Cobertura de Testes</div>
+		<div class="section-subtitle">Estrutura do token emitido pela Lambda · Justificativa da Opção A do ADR-032 · Cenários cobertos</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="grid-2" style="gap: 14px; margin-bottom: 14px;">
+		<div class="card">
+			<div class="card-title">Contrato do JWT da Lambda</div>
+			<table>
+				<tr><th style="width:30%">Campo</th><th>Valor</th></tr>
+				<tr><td>Algorithm</td><td>HS256</td></tr>
+				<tr><td>Secret</td><td><code>SECURITY_JWT_SECRET_KEY</code> (mesma do K8s Secret do app)</td></tr>
+				<tr><td><code>subject</code></td><td>email do cliente</td></tr>
+				<tr><td><code>id</code></td><td>UUID do cliente</td></tr>
+				<tr><td><code>role</code></td><td><code>"CLIENTE"</code></td></tr>
+				<tr><td><code>iat</code> / <code>exp</code></td><td>Emissão + TTL 3600s</td></tr>
+			</table>
+		</div>
+		<div class="card">
+			<div class="card-title">Por que Opção A (app não muda)</div>
+			<ul class="feature-list" style="font-size: 12px;">
+				<li><strong>Zero novo controller</strong> no app — <code>JwtAuthenticationFilter</code> já valida transparentemente</li>
+				<li>Cliente faz 1 hop até Lambda direto (sem passar pelo app)</li>
+				<li>Sem ponto de falha extra no app (timeout/retry/HTTP client)</li>
+				<li>Encaixa no IngressRoute Traefik que já estava definido</li>
+				<li>Alternativas B (proxy), C (inline app — fere requisito serverless), D (Cognito RS256) descartadas e justificadas no <a href="https://github.com/clefern/fiap-tc-mecanica-app/blob/main/docs/ADRs/ADR-032-autenticacao-cpf-via-lambda.md">ADR-032</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card">
+		<div class="card-title">Cobertura de Testes</div>
+		<ul class="feature-list" style="font-size: 12px;">
+			<li><code>JwtFromExternalIssuerIT</code> (novo, app/integration) — 3 cenários: <strong>(1)</strong> JWT externo válido com <code>subject = email_cadastrado</code> é aceito e libera endpoint com object-level security; <strong>(2)</strong> JWT com subject inexistente → 401; <strong>(3)</strong> JWT com secret diferente → 401</li>
+			<li>Testes unitários de <code>JwtService</code> e <code>JwtAuthenticationFilter</code> mantidos (Fase 1)</li>
+			<li>Testes da Lambda (<code>tests/cpf.test.ts</code>, <code>tests/handler.test.ts</code>) — validação CPF módulo 11, mock de repository</li>
+			<li>Smoke E2E real (com Lambda deployada): roda após <code>Provision &amp; Deploy</code> em lab</li>
+		</ul>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 7 — TOPOLOGIA CLOUD FASE 3
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Infraestrutura — Fase 3</div>
+		<div class="section-title">Topologia AWS (Operação Corporativa)</div>
+		<div class="section-subtitle">VPC compartilhada · EKS + Traefik + OTel · Lambda + API Gateway · RDS gerenciado · New Relic</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">Diagrama de Componentes (Cloud)</div>
+		<div class="arch-diagram">
+<pre>
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│  VPC us-east-1 (single source of truth: fiap-tc-mecanica-infra-k8s)                    │
+│                                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
+│  │  Subnets públicas                                                                │  │
+│  │  NAT Gateway · NLB → Traefik (substitui NGINX — ADR-033)                         │  │
+│  └─────────────────────────────────┬────────────────────────────────────────────────┘  │
+│                                    │                                                   │
+│  ┌─────────────────────────────────▼────────────────────────────────────────────────┐  │
+│  │  EKS Cluster 1.33 (subnets privadas)                                             │  │
+│  │                                                                                  │  │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐                │  │
+│  │  │ Traefik v3       │  │ mecanica-app     │  │ OTel Collector   │                │  │
+│  │  │ IngressRoute:    │  │ Spring Boot 3.3  │  │ (DaemonSet)      │                │  │
+│  │  │ /auth ──► API GW │  │ Java 21 + OTel   │──│ OTLP receivers   │                │  │
+│  │  │ /api ──► app     │  │ agent (jvm)      │  │ hostmetrics      │                │  │
+│  │  │ rate-limit 50/s  │  │ HPA 1-10 (CPU)   │  │ kubeletstats     │                │  │
+│  │  └────────┬─────────┘  └─────────┬────────┘  └────────┬─────────┘                │  │
+│  │           │                      │                    │ OTLP HTTP                │  │
+│  │           │ SNI                  │ JDBC               │                          │  │
+│  └───────────┼──────────────────────┼────────────────────┼──────────────────────────┘  │
+│              │                      │                    │                             │
+│  ┌───────────▼─────────┐  ┌─────────▼──────────┐         │                             │
+│  │ AWS API Gateway     │  │ AWS RDS PostgreSQL │         │                             │
+│  │ POST /auth → Lambda │  │ 16 · db.t3.small   │         │                             │
+│  └───────────┬─────────┘  │ Multi-AZ (prod)    │         │                             │
+│              │            │ subnet privada     │         │                             │
+│  ┌───────────▼─────────┐  │ backup 7 dias      │         │                             │
+│  │ Lambda CPF→JWT      │  │ SG: 5432 from VPC  │         │                             │
+│  │ Node.js 20 ARM64    │──┤ CIDR só            │         │                             │
+│  │ · valida CPF        │  └────────────────────┘         │                             │
+│  │ · busca cliente RDS │                                 │                             │
+│  │ · JWT HS256         │                                 │                             │
+│  │ (mesma secret app)  │                                 │                             │
+│  └─────────────────────┘                                 │                             │
+│                                                          │                             │
+│  ECR · Cert-Manager · Metrics Server · ALB Controller    │                             │
+└──────────────────────────────────────────────────────────┼─────────────────────────────┘
+                                                           │ OTLP
+                                                           ▼
+                                                ┌──────────────────────────┐
+                                                │  New Relic               │
+                                                │  https://otlp.nr-data.net│
+                                                │  · 2 dashboards (IaC)    │
+                                                │  · 3 alertas NRQL        │
+                                                │  · 100GB/mês free tier   │
+                                                └──────────────────────────┘
+</pre>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 11 — INFRA: SEGURANÇA · ESCALABILIDADE · CUSTO
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Infraestrutura — Fase 3</div>
+		<div class="section-title">Pilares: Segurança, Escalabilidade e Custo</div>
+		<div class="section-subtitle">Características operacionais da topologia AWS · Estimativa de custos lab vs prod</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="grid-3" style="gap: 12px;">
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Segurança</div>
+			<ul class="feature-list" style="font-size: 11.5px;">
+				<li>VPC privada · subnets privadas para EKS+RDS</li>
+				<li>RDS SG: ingress 5432 só do VPC CIDR</li>
+				<li>Lambda SG → RDS SG via rule específica</li>
+				<li>JWT secret single source (planejado: AWS Secrets Manager)</li>
+				<li>Traefik rate-limit 50 req/s + burst 100</li>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Escalabilidade</div>
+			<ul class="feature-list" style="font-size: 11.5px;">
+				<li>HPA: CPU 70% / Mem 80%, min 1 max 10</li>
+				<li>Lambda: scale automático (1k reqs/mês free)</li>
+				<li>RDS db.t3.small (Multi-AZ ready em prod)</li>
+				<li>Node group t3.large com cluster autoscaler</li>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Custo Estimado</div>
+			<ul class="feature-list" style="font-size: 11.5px;">
+				<li><strong>Lab</strong>: AWS Academy (crédito)</li>
+				<li><strong>Prod</strong>: ~US$ 270-300/mês</li>
+				<li>EKS US$ 73 + nodes US$ 121 + RDS US$ 32 + NAT US$ 35</li>
+				<li>Lambda + API GW: dentro free tier</li>
+				<li>New Relic: free tier 100GB/mês</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 8 — DECISÕES ARQUITETURAIS (ADRs + RFCs)
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Documentação — Fase 3</div>
+		<div class="section-title">Decisões Arquiteturais</div>
+		<div class="section-subtitle">4 novos ADRs + 3 RFCs formalizam as escolhas técnicas da Fase 3</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">ADRs Fase 3 (decisões registradas)</div>
+		<table>
+			<tr><th style="width:18%">ADR</th><th style="width:34%">Decisão</th><th>Justificativa-chave</th></tr>
+			<tr>
+				<td><strong>ADR-032</strong><br/><span style="font-size:10px; color:var(--text-muted);">auth-cpf-via-lambda</span></td>
+				<td>Lambda emite JWT HS256 com mesma secret · app valida transparentemente sem novo controller</td>
+				<td>Opção A escolhida sobre B (proxy no app, ponto de falha extra), C (inline no app — fere requisito serverless) e D (Cognito RS256 — complexidade desnecessária)</td>
+			</tr>
+			<tr>
+				<td><strong>ADR-033</strong><br/><span style="font-size:10px; color:var(--text-muted);">traefik-api-gateway</span></td>
+				<td>Traefik v3 substitui NGINX Ingress Controller como gateway de borda</td>
+				<td>SNI passthrough para AWS API Gateway sem hacks · middlewares declarativos (rate-limit, ForwardAuth) · integração nativa com Cert-Manager</td>
+			</tr>
+			<tr>
+				<td><strong>ADR-034</strong><br/><span style="font-size:10px; color:var(--text-muted);">observabilidade-otel-newrelic</span></td>
+				<td>OpenTelemetry Collector DaemonSet + New Relic via OTLP HTTP</td>
+				<td>Free tier 100GB/mês · portável (OTel exporter trocável) · auditoria de OS como métrica de negócio · dashboards e alertas como IaC</td>
+			</tr>
+			<tr>
+				<td><strong>ADR-035</strong><br/><span style="font-size:10px; color:var(--text-muted);">rds-postgresql-gerenciado</span></td>
+				<td>RDS PostgreSQL 16 db.t3.small em VPC compartilhada · backup 7 dias · sem mais Postgres em pod</td>
+				<td>Compatibilidade total com 17 migrations Flyway · same-VPC latency &lt; 1ms · snapshots/PITR/upgrade gerenciados pela AWS</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">RFCs (propostas com alternativas avaliadas)</div>
+		<table>
+			<tr><th style="width:18%">RFC</th><th style="width:30%">Tema</th><th>Alternativas avaliadas</th></tr>
+			<tr>
+				<td><strong>RFC-001</strong><br/><span style="font-size:10px; color:var(--text-muted);">escolha-cloud</span></td>
+				<td>AWS vs GCP vs Azure vs multi-cloud</td>
+				<td>Decisão: AWS — atende 5/5 requisitos com serviços nativos, time tem familiaridade, código TF da Fase 2 reaproveitado. Custos lab vs prod documentados</td>
+			</tr>
+			<tr>
+				<td><strong>RFC-002</strong><br/><span style="font-size:10px; color:var(--text-muted);">banco-gerenciado</span></td>
+				<td>RDS vs Aurora vs Neon vs Supabase vs PVC vs MySQL vs DynamoDB</td>
+				<td>Decisão: RDS PostgreSQL 16 db.t3.small. 7 alternativas avaliadas. Conformidade total com migrations Flyway, mesma VPC do EKS, custo dentro do crédito Academy → ADR-035</td>
+			</tr>
+			<tr>
+				<td><strong>RFC-003</strong><br/><span style="font-size:10px; color:var(--text-muted);">estrategia-auth-cpf</span></td>
+				<td>4 opções: A (Lambda HS256 mesma secret), B (proxy), C (inline app), D (Cognito RS256)</td>
+				<td>Decisão: Opção A — zero novo código no app, encaixa no IngressRoute Traefik existente, ADR-032 detalha contrato JWT e mitigação de riscos</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="highlight">
+		<strong>Histórico completo de decisões:</strong> 35 ADRs em <code>app/docs/ADRs/</code> documentam toda a evolução desde Fase 1 (ADR-001 escolha do PostgreSQL) até Fase 3 (ADR-035 RDS gerenciado). RFCs novos em <code>app/docs/RFCs/</code> registram alternativas consideradas com critérios de avaliação ponderados.
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 9 — OBSERVABILIDADE
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Observabilidade — Fase 3</div>
+		<div class="section-title">OpenTelemetry → New Relic</div>
+		<div class="section-subtitle">Telemetria portável (OTel) + backend free tier (New Relic) + dashboards como IaC</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="grid-2" style="gap: 14px; margin-bottom: 14px;">
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Pipeline OTel Collector (DaemonSet)</div>
+			<ul class="feature-list" style="font-size: 12px;">
+				<li><strong>Receivers</strong>: otlp (gRPC 4317 + HTTP 4318), hostmetrics (root_path /hostfs, 60s), kubeletstats</li>
+				<li><strong>Processors</strong>: batch (10s timeout)</li>
+				<li><strong>Exporters</strong>: debug + otlphttp/newrelic (https://otlp.nr-data.net)</li>
+				<li><strong>Pipelines</strong>: traces, metrics, logs (3 canais ativos)</li>
+				<li><strong>RBAC</strong>: ServiceAccount + ClusterRole pra kubeletstats (get nodes/pods/services)</li>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Instrumentação no App</div>
+			<ul class="feature-list" style="font-size: 12px;">
+				<li><strong>OTel Java Agent v2.26.1</strong> no Dockerfile (<code>-javaagent:/app/otel.jar</code>)</li>
+				<li>Micrometer OTLP exporter (<code>management.otlp.metrics</code>)</li>
+				<li>Logback JSON com <code>LogstashLogbackEncoder</code> (profile <code>!local</code>)</li>
+				<li><code>MonitoredOperationAspect</code> instrumenta 14+ métodos com tags <code>status/operation/service/error_type</code></li>
+				<li><code>CorrelationIdFilter</code> propaga <code>X-Correlation-ID</code> via MDC entre logs e traces</li>
+				<li>Auditoria de OS: 3 eventos novos + <code>OsHistoryListener</code> + tabela <code>os_history</code> (migration V17)</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">Dashboards New Relic (como código em <code>17-observability.tf</code>)</div>
+		<div class="grid-2" style="gap: 14px;">
+			<div>
+				<p style="font-weight: 700; font-size: 12px; color: var(--phase3); margin-bottom: 6px;">📊 Visão Geral de Negócio</p>
+				<ul class="feature-list" style="font-size: 11.5px;">
+					<li>Volume diário de OS criadas</li>
+					<li>Operações por tipo (OS / Orçamento)</li>
+					<li>Latência das APIs (p50/p95/p99)</li>
+					<li>Falhas de processamento por status</li>
+					<li>Ciclo de vida da OS (tempo médio por status)</li>
+				</ul>
+			</div>
+			<div>
+				<p style="font-weight: 700; font-size: 12px; color: var(--phase3); margin-bottom: 6px;">⚙️ Infraestrutura (OTel / Kubernetes)</p>
+				<ul class="feature-list" style="font-size: 11.5px;">
+					<li>CPU / memória por pod e nó</li>
+					<li>Container metrics (restarts, OOM)</li>
+					<li>JVM heap, GC, threads</li>
+					<li>Throughput de requisições por endpoint</li>
+					<li>Conexões ao RDS (pool ativo / idle)</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="card">
+		<div class="card-title" style="color: var(--phase3);">Alertas NRQL (3 condições críticas — IaC)</div>
+		<table>
+			<tr><th style="width:25%">Nome</th><th style="width:20%">Condição</th><th>Ação</th></tr>
+			<tr><td><code>high_error_rate</code></td><td>Taxa de erro &gt; 5% por 300s</td><td>Notifica canal de incidentes — pode indicar problema sistêmico (deploy ruim, RDS lento, Lambda quebrada)</td></tr>
+			<tr><td><code>os_process_failure</code></td><td>Erros em <code>metricName LIKE 'os_%'</code> (60s, at_least_once)</td><td>Falha específica no processamento de OS — dispara investigação no log com correlationId</td></tr>
+			<tr><td><code>app_downtime</code></td><td>Loss of signal &gt; 5min</td><td>App parou de enviar telemetria — pode indicar crash, OOM, network partition. Acionamento de plantão</td></tr>
+		</table>
+	</div>
+
+	<div class="highlight" style="margin-top: 14px;">
+		<strong>Portabilidade garantida pelo OTel:</strong> trocar New Relic por Datadog, Honeycomb, Tempo ou self-hosted exige apenas mudar o exporter no <code>otel-collector-configmap.yaml</code> — zero alteração no código do app. Queries NRQL dos dashboards são o único lock-in.
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 10 — CI/CD + EQUIPE + ENCERRAMENTO
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">CI/CD — Fase 3</div>
+		<div class="section-title">Provision &amp; Deploy Orquestrado</div>
+		<div class="section-subtitle">Single workflow no <code>infra-k8s</code> aciona toda a cadeia em sequência</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="card" style="margin-bottom: 14px;">
+		<div class="card-title" style="color: var(--phase3);">Pipeline (workflow_dispatch manual via Actions UI)</div>
+		<div class="pipeline">
+			<span class="pipeline-step">1. Setup Cluster (Terraform EKS)</span>
+			<span class="pipeline-arrow">→</span>
+			<span class="pipeline-step">2. Deploy RDS (infra-db)</span>
+			<span class="pipeline-arrow">→</span>
+			<span class="pipeline-step">3. Deploy Lambda (terraform apply)</span>
+			<span class="pipeline-arrow">→</span>
+			<span class="pipeline-step">4. Apply K8s (kustomize)</span>
+			<span class="pipeline-arrow">→</span>
+			<span class="pipeline-step">5. Build + Deploy App (ECR + rollout)</span>
+		</div>
+		<p style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+			Trigger: <code>github.com/clefern/fiap-tc-mecanica-infra-k8s/actions/workflows/cd.yml</code> → <strong>Run workflow</strong>. Cada step usa <code>workflow_call</code> ou cross-repo via <code>actions/checkout@v4</code> com PAT. Ordem garantida por <code>needs:</code> entre jobs.
+		</p>
+	</div>
+
+	<div class="grid-2" style="gap: 14px; margin-bottom: 14px;">
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Governança (Branch Protection × 8)</div>
+			<ul class="feature-list" style="font-size: 12px;">
+				<li>4 repos × 2 branches (<code>main</code> e <code>develop</code>) = 8 protections ativas</li>
+				<li>PR obrigatório · 1 approval mínimo · status checks strict</li>
+				<li>No force-push · no deletions · no direct push</li>
+				<li>Admin (clefern) pode mergear via <code>--admin</code> bypass quando necessário</li>
+				<li>Collaborator <code>soat-architecture</code> adicionado (read) — EXT-003</li>
+			</ul>
+		</div>
+		<div class="card">
+			<div class="card-title" style="color: var(--phase3);">Secrets &amp; OIDC</div>
+			<div style="font-family: 'Courier New', monospace; font-size: 10.5px; line-height: 1.7; color: var(--text);">
+				<div><span style="color: var(--phase3);">AWS_ACCESS_KEY_ID</span> / <span style="color: var(--phase3);">AWS_SECRET_ACCESS_KEY</span> / <span style="color: var(--phase3);">AWS_SESSION_TOKEN</span></div>
+				<div><span style="color: var(--phase3);">AWS_REGION</span> · <span style="color: var(--phase3);">AWS_TERRAFORM_BUCKET_STATE</span></div>
+				<div><span style="color: var(--phase3);">JAVA_VERSION</span> (21) · <span style="color: var(--phase3);">JWT_SECRET</span></div>
+				<div><span style="color: var(--phase3);">NEW_RELIC_API_KEY</span> / <span style="color: var(--phase3);">NEW_RELIC_LICENSE_KEY</span></div>
+				<div><span style="color: var(--phase3);">NEW_RELIC_ACCOUNT_ID</span> · <span style="color: var(--phase3);">NEW_RELIC_REGION</span></div>
+				<div><span style="color: var(--phase3);">INTEGRATION_API_KEY</span> · <span style="color: var(--phase3);">ACTION_TOKEN_SECRET</span></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA 15 — EQUIPE + ENCERRAMENTO
+════════════════════════════════════════════════════════════ -->
+<div class="page">
+	<div class="section-header">
+		<div class="section-label">Grupo 14SOAT — FIAP</div>
+		<div class="section-title">Equipe e Encerramento</div>
+		<div class="section-subtitle">Pós-Graduação em Arquitetura de Software · Tech Challenge Fase 3 · Maio 2026</div>
+		<div class="section-rule"></div>
+	</div>
+
+	<div class="phase-banner">
+		<div>
+			<div class="pb-label">Equipe</div>
+			<div class="pb-title">Grupo 14SOAT</div>
+			<div class="pb-desc">FIAP — Pós-Graduação em Arquitetura de Software · 2025/2026</div>
+		</div>
+	</div>
+
+	<div class="grid-3" style="gap: 12px; margin-bottom: 14px;">
+		<div class="team-card">
+			<div class="team-avatar">CF</div>
+			<div class="team-name">Cleber Fernandes</div>
+			<div class="team-email">cleber_sim@outlook.com</div>
+			<div class="team-role">Software Engineer</div>
+		</div>
+		<div class="team-card">
+			<div class="team-avatar">CL</div>
+			<div class="team-name">Christian Felipe F. de Lima</div>
+			<div class="team-email">christian.fflima@gmail.com</div>
+			<div class="team-role">Software Engineer</div>
+		</div>
+		<div class="team-card">
+			<div class="team-avatar">GS</div>
+			<div class="team-name">Gabriel J. A. Schuina</div>
+			<div class="team-email">gabriel.schuina@gmail.com</div>
+			<div class="team-role">Software Engineer</div>
+		</div>
+	</div>
+
+	<div class="highlight">
+		<strong>Encerramento da Fase 3:</strong> a Mecânica API evoluiu de monolito local (Fase 1) e cloud-native single-repo (Fase 2) para um sistema distribuído de operação corporativa — 4 repositórios independentes com CI/CD próprio, autenticação serverless por CPF, banco PostgreSQL gerenciado, observabilidade ponta a ponta com OpenTelemetry e New Relic, e governança de branches ativa. <em>Pronto para produção.</em>
+	</div>
+
+	<div style="margin-top: 20px; text-align: center; color: var(--text-muted); font-size: 10.5px;">
+		<p><strong style="color: var(--fiap-blue);">Grupo 14SOAT</strong> &nbsp;·&nbsp; FIAP — Tech Challenge Fase 3 &nbsp;·&nbsp; Entrega: Maio 2026</p>
+	</div>
+</div>
+
+	</body>
+</html>
