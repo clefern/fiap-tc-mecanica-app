@@ -1,17 +1,32 @@
-name: Reusable — Deploy EKS
+######################################################
+# Deploy App — build/push ECR + rollout no EKS
+# Ordem sugerida: infra-k8s "Provision & Deploy" ou após k8s deploy
+######################################################
+name: Deploy App
 
 on:
   workflow_call:
     inputs:
-      aws-region:
-        required: true
-        type: string
-      eks-cluster-name:
-        required: true
-        type: string
       environment:
         required: true
         type: string
+      aws_region:
+        required: true
+        type: string
+      ecr_repository:
+        required: true
+        type: string
+      eks_cluster_name:
+        required: true
+        type: string
+      bump_version:
+        required: false
+        type: boolean
+        default: false
+      rollout_only:
+        required: false
+        type: boolean
+        default: false
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
@@ -19,78 +34,110 @@ on:
         required: true
       AWS_SESSION_TOKEN:
         required: true
-      AWS_ACCOUNT_ID:
+      GITHUB_TOKEN:
         required: true
-      DB_USER:
-        required: true
-      DB_PASSWORD:
-        required: true
-      POSTGRES_USER:
-        required: true
-      POSTGRES_PASSWORD:
-        required: true
-      POSTGRES_DB:
-        required: true
-      SECURITY_JWT_SECRET_KEY:
-        required: true
-      ACTION_TOKEN_SECRET:
-        required: true
-      INTEGRATION_API_KEY:
-        required: true
-      MAIL_USERNAME:
-        required: false
-      MAIL_PASSWORD:
-        required: false
 
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Ambiente (lab, prod, etc)'
+        description: 'Ambiente / overlay K8s'
         required: true
-        type: string
+        type: choice
+        options:
+          - lab
+          - develop
+          - prod
         default: lab
-      aws-region:
-        description: 'AWS Region'
+      aws_region:
+        description: 'Região AWS'
         required: true
         type: string
         default: us-east-1
-      eks-cluster-name:
+      ecr_repository:
+        description: 'Repositório ECR'
+        required: true
+        type: string
+        default: fiap-mecanica
+      eks_cluster_name:
         description: 'Nome do cluster EKS'
         required: true
         type: string
         default: lab-fiap-cluster
+      bump_version:
+        description: 'Incrementar patch SemVer e criar tag git'
+        required: true
+        type: boolean
+        default: false
+      rollout_only:
+        description: 'Pular build — apenas restart do Deployment (:latest)'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
 
 jobs:
-  deploy:
-    name: 🚀 K8s Deploy
-    runs-on: ubuntu-latest
-    env:
-      ENV: ${{ inputs.environment }}
+  build:
+    name: 🐳 Build & Push
+    if: ${{ !inputs.rollout_only }}
+    uses: ./.github/workflows/build-push.yml
+    with:
+      java-version: ${{ vars.JAVA_VERSION || '21' }}
+      aws-region: ${{ inputs.aws_region }}
+      ecr-repository: ${{ inputs.ecr_repository }}
+      bump-version: ${{ inputs.bump_version }}
+    secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      AWS_REGION: ${{ inputs.aws-region }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      SECURITY_JWT_SECRET_KEY: ${{ secrets.SECURITY_JWT_SECRET_KEY }}
-      ACTION_TOKEN_SECRET: ${{ secrets.ACTION_TOKEN_SECRET }}
-      INTEGRATION_API_KEY: ${{ secrets.INTEGRATION_API_KEY }}
-      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME || '' }}
-      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD || '' }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  rollout:
+    name: 🚀 Rollout EKS
+    needs: [build]
+    if: ${{ always() && (inputs.rollout_only || needs.build.result == 'success') }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ inputs.aws_region }}
+      K8S_NAMESPACE: mecanica
+      EKS_CLUSTER: ${{ inputs.eks_cluster_name }}
 
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - name: 🔐 AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ inputs.aws_region }}
 
-      - name: Configure kubeconfig
+      - name: 🔎 Resolve deployment name
+        id: target
+        run: |
+          case "${{ inputs.environment }}" in
+            lab)     echo "deployment=lab-mecanica-app" >> "$GITHUB_OUTPUT" ;;
+            develop) echo "deployment=develop-mecanica-app" >> "$GITHUB_OUTPUT" ;;
+            prod)    echo "deployment=mecanica-app" >> "$GITHUB_OUTPUT" ;;
+            *)       echo "deployment=${{ inputs.environment }}-mecanica-app" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: 🔧 Configure kubeconfig
         run: |
           aws eks update-kubeconfig \
-            --region "$AWS_REGION" \
-            --name ${{ inputs.eks-cluster-name }}
+            --region "${AWS_REGION}" \
+            --name "${EKS_CLUSTER}"
 
-      - name: Deploy to K8s
-        run: ./scripts/k8s-deploy.sh
+      - name: 🔄 Rollout restart
+        run: |
+          DEPLOY="${{ steps.target.outputs.deployment }}"
+          kubectl rollout restart "deployment/${DEPLOY}" -n "${K8S_NAMESPACE}"
+          kubectl rollout status "deployment/${DEPLOY}" -n "${K8S_NAMESPACE}" --timeout=900s
+
+      - name: 📋 Summary
+        if: success()
+        run: |
+          if [[ "${{ inputs.rollout_only }}" != "true" ]]; then
+            echo "Image: ${{ needs.build.outputs.image-uri || 'n/a' }}"
+          fi
+          echo "Deployment: ${{ steps.target.outputs.deployment }}"
