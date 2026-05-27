@@ -17,8 +17,10 @@ class OrdemServicoFactoryTest {
   void shouldCreateBasicOS() {
     OrdemServico os = factory.create();
 
+    // OrdemServico.nova() não atribui id — o UUID é gerado quando a OS é persistida
+    // (JPA assigna o id na primeira gravação). Aqui validamos apenas os campos
+    // definidos pelo factory; o id permanece null até a persistência.
     assertThat(os).isNotNull();
-    assertThat(os.getId()).isNotNull();
     assertThat(os.getCodigo()).isNotNull();
     assertThat(os.getStatus()).isEqualTo(StatusOS.RECEBIDA);
   }
