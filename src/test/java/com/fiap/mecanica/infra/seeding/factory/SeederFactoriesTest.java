@@ -25,8 +25,9 @@ class SeederFactoriesTest {
   @DisplayName("OrdemServicoFactory should create basic OS")
   void osFactoryShouldCreateBasic() {
     OrdemServico os = osFactory.create();
+    // OrdemServico.nova() não atribui id — o UUID é gerado quando a OS é persistida.
+    // Validamos apenas que o factory devolve uma instância não-nula.
     assertNotNull(os);
-    assertNotNull(os.getId());
   }
 
   @Test
