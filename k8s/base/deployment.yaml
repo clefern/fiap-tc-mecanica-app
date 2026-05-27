@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mecanica-app
+  labels:
+    app: fiap-mecanica
+    tier: backend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: fiap-mecanica
+  template:
+    metadata:
+      labels:
+        app: fiap-mecanica
+        tier: backend
+        version: v1
+    spec:
+      containers:
+        - name: mecanica-app
+          image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/fiap-mecanica:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: "JAVA_OPTS"
+              value: >
+                -XX:+UseContainerSupport
+                -XX:MaxRAMPercentage=75.0
+                -XX:+UseG1GC
+                -Xms256m
+                -Xmx512m
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: mecanica-db-secret
+                  key: DB_HOST
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: mecanica-db-secret
+                  key: DB_NAME
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: mecanica-db-secret
+                  key: DB_USERNAME
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: mecanica-db-secret
+                  key: DB_PASSWORD
+            - name: "SECURITY_JWT_SECRET_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: mecanica-db-secret
+                  key: SECURITY_JWT_SECRET_KEY
+            - name: "MAIL_HOST"
+              value: "mailhog"
+            - name: "TESTE"
+              value: "batata"
+            - name: "OTEL_EXPORTER_OTLP_ENDPOINT"
+              value: "http://otel-collector:4318"
+            - name: "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"
+              value: "http://otel-collector:4318/v1/traces"
+            - name: "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"
+              value: "http://otel-collector:4318/v1/metrics"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 180
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+      initContainers:
+        - name: wait-for-otel
+          image: busybox:1.36
+          command: [ "sh", "-c", "until nc -z otel-collector 4318; do echo waiting for otel-collector; sleep 2; done;" ]

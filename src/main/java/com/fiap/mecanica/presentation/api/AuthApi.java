@@ -15,26 +15,14 @@ import org.springframework.http.ResponseEntity;
 
 @Tag(
     name = "Autenticação",
-    description =
-        "Endpoints de autenticação. \n\n"
-            + "**Clientes (CPF)**: usar `POST /auth` no Traefik gateway — roteia para a Function\n"
-            + "Serverless (Lambda CPF→JWT). O JWT emitido pela Lambda é aceito transparentemente\n"
-            + "pelos endpoints `/api/*` (mesma secret HS256). Ver ADR-032.\n\n"
-            + "**Equipe interna (ADMIN, ATENDENTE, MECANICO)**: usar `POST /oauth/token` com\n"
-            + "`grant_type=password` (email + senha). Este endpoint está marcado como `@Deprecated`\n"
-            + "para clientes — mantido apenas para staff interna.")
+    description = "Endpoints de autenticação — obtenção e gestão de tokens JWT")
 public interface AuthApi {
 
   @Operation(
-      summary = "Obter token de acesso (uso restrito a staff interna)",
+      summary = "Obter token de acesso",
       description =
           "Obtém tokens de acesso e refresh usando `grant_type=password` (login) ou"
-              + " `grant_type=refresh_token` (renovação).\n\n"
-              + "**Deprecated para clientes (CPF)** — clientes devem usar `POST /auth` no Traefik"
-              + " gateway, que delega para a Function Serverless. Este endpoint permanece"
-              + " ativo para login de staff interna (ADMIN, ATENDENTE, MECANICO).\n\n"
-              + "Ver ADR-032: `docs/ADRs/ADR-032-autenticacao-cpf-via-lambda.md`.",
-      deprecated = true,
+              + " `grant_type=refresh_token` (renovação).",
       responses = {
         @ApiResponse(
             responseCode = "200",

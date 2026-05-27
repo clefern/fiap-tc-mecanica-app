@@ -1,16 +1,12 @@
-name: Reusable — Build & Push ECR
+name: Build & Push
 
 on:
   workflow_call:
     inputs:
-      java-version:
-        required: false
-        type: string
-        default: '21'
-      aws-region:
+      aws_region:
         required: true
         type: string
-      ecr-repository:
+      ecr_repository:
         required: true
         type: string
     secrets:
@@ -20,73 +16,50 @@ on:
         required: true
       AWS_SESSION_TOKEN:
         required: true
-      GITHUB_TOKEN:
-        required: true
-    outputs:
-      image-uri:
-        description: "URI completa da imagem no ECR"
-        value: ${{ jobs.build.outputs.image-uri }}
 
   workflow_dispatch:
     inputs:
-      java-version:
-        description: 'Versão do JDK'
-        required: false
-        type: string
-        default: '21'
-      aws-region:
-        description: 'Região da AWS'
+      environment:
+        description: 'Ambiente (lab, prod, etc)'
         required: true
         type: string
-        default: 'us-east-1'
-      ecr-repository:
-        description: 'Nome do repositório no ECR'
+        default: lab
+      aws_region:
+        description: 'AWS Region'
         required: true
         type: string
+        default: us-east-1
+      ecr_repository:
+        description: 'ECR Repository'
+        required: true
+        type: string
+        default: "fiap-mecanica"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
-    name: 🏗️ Version, Build & Push
+    name: 🏗️ Build & Push (SHA Tag)
     runs-on: ubuntu-latest
-
-    outputs:
-      image-uri: ${{ steps.meta.outputs.image-uri }}
-      version: ${{ steps.set-version.outputs.version }}
 
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.ref_name }}
 
-      - name: 🏷️ Configure Git Identity
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: 🏷️ Set Short SHA
+        id: main_sha
+        run: echo "main_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: ⚙️ Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ inputs.java-version }}
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
 
-      - name: 🏷️ Bump Version
-        id: set-version
-        run: |
-          chmod +x ./scripts/semver.sh
-          NEXT=$(./scripts/semver.sh get-next-version)
-          ./scripts/semver.sh update-version "$NEXT"
-          echo "version=$NEXT" >> $GITHUB_OUTPUT
-          echo "Final Version: $NEXT"
-
       - name: 🔨 Build Artifact
-        run: ./mvnw clean package -DskipTests --batch-mode --no-transfer-progress
+        run: mvn clean package -DskipTests --batch-mode --no-transfer-progress
 
       - name: 🔐 Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -94,27 +67,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ inputs.aws-region }}
+          aws-region: ${{ inputs.aws_region }}
 
       - name: 🔑 Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: 🏷️ Generate Docker Metadata
-        id: meta
-        run: |
-          IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}:${{ steps.set-version.outputs.version }}"
-          IMAGE_URI_LATEST="${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr-repository }}:latest"
-          echo "image-uri=${IMAGE_URI}" >> $GITHUB_OUTPUT
-          echo "image-uri-latest=${IMAGE_URI_LATEST}" >> $GITHUB_OUTPUT
-
       - name: 🐳 Build and Push Docker Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ inputs.ecr_repository }}
+          IMAGE_TAG: ${{ steps.main_sha.outputs.main_sha }}
         run: |
           docker build \
-            --file Dockerfile.deploy \
-            --tag ${{ steps.meta.outputs.image-uri }} \
-            --tag ${{ steps.meta.outputs.image-uri-latest }} \
+            --file Dockerfile \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:latest \
             --label "git-commit=${{ github.sha }}" \
             .
-          docker push ${{ steps.meta.outputs.image-uri }}
-          docker push ${{ steps.meta.outputs.image-uri-latest }}
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
