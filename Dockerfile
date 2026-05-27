@@ -1,14 +1,7 @@
-FROM eclipse-temurin:21-jre-alpine
-
-ARG OTEL_AGENT_VERSION=2.26.1
+FROM gcr.io/distroless/java21-debian13:nonroot
 
 WORKDIR /app
 
-COPY ./target/*.jar app.jar
+COPY --chown=nonroot:nonroot target/mecanica*.jar /app/app.jar
 
-RUN apk add --no-cache curl \
-    && curl -sSfL \
-      "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" \
-      -o otel.jar
-
-CMD [ "java", "-javaagent:/app/otel.jar", "-jar", "app.jar" ]
+CMD [ "app.jar" ]

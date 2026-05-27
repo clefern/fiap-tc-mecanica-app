@@ -1,10 +1,10 @@
 ######################################################
-# CD — App only (build ECR + rollout)
-#
-# Deploy completo dos 4 repos: use fiap-tc-mecanica-infra-k8s
-#   Actions → "Provision & Deploy"
+# CD — Execução manual
+# Dispare pela aba: Actions → "Provision & Deploy" → Run workflow
+# Ao executar, todos os passos rodam em sequência:
+#   Infra (Terraform) → Build & Push (ECR) → Deploy (EKS)
 ######################################################
-name: CD — App only
+name: CD
 
 on:
   workflow_dispatch:
@@ -14,47 +14,61 @@ on:
         required: true
         type: choice
         options:
-          - lab
-          - develop
-          - prod
-        default: lab
+          - "lab"
+          - "develop"
+        default: "lab"
       aws_region:
-        description: 'Região AWS'
+        description: 'Região AWS para o deployment'
         required: true
         type: string
-        default: us-east-1
+        default: "us-east-1"
+      aws_account_id:
+        description: 'Account ID AWS (opcional, necessário para cross-account)'
+        required: false
+        type: string
       ecr_repository:
-        description: 'Repositório ECR'
+        description: 'ECR Repository'
         required: true
         type: string
-        default: fiap-mecanica
+        default: "fiap-mecanica"
       eks_cluster_name:
-        description: 'Nome do cluster EKS'
+        description: 'EKS Cluster Name'
         required: true
         type: string
-        default: lab-fiap-cluster
-      bump_version:
-        description: 'Incrementar patch SemVer'
-        required: true
-        type: boolean
-        default: false
+        default: "fiap-cluster"
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
-    name: 🐳 Deploy App
-    uses: ./.github/workflows/deploy.yml
+
+  ##################
+  ## Build & Push ##
+  ##################
+  build:
+    name: 🐳 Build & Push - ${{ inputs.environment }}
+    uses: ./.github/workflows/build.yml
     with:
-      environment: ${{ inputs.environment }}
       aws_region: ${{ inputs.aws_region }}
       ecr_repository: ${{ inputs.ecr_repository }}
-      eks_cluster_name: ${{ inputs.eks_cluster_name }}
-      bump_version: ${{ inputs.bump_version }}
-      rollout_only: false
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ############
+  ## Deploy ##
+  ############
+  deploy:
+    name: 🚀 Deploy
+    needs: [ build ]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: ${{ inputs.environment }}
+      aws_region: ${{ inputs.aws_region }}
+      aws_account_id: ${{ inputs.aws_account_id || vars.AWS_ACCOUNT_ID }}
+      eks_cluster_name: ${{ inputs.eks_cluster_name }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}

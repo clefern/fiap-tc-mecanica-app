@@ -6,32 +6,24 @@ set -euox pipefail
 # substituindo variáveis de ambiente nos manifests via envsubst.
 #
 # Variáveis obrigatórias (devem vir do pipeline):
-#   ENV                    — nome do overlay (ex: develop, lab, prod)
+#   ENVIRONMENT            — nome do overlay (ex: develop, lab, prod)
 #   AWS_ACCOUNT_ID         — ID da conta AWS
 #   AWS_REGION             — região AWS (ex: us-east-1)
-#   DB_USER                — usuário do banco de dados
+#   DB_HOST                — host do banco de dados
+#   DB_USERNAME            — usuário do banco de dados
 #   DB_PASSWORD            — senha do banco de dados
-#   POSTGRES_USER          — usuário do PostgreSQL
-#   POSTGRES_PASSWORD      — senha do PostgreSQL
-#   POSTGRES_DB            — nome do banco de dados
-#   SECURITY_JWT_SECRET_KEY — chave secreta JWT (base64-encoded, min 256 bits)
-#   ACTION_TOKEN_SECRET    — HMAC-SHA256 secret para action tokens de email
-#   INTEGRATION_API_KEY    — API key para integrações machine-to-machine
+#   DB_NAME                — nome do banco de dados
 # ---------------------------------------------------------------------------
 
 # Validar todas as variáveis obrigatórias
 REQUIRED_VARS=(
-  ENV
+  ENVIRONMENT
   AWS_ACCOUNT_ID
   AWS_REGION
-  DB_USER
+  DB_HOST
+  DB_USERNAME
   DB_PASSWORD
-  POSTGRES_USER
-  POSTGRES_PASSWORD
-  POSTGRES_DB
-  SECURITY_JWT_SECRET_KEY
-  ACTION_TOKEN_SECRET
-  INTEGRATION_API_KEY
+  DB_NAME
 )
 
 # Variáveis opcionais (podem ser vazias ou ter default)
@@ -69,10 +61,10 @@ log "✅ Todas as variáveis obrigatórias estão definidas."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}"/.. && pwd)"
 BASE_SRC="${ROOT_DIR}/k8s/base"
-OVERLAY_SRC="${ROOT_DIR}/k8s/overlays/${ENV}"
+OVERLAY_SRC="${ROOT_DIR}/k8s/overlays/${ENVIRONMENT}"
 
 [[ -d "${BASE_SRC}" ]] || fail "Base Kustomize não encontrada: ${BASE_SRC}"
-[[ -d "${OVERLAY_SRC}" ]] || fail "Overlay não encontrado para o ambiente '${ENV}': ${OVERLAY_SRC}"
+[[ -d "${OVERLAY_SRC}" ]] || fail "Overlay não encontrado para o ambiente '${ENVIRONMENT}': ${OVERLAY_SRC}"
 [[ -f "${BASE_SRC}/kustomization.yaml" ]] || fail "kustomization.yaml não encontrado na base: ${BASE_SRC}"
 [[ -f "${OVERLAY_SRC}/kustomization.yaml" ]] || fail "kustomization.yaml não encontrado no overlay: ${OVERLAY_SRC}"
 
@@ -83,34 +75,23 @@ kubectl auth can-i get pods >/dev/null || fail "Sem permissão mínima no cluste
 TMP_BUILD_DIR="$(mktemp -d)"
 TMP_K8S_DIR="${TMP_BUILD_DIR}/k8s"
 TMP_BASE_DIR="${TMP_K8S_DIR}/base"
-TMP_OVERLAY_DIR="${TMP_K8S_DIR}/overlays/${ENV}"
+TMP_OVERLAY_DIR="${TMP_K8S_DIR}/overlays/${ENVIRONMENT}"
 BUILT_MANIFESTS_FILE="${TMP_BUILD_DIR}/built-manifests.yaml"
 
-mkdir -p "${TMP_K8S_DIR}/overlays"
-
 log "📦 Copiando base e overlay para diretório temporário..."
+mkdir -p "${TMP_K8S_DIR}/overlays"
 cp -r "${BASE_SRC}" "${TMP_BASE_DIR}"
 cp -r "${OVERLAY_SRC}" "${TMP_OVERLAY_DIR}"
-
-cd "${TMP_K8S_DIR}"
 
 log "⚙️ Substituindo variáveis de ambiente nos manifests..."
 while IFS= read -r file; do
   log "  - Processando ${file}"
   envsubst < "${file}" > "${file}.tmp" && mv "${file}.tmp" "${file}"
-done < <(find . -type f \( -name "*.yaml" -o -name "*.yml" \))
+done < <(find "${TMP_K8S_DIR}" -type f \( -name "*.yaml" -o -name "*.yml" \))
 
 log "🔧 Construindo manifests finais com Kustomize..."
 kustomize build "${TMP_OVERLAY_DIR}" > "${BUILT_MANIFESTS_FILE}"
 [[ -s "${BUILT_MANIFESTS_FILE}" ]] || fail "Manifestos gerados estão vazios."
-
-# Criar namespace primeiro para evitar erro no dry-run
-NAMESPACE_NAME="mecanica-${ENV}"
-log "📦 Criando namespace ${NAMESPACE_NAME} antes da validação..."
-kubectl create namespace "${NAMESPACE_NAME}" --dry-run=client -o yaml | kubectl apply -f -
-
-log "🧪 Validando manifests com dry-run server..."
-kubectl apply --dry-run=server -f "${BUILT_MANIFESTS_FILE}" >/dev/null
 
 log "🚀 Aplicando manifests no cluster..."
 kubectl apply -f "${BUILT_MANIFESTS_FILE}"
@@ -128,11 +109,11 @@ if [[ "${SKIP_ROLLOUT_CHECK}" != "true" ]]; then
     while IFS= read -r resource; do
       [[ -z "${resource}" ]] && continue
       log "  - Rollout status: ${resource}"
-      kubectl rollout status "${resource}" -n "mecanica-${ENV}" --timeout="${ROLLOUT_TIMEOUT}"
+      kubectl rollout status "${resource}" -n "mecanica-${ENVIRONMENT}" --timeout="${ROLLOUT_TIMEOUT}"
     done <<< "$(printf '%s\n%s\n' "${DEPLOYMENTS}" "${STATEFULSETS}")"
   fi
 else
   log "⚠️ SKIP_ROLLOUT_CHECK=true, validação de rollout ignorada."
 fi
 
-log "✅ Deploy concluído para o ambiente: ${ENV}"
+log "✅ Deploy concluído para o ambiente: ${ENVIRONMENT}"

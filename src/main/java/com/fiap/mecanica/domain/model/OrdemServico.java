@@ -46,7 +46,6 @@ public class OrdemServico implements Serializable {
   // Factory method para nova OS
   public static OrdemServico nova(UUID clienteId, UUID veiculoId) {
     return OrdemServico.builder()
-        .id(UUID.randomUUID())
         .clienteId(clienteId)
         .veiculoId(veiculoId)
         .codigo(gerarCodigo())

@@ -19,7 +19,7 @@ services:
 #  app:
 #    build:
 #      context: .
-#      dockerfile: Dockerfile.deploy
+#      dockerfile: Dockerfile
 #    container_name: mecanica-app
 #    restart: unless-stopped
 #    ports:

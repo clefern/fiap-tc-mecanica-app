@@ -1,0 +1,33 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mecanica-api-gateway
+  labels:
+    app: mecanica-app
+    tier: gateway
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/auth`)
+      priority: 200
+      middlewares:
+        - name: lambda-api-gateway
+      services:
+        - name: lambda-auth-external
+          port: 443
+          scheme: https
+          passHostHeader: false
+          serversTransport: mecanica-lambda-apigw-transport
+    - match: PathPrefix(`/api`)
+      priority: 100
+      middlewares:
+        - name: api-gateway-ratelimit
+      services:
+        - name: mecanica-service
+          port: 80
+    - match: PathPrefix(`/`)
+      priority: 1
+      services:
+        - name: mecanica-service
+          port: 80
